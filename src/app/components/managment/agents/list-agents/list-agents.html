@@ -1,0 +1,254 @@
+<div class="employee-container">
+    <!-- En-tête -->
+    <div class="page-header">
+        <div>
+            <h1>Gestion des employés</h1>
+            <p>Liste et gestion de tous les employés</p>
+        </div>
+        <button class="btn btn-validation" (click)="addEmployee()">
+            <span>➕</span> Ajouter un employé
+        </button>
+    </div>
+
+    <!-- Cartes statistiques -->
+    <div class="stats-cards">
+        <div class="stat-card-employee">
+            <div class="stat-icon on-site">
+                <span>🏢</span>
+            </div>
+            <div class="stat-details">
+                <h3>Sur site</h3>
+                <div class="stat-number">{{ stats.onSite }}</div>
+                <span class="stat-trend positive">+{{ stats.onSiteToday }} aujourd'hui</span>
+            </div>
+        </div>
+
+        <div class="stat-card-employee">
+            <div class="stat-icon remote">
+                <span>🏠</span>
+            </div>
+            <div class="stat-details">
+                <h3>Hors site</h3>
+                <div class="stat-number">{{ stats.remote }}</div>
+                <span class="stat-trend">Télétravail</span>
+            </div>
+        </div>
+
+        <div class="stat-card-employee">
+            <div class="stat-icon sick">
+                <span>🤒</span>
+            </div>
+            <div class="stat-details">
+                <h3>Malade</h3>
+                <div class="stat-number">{{ stats.sick }}</div>
+                <span class="stat-trend danger">Arrêts maladie</span>
+            </div>
+        </div>
+
+        <div class="stat-card-employee">
+            <div class="stat-icon leave">
+                <span>🏖️</span>
+            </div>
+            <div class="stat-details">
+                <h3>En congé</h3>
+                <div class="stat-number">{{ stats.onLeave }}</div>
+                <span class="stat-trend">{{ stats.leaveThisWeek }} cette semaine</span>
+            </div>
+        </div>
+
+        <div class="stat-card-employee">
+            <div class="stat-icon unavailable">
+                <span>⏸️</span>
+            </div>
+            <div class="stat-details">
+                <h3>Indisponible</h3>
+                <div class="stat-number">{{ stats.unavailable }}</div>
+                <span class="stat-trend">Formation/Réunion</span>
+            </div>
+        </div>
+
+        <div class="stat-card-employee">
+            <div class="stat-icon total">
+                <span>👥</span>
+            </div>
+            <div class="stat-details">
+                <h3>Total</h3>
+                <div class="stat-number">{{ stats.total }}</div>
+                <span class="stat-trend">Employés actifs</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtres et recherche -->
+    <div class="filters-section">
+        <div class="search-box">
+            <input type="text" [(ngModel)]="searchTerm" placeholder="🔍 Rechercher..." class="search-input"
+                (ngModelChange)="onSearchChange()">
+        </div>
+        <div class="filter-buttons">
+            <button class="filter-btn" [class.active]="selectedFilter === 'all'" (click)="setFilter('all')">
+                Tous
+            </button>
+            <button class="filter-btn" [class.active]="selectedFilter === 'onSite'" (click)="setFilter('onSite')">
+                Sur site
+            </button>
+            <button class="filter-btn" [class.active]="selectedFilter === 'remote'" (click)="setFilter('remote')">
+                Hors site
+            </button>
+            <button class="filter-btn" [class.active]="selectedFilter === 'sick'" (click)="setFilter('sick')">
+                Malade
+            </button>
+            <button class="filter-btn" [class.active]="selectedFilter === 'leave'" (click)="setFilter('leave')">
+                Congé
+            </button>
+        </div>
+    </div>
+
+    <!-- Vue tableau (Desktop) -->
+    <div class="table-wrapper desktop-view">
+        <table class="employee-table">
+            <thead>
+                <tr>
+                    <th>Employé</th>
+                    <th>Contact</th>
+                    <th>Fonction</th>
+                    <th>Contrat</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let employee of filteredEmployees">
+                    <td class="employee-info">
+
+                        <!-- IMAGE si existe -->
+                        <img *ngIf="employee.avatar" [src]="employee.avatar" alt="Avatar" class="employee-avatar">
+
+                        <!-- INITIALS sinon -->
+                        <div *ngIf="!employee.avatar" class="avatar-fallback">
+                            {{ getInitials(employee.nom, employee.prenom) }}
+                        </div>
+
+                        <div>
+                            <div class="employee-name">{{ employee.nom }} {{ employee.prenom }}</div>
+                            <div class="employee-id">#{{ employee.id }}</div>
+                        </div>
+
+                    </td>
+                    <!-- <td class="employee-info">
+                        <img src="assets/images/Benade01.png" alt="Avatar" class="employee-avatar">
+                        <div>
+                            <div class="employee-name">{{ employee.nom }} {{ employee.prenom }}</div>
+                            <div class="employee-id">#{{ employee.id }}</div>
+                        </div>
+                    </td> -->
+                    <td>
+                        <div class="contact-info">
+                            <div>📞 {{ employee.telephone }}</div>
+                            <div>✉️ {{ employee.email }}</div>
+                        </div>
+                    </td>
+                    <td>{{ employee.fonction }}</td>
+                    <td>
+                        <span class="contract-badge" [class]="'contract-' + employee.typeContrat">
+                            {{ employee.typeContrat }}
+                        </span>
+                        <div class="start-date">Depuis {{ employee.dateDebut | date: 'MM/yyyy' }}</div>
+                    </td>
+                    <td>
+                        <span class="status-badge" [class]="'status-' + employee.statut">
+                            {{ getStatutLabel(employee.statut) }}
+                        </span>
+                    </td>
+                    <td class="actions">
+                        <button class="action-btn view" [routerLink]="['/employes', employee.id]" title="Voir détails">
+                            👁️
+                        </button>
+                        <button class="action-btn edit" (click)="editEmployee(employee)" title="Modifier">
+                            ✏️
+                        </button>
+                        <button class="action-btn delete" (click)="deleteEmployee(employee)" title="Supprimer">
+                            🗑️
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Vue cartes (Mobile/Tablette) -->
+    <div class="cards-view">
+        <div *ngFor="let employee of filteredEmployees" class="employee-card">
+            <div class="card-header">
+                <div class="employee-info">
+                    <!-- <img src="assets/logo.png" alt="Avatar"> -->
+                    <!-- IMAGE si existe -->
+                    <img *ngIf="employee.avatar" [src]="employee.avatar" alt="Avatar" class="employee-avatar">
+
+                    <!-- INITIALS sinon -->
+                    <div *ngIf="!employee.avatar" class="avatar-fallback">
+                        {{ getInitials(employee.nom, employee.prenom) }}
+                    </div>
+                </div>
+                <div class="card-header-info">
+                    <h3>{{ employee.nom }} {{ employee.prenom }}</h3>
+                    <span class="employee-id">#{{ employee.id }}</span>
+                </div>
+                <span class="status-badge" [class]="'status-' + employee.statut">
+                    {{ getStatutLabel(employee.statut) }}
+                </span>
+            </div>
+
+            <div class="card-body">
+                <div class="info-row">
+                    <div class="info-label">📞 Téléphone</div>
+                    <div class="info-value">{{ employee.telephone }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">✉️ Email</div>
+                    <div class="info-value">{{ employee.email }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">💼 Fonction</div>
+                    <div class="info-value">{{ employee.fonction }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">📄 Contrat</div>
+                    <div class="info-value">
+                        <span class="contract-badge" [class]="'contract-' + employee.typeContrat">
+                            {{ employee.typeContrat }}
+                        </span>
+                        <span class="start-date"> depuis {{ employee.dateDebut | date: 'MM/yyyy' }}</span>
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">🏢 Service</div>
+                    <div class="info-value">{{ employee.service || 'Non défini' }}</div>
+                </div>
+                <div class="info-row" *ngIf="employee.manager">
+                    <div class="info-label">👔 Manager</div>
+                    <div class="info-value">{{ employee.manager }}</div>
+                </div>
+            </div>
+
+            <div class="card-actions">
+                <button class="action-card view" [routerLink]="['/employes', employee.id]" title="Voir détails">
+                    👁️ Voir
+                </button>
+                <button class="action-card edit" (click)="editEmployee(employee)">
+                    ✏️ Modifier
+                </button>
+                <button class="action-card delete" (click)="deleteEmployee(employee)">
+                    🗑️ Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages > 1">
+        <button (click)="previousPage()" [disabled]="currentPage === 1">◀ Précédent</button>
+        <span>Page {{ currentPage }} sur {{ totalPages }}</span>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages">Suivant ▶</button>
+    </div>
+</div>

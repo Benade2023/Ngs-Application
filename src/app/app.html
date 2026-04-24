@@ -1,0 +1,35 @@
+<div class="app-container">
+  <app-header></app-header>
+
+  <!-- Sidebar (dans le composant principal) -->
+ <!-- Sidebar -->
+<div class="sidebar" [class.active]="sidebarOpen">
+
+  <div class="sidebar-header">
+    <img src="assets/images/logo/logo.png" alt="Gestion Personnel" class="sidebar-logo">
+    <h3>Menu</h3>
+    <button class="close-sidebar-btn" (click)="closeSidebar()">×</button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul>
+      <li><a routerLink="/dashboard" (click)="closeSidebar()">Accueil</a></li>
+      <li><a routerLink="/employes" (click)="closeSidebar()">Employés</a></li>
+      <li><a routerLink="/mouvement-personnel" (click)="closeSidebar()">Mob-Demob</a></li>
+    </ul>
+  </nav>
+
+</div>
+
+<!-- Overlay -->
+<div 
+  class="sidebar-overlay" 
+  [class.active]="sidebarOpen" 
+  (click)="closeSidebar()">
+</div>
+  <main class="app-main" style="margin-top: 100px;">
+    <router-outlet></router-outlet>
+  </main>
+
+  <app-footer></app-footer>
+</div>

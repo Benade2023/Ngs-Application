@@ -1,0 +1,238 @@
+<div class="mouvement-container">
+  <!-- En-tête -->
+  <div class="page-header">
+    <div>
+      <h1>Mouvement du personnel</h1>
+      <p>Suivi des affectations et déplacements du personnel</p>
+    </div>
+    <button class="btn btn-validation" (click)="exportToExcel()">
+      <span>📊</span> Exporter Excel
+    </button>
+  </div>
+
+  <!-- Cartes statistiques -->
+  <div class="stats-cards">
+    <div class="stat-card-mouvement">
+      <div class="stat-icon site">
+        <span>🏢</span>
+      </div>
+      <div class="stat-details">
+        <h3>Sur site</h3>
+        <div class="stat-number">{{ stats.onSite }}</div>
+        <span class="stat-trend">{{ ((stats.onSite / stats.total) * 100) || 0 }}% du total</span>
+      </div>
+    </div>
+
+    <div class="stat-card-mouvement">
+      <div class="stat-icon offsite">
+        <span>🏠</span>
+      </div>
+      <div class="stat-details">
+        <h3>Hors site</h3>
+        <div class="stat-number">{{ stats.offSite }}</div>
+        <span class="stat-trend">{{ ((stats.offSite / stats.total) * 100) || 0 }}% du total</span>
+      </div>
+    </div>
+
+    <div class="stat-card-mouvement">
+      <div class="stat-icon pending">
+        <span>⏳</span>
+      </div>
+      <div class="stat-details">
+        <h3>En attente</h3>
+        <div class="stat-number">{{ stats.pending }}</div>
+        <span class="stat-trend">Prévus</span>
+      </div>
+    </div>
+
+    <div class="stat-card-mouvement">
+      <div class="stat-icon demobilized">
+        <span>📤</span>
+      </div>
+      <div class="stat-details">
+        <h3>Démobilisés</h3>
+        <div class="stat-number">{{ stats.demobilized }}</div>
+        <span class="stat-trend">Ce mois</span>
+      </div>
+    </div>
+
+    <div class="stat-card-mouvement">
+      <div class="stat-icon total">
+        <span>👥</span>
+      </div>
+      <div class="stat-details">
+        <h3>Total agents</h3>
+        <div class="stat-number">{{ stats.total }}</div>
+        <span class="stat-trend">Actifs</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters-section">
+    <div class="search-box">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (input)="onSearchChange()"
+        placeholder="🔍 Rechercher par nom, fonction, projet, site..."
+        class="search-input">
+    </div>
+    <div class="filter-group">
+      <select [(ngModel)]="filterSite" (change)="applyFilters()" class="filter-select">
+        <option value="">Tous les sites</option>
+        <option value="HYLIA SM">HYLIA SM</option>
+        <option value="HYLIA M">HYLIA M</option>
+        <option value="OBA">OBA</option>
+      </select>
+      <select [(ngModel)]="filterStatus" (change)="applyFilters()" class="filter-select">
+        <option value="">Tous les statuts</option>
+        <option value="Sur site">Sur site</option>
+        <option value="Hors site">Hors site</option>
+        <option value="En attente">En attente</option>
+      </select>
+      <select [(ngModel)]="filterProjet" (change)="applyFilters()" class="filter-select">
+        <option value="">Tous les projets</option>
+        <option *ngFor="let projet of projets" [value]="projet">{{ projet }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Vue tableau (Desktop) -->
+  <div class="table-wrapper desktop-view">
+    <table class="mouvement-table">
+      <thead>
+        <tr>
+          <th>Nom & Prénom</th>
+          <th>Fonction</th>
+          <!-- <th>Projet</th> -->
+          <th>Mobilisation</th>
+          <th>Démobilisation</th>
+          <th>Nb jours</th>
+          <th>Status</th>
+          <th>Date estimée démob</th>
+          <!-- <th>État</th> -->
+          <!-- <th>Activités</th> -->
+          <th>Site</th>
+          <th>Entreprise</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let agent of filteredAgents">
+          <td class="agent-name">
+            <strong>{{ (agent.nom) + ' ' + (agent.prenom) }}</strong>
+            <div class="agent-email" *ngIf="agent.email">{{ agent.email }}</div>
+          </td>
+          <td>{{ agent.fonction }}</td>
+          <!-- <td>{{ agent.projet }}</td> -->
+          <td>{{ agent.mobilisation | date:'dd/MM/yyyy' }}</td>
+          <td>{{ agent.demobilisation | date:'dd/MM/yyyy' }}</td>
+          <td>{{ agent.nombreJours || calculateJours(agent.mobilisation, agent.demobilisation) }}</td>
+          <td>
+            <span class="status-badge" [class]="getStatusClass(agent.status)">
+              {{ agent.status }}
+            </span>
+          </td>
+          <td>
+            <span [class.expiring-soon]="isDateExpiringSoon(agent.dateEstimeDemob)">
+              {{ agent.dateEstimeDemob | date:'dd/MM/yyyy' }}
+            </span>
+          </td>
+          <!-- <td>
+            <span class="etat-badge" [class]="agent.etat === true ? 'etat-true' : 'etat-false'">
+              {{ agent.etat === true ? 'ACTIF' : 'INACTIF' }}
+            </span>
+          </td> -->
+          <!-- <td>{{ agent.activites }}</td> -->
+          <td>{{ agent.site }}</td>
+          <td>{{ agent.entreprise }}</td>
+          <td class="actions">
+            <button class="action-btn view" (click)="viewDetails(agent)" title="Voir détails">
+              👁️
+            </button>
+            <button class="action-btn edit" (click)="editAgent(agent)" title="Modifier">
+              ✏️
+            </button>
+          </td>
+        <tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Vue cartes (Mobile/Tablette) -->
+  <div class="cards-view">
+    <div *ngFor="let agent of filteredAgents" class="agent-card">
+      <div class="card-header">
+        <div>
+          <h3>{{ (agent.nom) + ' ' + (agent.prenom) }}</h3>
+          <span class="fonction">{{ agent.fonction }}</span>
+        </div>
+        <span class="status-badge" [class]="getStatusClass(agent.status)">
+          {{ agent.status }}
+        </span>
+      </div>
+
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Projet</label>
+            <span>{{ agent.projet }}</span>
+          </div>
+          <div class="info-item">
+            <label>Site</label>
+            <span>{{ agent.site }}</span>
+          </div>
+          <div class="info-item">
+            <label>Entreprise</label>
+            <span>{{ agent.entreprise }}</span>
+          </div>
+          <div class="info-item">
+            <label>Mobilisation</label>
+            <span>{{ agent.mobilisation | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Démobilisation</label>
+            <span>{{ agent.demobilisation | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Jours</label>
+            <span>{{ agent.nombreJours || calculateJours(agent.mobilisation, agent.demobilisation) }}</span>
+          </div>
+          <div class="info-item">
+            <label>Démob estimée</label>
+            <span [class.expiring-soon]="isDateExpiringSoon(agent.dateEstimeDemob)">
+              {{ agent.dateEstimeDemob | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+          <div class="info-item">
+            <label>État</label>
+            <span class="etat-badge" [class]="agent.etat === true ? 'etat-true' : 'etat-false'">
+              {{ agent.etat === true ? 'ACTIF' : 'INACTIF' }}
+            </span>
+          </div>
+          <div class="info-item full-width">
+            <label>Activités</label>
+            <span>{{ agent.activites }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="action-card view" (click)="viewDetails(agent)">
+          👁️ Voir détails
+        </button>
+        <button class="action-card edit" (click)="editAgent(agent)">
+          ✏️ Modifier
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button (click)="previousPage()" [disabled]="currentPage === 1">◀ Précédent</button>
+    <span>Page {{ currentPage }} sur {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">Suivant ▶</button>
+  </div>
+</div>

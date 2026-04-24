@@ -1,0 +1,337 @@
+<div class="agent-detail-container">
+  <!-- En-tête avec navigation -->
+  <div class="detail-header">
+    <div class="header-left">
+      <button class="btn-back" (click)="goBack()">
+        ← Retour à la liste
+      </button>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondaire" (click)="editAgent()">
+        ✏️ Modifier
+      </button>
+      <button class="btn btn-validation" (click)="addRotation()">
+        ➕ Ajouter une rotation
+      </button>
+    </div>
+  </div>
+
+  <!-- Informations générales de l'agent -->
+  <div class="agent-profile">
+    <div class="agent-avatar">
+      <!-- <img [src]="agent.avatar || 'assets/default-avatar.png'" alt="Avatar"> -->
+            <!-- IMAGE si existe -->
+                        <img *ngIf="agent.avatar" [src]="agent.avatar" alt="Avatar" class="employee-avatar">
+
+                        <!-- INITIALS sinon -->
+                        <div *ngIf="!agent.avatar" class="avatar-fallback">
+                            {{ getInitials(agent.nom, agent.prenom) }}
+                        </div>
+    </div>
+    <div class="agent-info">
+      <h1>{{ agent.nom }} {{ agent.prenom }}</h1>
+      <div class="agent-badges">
+        <span class="badge fonction">{{ agent.fonction }}</span>
+        <span class="badge entreprise">{{ agent.entreprise }}</span>
+        <span class="badge status" [class]="getCurrentStatusClass()">
+          {{ getCurrentStatus() }}
+        </span>
+      </div>
+      <div class="agent-contacts">
+        <div class="contact-item">📞 {{ agent.telephone || 'Non renseigné' }}</div>
+        <div class="contact-item">✉️ {{ agent.email || 'Non renseigné' }}</div>
+        <div class="contact-item">📍 {{ agent.adresse || 'Non renseignée' }}</div>
+      </div>
+    </div>
+    <div class="agent-stats">
+      <div class="stat">
+        <div class="stat-value">{{ totalProjets }}</div>
+        <div class="stat-label">Projets</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">{{ totalJoursTravail }}</div>
+        <div class="stat-label">Jours travaillés</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">{{ getCurrentProjet()?.projet || '-' }}</div>
+        <div class="stat-label">Projet actuel</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section historique avec recherche et pagination -->
+  <div class="historique-section">
+    <div class="section-header">
+      <h2>📋 Historique des rotations ({{ rotations.length }} projets)</h2>
+      <div class="historique-controls">
+        <div class="search-box">
+          <input 
+            type="text" 
+            [(ngModel)]="searchHistorique" 
+            (input)="filterHistorique()"
+            placeholder="🔍 Rechercher par projet, site, fonction..."
+            class="search-input">
+        </div>
+        <select [(ngModel)]="filterStatusHistorique" (change)="filterHistorique()" class="filter-select">
+          <option value="all">Tous les statuts</option>
+          <option value="current">En cours</option>
+          <option value="completed">Terminés</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Timeline des rotations -->
+    <div class="timeline">
+      <div *ngFor="let rotation of filteredRotations; let i = index" 
+           class="timeline-item" 
+           [class.current]="isCurrentProject(rotation)"
+           [class.completed]="!isCurrentProject(rotation)">
+        
+        <div class="timeline-marker">
+          <div class="marker-dot"></div>
+          <div class="timeline-line" *ngIf="i < filteredRotations.length - 1"></div>
+        </div>
+        
+        <div class="timeline-content">
+          <div class="timeline-header">
+            <div class="project-info">
+              <h3>{{ rotation.projet }}</h3>
+              <span class="project-site">{{ rotation.site }}</span>
+            </div>
+            <div class="project-actions">
+              <span class="project-status" [class]="getProjectStatusClass(rotation)">
+                {{ isCurrentProject(rotation) ? 'En cours' : 'Terminé' }}
+              </span>
+              <button class="btn-timesheet" (click)="genererTimesheet(rotation)" title="Générer le timesheet">
+                📄 Timesheet
+              </button>
+            </div>
+          </div>
+          
+          <div class="timeline-body">
+            <div class="info-grid">
+              <div class="info-item">
+                <label>📅 Mobilisation</label>
+                <span>{{ rotation.mobilisation | date:'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="info-item">
+                <label>📅 Démobilisation</label>
+                <span>{{ rotation.demobilisation ? (rotation.demobilisation | date:'dd/MM/yyyy') : 'En cours' }}</span>
+              </div>
+              <div class="info-item">
+                <label>⏱️ Durée</label>
+                <span>{{ getRotationDuree(rotation) }} jours</span>
+              </div>
+              <div class="info-item">
+                <label>🏢 Entreprise</label>
+                <span>{{ rotation.entreprise }}</span>
+              </div>
+              <div class="info-item">
+                <label>📋 Fonction</label>
+                <span>{{ rotation.fonction }}</span>
+              </div>
+              <div class="info-item">
+                <label>🔧 Activités</label>
+                <span>{{ rotation.activites }}</span>
+              </div>
+              <div class="info-item full-width" *ngIf="rotation.observations">
+                <label>📝 Observations</label>
+                <span>{{ rotation.observations }}</span>
+              </div>
+            </div>
+            
+            <div class="timeline-footer">
+              <button class="btn-details" (click)="editRotation(rotation)">
+                Modifier
+              </button>
+              <button class="btn-timesheet-small" (click)="genererTimesheet(rotation)">
+                📄 Générer le timesheet
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button (click)="previousPage()" [disabled]="currentPage === 1">◀ Précédent</button>
+      <div class="page-info">
+        <span>Page {{ currentPage }} sur {{ totalPages }}</span>
+        <span class="total-items">({{ filteredRotations.length }} rotations)</span>
+      </div>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages">Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- Graphique d'activité -->
+  <div class="chart-section">
+    <h2>📈 Planning d'activité</h2>
+    <div class="chart-container">
+      <canvas #activityChart></canvas>
+    </div>
+  </div>
+
+  <!-- Modal Timesheet -->
+  <div class="modal" [class.active]="showTimesheetModal" (click)="closeTimesheetModalOnOutside($event)">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h3>📄 Fiche de travail (Timesheet)</h3>
+        <button class="close-btn" (click)="closeTimesheetModal()">×</button>
+      </div>
+      <div class="modal-body" id="timesheet-content">
+        <div class="timesheet-header">
+          <div class="company-info">
+            <h2>{{ timesheetData.entreprise }}</h2>
+            <p>Fiche de suivi d'activité</p>
+          </div>
+          <div class="timesheet-title">
+            <h3>Timesheet - {{ timesheetData.projet }}</h3>
+          </div>
+        </div>
+
+        <div class="timesheet-info">
+          <div class="info-row">
+            <span class="label">Employé :</span>
+            <span class="value">{{ agent.nom }} {{ agent.prenom }}</span>
+            <span class="label">Fonction :</span>
+            <span class="value">{{ timesheetData.fonction }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Période :</span>
+            <span class="value">du {{ timesheetData.mobilisation | date:'dd/MM/yyyy' }} au {{ timesheetData.demobilisation ? (timesheetData.demobilisation | date:'dd/MM/yyyy') : 'aujourd\'hui' }}</span>
+            <span class="label">Durée :</span>
+            <span class="value">{{ timesheetData.duree }} jours</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Site :</span>
+            <span class="value">{{ timesheetData.site }}</span>
+            <span class="label">Activités :</span>
+            <span class="value">{{ timesheetData.activites }}</span>
+          </div>
+        </div>
+
+        <table class="timesheet-table">
+          <thead>
+            <tr>
+              <th>Semaine</th>
+              <th>Lundi</th>
+              <th>Mardi</th>
+              <th>Mercredi</th>
+              <th>Jeudi</th>
+              <th>Vendredi</th>
+              <th>Samedi</th>
+              <th>Dimanche</th>
+              <th>Total heures</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let week of timesheetData.weeks">
+              <td>Semaine {{ week.numero }}</td>
+              <td>{{ week.lundi || '-' }}h</td>
+              <td>{{ week.mardi || '-' }}h</td>
+              <td>{{ week.mercredi || '-' }}h</td>
+              <td>{{ week.jeudi || '-' }}h</td>
+              <td>{{ week.vendredi || '-' }}h</td>
+              <td>{{ week.samedi || '-' }}h</td>
+              <td>{{ week.dimanche || '-' }}h</td>
+              <td><strong>{{ week.total }}h</strong></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="8"><strong>Total général</strong></td>
+              <td><strong>{{ timesheetData.totalHeures }}h</strong></td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="timesheet-footer">
+          <div class="signature">
+            <p>Signature employé : _________________</p>
+            <p>Signature responsable : _________________</p>
+          </div>
+          <div class="date">
+            <p>Fait à {{ timesheetData.site }}, le {{ dateActuelle | date:'dd/MM/yyyy' }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondaire" (click)="closeTimesheetModal()">Fermer</button>
+        <button class="btn btn-validation" (click)="imprimerTimesheet()">🖨️ Imprimer</button>
+        <button class="btn btn-primary" (click)="exporterTimesheetPDF()">📥 Exporter PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal d'ajout de rotation -->
+  <div class="modal" [class.active]="showRotationModal" (click)="closeModalOnOutside($event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>{{ isEditMode ? 'Modifier la rotation' : 'Ajouter une rotation' }}</h3>
+        <button class="close-btn" (click)="closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <!-- <label>Projet *</label>
+          <input type="text" [(ngModel)]="rotation.projet" placeholder="Nom du projet">
+         -->
+            <label for="manager">Projet</label>
+            <select id="manager" name="manager" [(ngModel)]="rotation.projet">
+              <option value="">Sélectionner un projet</option>
+              <div *ngFor="let pr of projets">
+                <option [value]="pr.nom">{{ pr.nom }}</option>
+              </div>
+            </select>
+        
+        
+        
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date de mobilisation *</label>
+            <input type="date" [(ngModel)]="rotation.mobilisation">
+          </div>
+          <div class="form-group">
+            <label>Date de démobilisation</label>
+            <input type="date" [(ngModel)]="rotation.demobilisation">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Site *</label>
+            <input type="text" [(ngModel)]="rotation.site">
+          </div>
+          <div class="form-group">
+            <label style="display: none;">Fonction *</label>
+            <input style="display: none;" type="text" [(ngModel)]="rotation.fonction">
+            <!-- <label>Entreprise *</label>
+          <input type="text" [(ngModel)]="rotation.entreprise"> -->
+             <label for="entreprise">Entreprise</label>
+            <select id="entreprise" name="entreprise" [(ngModel)]="rotation.entreprise">
+              <option value="">Sélectionner une entreprise</option>
+              <div *ngFor="let entreprise of listEntreprises">
+                <option [value]="entreprise.nom">{{ entreprise.nom }}</option>
+              </div>
+            </select>
+          </div>
+        </div>
+         <div class="form-group">
+          <!-- <label>Entreprise *</label>
+          <input type="text" [(ngModel)]="rotation.entreprise"> -->
+        <div class="form-group">
+          <label>Activités *</label>
+          <input type="text" [(ngModel)]="rotation.activites">
+        </div>
+        <div class="form-group">
+          <label>Observations</label>
+          <textarea rows="2" [(ngModel)]="rotation.observations"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondaire" (click)="closeModal()">Annuler</button>
+        <button class="btn btn-validation" (click)="saveRotation()">{{ isEditMode ? 'Modifier' : 'Ajouter' }}</button>
+      </div>
+    </div>
+  </div>
+</div>

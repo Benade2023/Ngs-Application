@@ -1,0 +1,94 @@
+<div class="app-container">
+    <main class="app-main">
+        <div class="login-wrapper">
+            <div class="form-card login-card">
+                <!-- Logo et titre -->
+                <div class="login-header">
+                    <img src="assets/images/logo/logo.png" alt="Gestion Personnel" class="login-logo">
+                    <h2>Connexion</h2>
+                    <p>Bienvenue sur votre espace de gestion</p>
+                </div>
+
+                <!-- Formulaire de connexion -->
+                <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email">Adresse email</label>
+                        <input type="email" id="email" name="email" [(ngModel)]="loginData.email" #email="ngModel"
+                            required email placeholder="exemple@entreprise.com"
+                            [class.is-invalid]="email.invalid && email.touched">
+                        @if(email.invalid && email.touched) {
+                        <div class="invalid-feedback">
+                            @if(email.errors?.['required']) {
+                            <span>L'email est requis</span>
+                            }
+                            @if(email.errors?.['email']) {
+                            <span>Email invalide</span>
+                            }
+                        </div>
+                        }
+
+                    </div>
+
+                    <!-- Mot de passe -->
+                    <div class="form-group">
+                        <label for="password">Mot de passe</label>
+                        <div class="password-input-wrapper">
+                            <input [type]="showPassword ? 'text' : 'password'" id="password" name="password"
+                                [(ngModel)]="loginData.password" #password="ngModel" required minlength="6"
+                                placeholder="••••••••">
+                            <button type="button" class="password-toggle" (click)="togglePassword()">
+                                <span class="eye-icon">{{ showPassword ? '👁' : '👁‍🗨' }}</span>
+                            </button>
+                        </div>
+                        @if(password.invalid && password.touched) {
+                        <div class="invalid-feedback">
+                            @if(password.errors?.['required']) {
+                            <span>Le mot de passe est requis</span>
+                            }
+                            @if(password.errors?.['minlength']) {
+                            <span>Minimum 6 caractères</span>
+                            }
+                        </div>
+                        }
+
+                    </div>
+
+                    <!-- Options supplémentaires -->
+                    <div class="login-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe">
+                            <span>Se souvenir de moi</span>
+                        </label>
+                        <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+                    </div>
+
+                    <!-- Bouton de connexion avec spinner -->
+                    <button type="submit" class="btn btn-validation login-btn"
+                        [disabled]="loginForm.invalid || isLoading">
+                        @if (!isLoading) {
+                        <span>Se connecter</span>
+                        } @else {
+                        <span class="spinner"></span>
+                        <span style="margin-left: 0.5rem;">Connexion...</span>
+                        }
+
+                    </button>
+
+                    <!-- Message d'erreur -->
+                    @if (errorMessage) {
+                    <div class="alert alert-danger">
+                        {{ errorMessage }}
+                    </div>
+                    }
+
+                </form>
+
+                <!-- Lien d'inscription -->
+                <div class="login-footer">
+                    <p>Pas encore de compte ? <a href="#">Contacter l'administrateur</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

@@ -1,0 +1,105 @@
+<header class="app-header">
+  <div class="header-content">
+
+    <!-- LEFT -->
+    <div class="header-left">
+      <button 
+        class="hamburger-btn" 
+        (click)="toggleSidebar()"
+        [class.active]="sidebarOpen"
+        type="button">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- CENTER -->
+    <div class="logo">
+      <img src="assets/images/logo/logo.png" alt="NGS-APPLY">
+    </div>
+
+    <!-- NAV (desktop only) -->
+    <nav>
+      <ul class="nav-menu">
+        <li><a routerLink="/dashboard" routerLinkActive="active">Accueil</a></li>
+        <li><a routerLink="/employes" routerLinkActive="active">Employés</a></li>
+        <li><a routerLink="/mouvement-personnel" routerLinkActive="active">Mob-Demob</a></li>
+      </ul>
+    </nav>
+
+    <!-- RIGHT -->
+    <div class="header-right">
+
+      <!-- 🔔 NOTIFICATION -->
+      <div class="notification-wrapper">
+        <button 
+          class="notification-btn" 
+          (click)="toggleNotifications()"
+          [class.active]="showNotifications">
+          <i class="fas fa-bell"></i>
+          <span class="badge" *ngIf="notifications.length > 0">
+            {{ notifications.length }}
+          </span>
+        </button>
+
+        <div class="notification-dropdown" *ngIf="showNotifications">
+          <div class="dropdown-header">Notifications</div>
+
+          <div class="dropdown-body">
+            <div class="notification-item" *ngFor="let notif of notifications">
+              <p class="message">{{ notif.message }}</p>
+              <span class="time">{{ notif.time }}</span>
+            </div>
+
+            <div *ngIf="notifications.length === 0" class="empty">
+              Aucune notification
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 👤 USER -->
+      <div class="user-wrapper">
+        <div *ngIf="currentUser"
+          class="user-info" 
+          (click)="toggleUserMenu()"
+          [class.active]="showUserMenu">
+
+          <img 
+            [src]="currentUser.photo || 'assets/images/default-user.png'" 
+            alt="User"
+          />
+
+          <div class="user-details" *ngIf="currentUser">
+            <span class="name">{{ currentUser.name }}</span>
+            <span class="role">{{ currentUser.role }}</span>
+          </div>
+
+          <i class="fas fa-chevron-down"></i>
+        </div>
+
+        <div class="user-dropdown" *ngIf="showUserMenu">
+          <div class="dropdown-item" (click)="goToProfile()">
+            <i class="fas fa-user"></i>
+            <span>Mon compte</span>
+          </div>
+
+          <div class="dropdown-item" (click)="goToSettings()">
+            <i class="fas fa-cog"></i>
+            <span>Paramètres</span>
+          </div>
+
+          <div class="dropdown-divider"></div>
+
+          <div class="dropdown-item logout" (click)="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Déconnexion</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</header>

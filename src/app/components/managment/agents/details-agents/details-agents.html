@@ -1,0 +1,303 @@
+<div class="detail-container">
+  <!-- En-tête avec actions -->
+  <div class="detail-header">
+    <div class="header-left">
+      <button class="btn-back" (click)="goBack()">
+        ← Retour
+      </button>
+      <div class="employee-title"  *ngIf="employe">
+        <h1 style="color: white;">{{ employe.prenom }} {{ employe.nom }}</h1>
+        <span class="employee-id">#{{ employe.id }}</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondaire" (click)="editEmployee()">
+        ✏️ Modifier
+      </button>
+      <button class="btn btn-supprimer" (click)="deleteEmployee()">
+        🗑️ Supprimer
+      </button>
+    </div>
+  </div>
+
+  <!-- Statistiques rapides -->
+  <div class="stats-grid">
+    <div class="stat-card" [class.expired]="isInductionExpired(employe)">
+      <div class="stat-icon induction">
+        <span>📋</span>
+      </div>
+      <div class="stat-info">
+        <h3>Induction</h3>
+        <div class="stat-value">{{ getInductionStatus(employe) }}</div>
+        <div class="stat-date" *ngIf="employe.induction">
+          Expire le {{ employe.induction.dateExpiration | date:'dd/MM/yyyy' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card" [class.expired]="isHabilitationExpired()">
+      <div class="stat-icon habilitation">
+        <span>🔒</span>
+      </div>
+      <div class="stat-info">
+        <h3>Habilitation</h3>
+        <div class="stat-value">{{ getHabilitationStatus() }}</div>
+        <div class="stat-date" *ngIf="employe.habilitation?.dateExpiration">
+          Expire le {{ employe.habilitation?.dateExpiration | date:'dd/MM/yyyy' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card" [class.expired]="isCertificatMedicalExpired()">
+      <div class="stat-icon medical">
+        <span>🏥</span>
+      </div>
+      <div class="stat-info">
+        <h3>Certificat Médical</h3>
+        <div class="stat-value">{{ getCertificatMedicalStatus() }}</div>
+        <div class="stat-date" *ngIf="employe.certificatMedical?.dateExpiration">
+          Expire le {{ employe.certificatMedical?.dateExpiration | date:'dd/MM/yyyy' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card" [class.expired]="isCarteMarineExpired()">
+      <div class="stat-icon marine">
+        <span>⛵</span>
+      </div>
+      <div class="stat-info">
+        <h3>Carte Marine</h3>
+        <div class="stat-value">{{ getCarteMarineStatus() }}</div>
+        <div class="stat-date" *ngIf="employe.carteMarine?.dateExpiration">
+          Expire le {{ employe.carteMarine?.dateExpiration | date:'dd/MM/yyyy' }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail-grid">
+    <!-- Informations personnelles -->
+    <div class="detail-card">
+      <div class="card-header">
+        <h3>👤 Informations personnelles</h3>
+      </div>
+      <div class="card-body">
+        <div class="info-row">
+          <div class="info-label">Nom complet</div>
+          <div class="info-value">{{ employe.nom }} {{ employe.prenom }}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Email</div>
+          <div class="info-value">{{ employe.email }}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Téléphone</div>
+          <div class="info-value">{{ employe.telephone }}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Adresse</div>
+          <div class="info-value">{{ employe.adresse || 'Non renseignée' }}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">CNI / NINA</div>
+          <div class="info-value">{{ employe.cni }}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Date de naissance</div>
+          <div class="info-value">{{ employe.dateNaissance | date:'dd/MM/yyyy' }} ({{ calculateAge() }} ans)</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Sexe</div>
+          <div class="info-value">{{ employe.sexe === 'M' ? 'Masculin' : 'Féminin' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informations professionnelles -->
+    <div class="detail-card">
+      <div class="card-header">
+        <h3>💼 Informations professionnelles</h3>
+      </div>
+      <div class="card-body">
+        <div class="info-row">
+          <div class="info-label">Fonction</div>
+          <div class="info-value">{{ employe.fonction }}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Service</div>
+          <div class="info-value">{{ employe.service }}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Manager</div>
+          <div class="info-value">{{ employe.manager || 'Non assigné' }}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Type de contrat</div>
+          <div class="info-value">
+            <span class="contract-badge" [class]="'contract-' + employe.typeContrat">
+              {{ employe.typeContrat }}
+            </span>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Statut</div>
+          <div class="info-value">
+            <span class="status-badge" [class]="'status-' + employe.statut">
+              {{ getStatutLabel(employe.statut) }}
+            </span>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Date de début</div>
+          <div class="info-value">{{ employe.dateDebut | date:'dd/MM/yyyy' }}</div>
+        </div>
+        <div class="info-row" *ngIf="employe.dateFin">
+          <div class="info-label">Date de fin</div>
+          <div class="info-value">{{ employe.dateFin | date:'dd/MM/yyyy' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Induction -->
+    <div class="detail-card" [class.expired-card]="isInductionExpired(employe)">
+      <div class="card-header">
+        <h3>📋 Induction</h3>
+        <span class="status-badge" [class]="getInductionClass()">
+          {{ getInductionStatus(employe) }}
+        </span>
+      </div>
+      <div class="card-body">
+        <div class="info-row" *ngIf="employe.induction?.dateEmission">
+          <div class="info-label">Date d'émission</div>
+          <div class="info-value">{{ employe.induction?.dateEmission | date:'dd/MM/yyyy' }}</div>
+        </div>
+        <div class="info-row" *ngIf="employe.induction?.dateExpiration">
+          <div class="info-label">Date d'expiration</div>
+          <div class="info-value">
+            {{ employe.induction?.dateExpiration | date:'dd/MM/yyyy' }}
+            <span class="expiration-warning" *ngIf="isInductionExpired(employe)">
+              ⚠️ EXPIRÉ
+            </span>
+            <span class="expiration-warning" *ngIf="isInductionNearExpiration() && !isInductionExpired(employe)">
+              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(employe.induction?.dateExpiration) }} jours)
+            </span>
+          </div>
+        </div>
+        <div class="info-row" *ngIf="employe.induction?.document">
+          <div class="info-label">Document</div>
+          <div class="info-value">
+            <a [href]="employe.induction?.document" target="_blank">Voir le document</a>
+          </div>
+        </div>
+        <div class="info-row" *ngIf="!employe.induction">
+          <div class="info-value">Aucune induction enregistrée</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Habilitation -->
+    <div class="detail-card" [class.expired-card]="isHabilitationExpired()">
+      <div class="card-header">
+        <h3>🔒 Habilitation</h3>
+        <span class="status-badge" [class]="getHabilitationClass()">
+          {{ getHabilitationStatus() }}
+        </span>
+      </div>
+      <div class="card-body">
+        <div class="info-row" *ngIf="employe.habilitation?.type">
+          <div class="info-label">Type d'habilitation</div>
+          <div class="info-value">{{ employe.habilitation?.type }}</div>
+        </div>
+        <div class="info-row" *ngIf="employe.habilitation?.dateObtention">
+          <div class="info-label">Date d'obtention</div>
+          <div class="info-value">{{ employe.habilitation?.dateObtention | date:'dd/MM/yyyy' }}</div>
+        </div>
+        <div class="info-row" *ngIf="employe.habilitation?.dateExpiration">
+          <div class="info-label">Date d'expiration</div>
+          <div class="info-value">
+            {{ employe.habilitation?.dateExpiration | date:'dd/MM/yyyy' }}
+            <span class="expiration-warning" *ngIf="isHabilitationExpired()">
+              ⚠️ EXPIRÉ
+            </span>
+            <span class="expiration-warning" *ngIf="isHabilitationNearExpiration() && !isHabilitationExpired()">
+              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(employe.habilitation?.dateExpiration) }} jours)
+            </span>
+          </div>
+        </div>
+        <div class="info-row" *ngIf="!employe.habilitation">
+          <div class="info-value">Aucune habilitation enregistrée</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Certificat Médical -->
+    <div class="detail-card" [class.expired-card]="isCertificatMedicalExpired()">
+      <div class="card-header">
+        <h3>🏥 Certificat Médical</h3>
+        <span class="status-badge" [class]="getCertificatMedicalClass()">
+          {{ getCertificatMedicalStatus() }}
+        </span>
+      </div>
+      <div class="card-body">
+        <div class="info-row" *ngIf="employe.certificatMedical?.date">
+          <div class="info-label">Date d'émission</div>
+          <div class="info-value">{{ employe.certificatMedical?.date | date:'dd/MM/yyyy' }}</div>
+        </div>
+        <div class="info-row" *ngIf="employe.certificatMedical?.medecin">
+          <div class="info-label">Médecin</div>
+          <div class="info-value">{{ employe.certificatMedical?.medecin }}</div>
+        </div>
+        <div class="info-row" *ngIf="employe.certificatMedical?.dateExpiration">
+          <div class="info-label">Date d'expiration</div>
+          <div class="info-value">
+            {{ employe.certificatMedical?.dateExpiration | date:'dd/MM/yyyy' }}
+            <span class="expiration-warning" *ngIf="isCertificatMedicalExpired()">
+              ⚠️ EXPIRÉ
+            </span>
+            <span class="expiration-warning" *ngIf="isCertificatMedicalNearExpiration() && !isCertificatMedicalExpired()">
+              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(employe.certificatMedical?.dateExpiration) }} jours)
+            </span>
+          </div>
+        </div>
+        <div class="info-row" *ngIf="!employe.certificatMedical">
+          <div class="info-value">Aucun certificat médical enregistré</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carte Marine -->
+    <div class="detail-card" [class.expired-card]="isCarteMarineExpired()">
+      <div class="card-header">
+        <h3>⛵ Carte Marine</h3>
+        <span class="status-badge" [class]="getCarteMarineClass()">
+          {{ getCarteMarineStatus() }}
+        </span>
+      </div>
+      <div class="card-body">
+        <div class="info-row" *ngIf="employe.carteMarine?.numero">
+          <div class="info-label">Numéro</div>
+          <div class="info-value">{{ employe.carteMarine?.numero }}</div>
+        </div>
+        <div class="info-row" *ngIf="employe.carteMarine?.dateDelivrance">
+          <div class="info-label">Date de délivrance</div>
+          <div class="info-value">{{ employe.carteMarine?.dateDelivrance | date:'dd/MM/yyyy' }}</div>
+        </div>
+        <div class="info-row" *ngIf="employe.carteMarine?.dateExpiration">
+          <div class="info-label">Date d'expiration</div>
+          <div class="info-value">
+            {{ employe.carteMarine?.dateExpiration | date:'dd/MM/yyyy' }}
+            <span class="expiration-warning" *ngIf="isCarteMarineExpired()">
+              ⚠️ EXPIRÉ
+            </span>
+            <span class="expiration-warning" *ngIf="isCarteMarineNearExpiration() && !isCarteMarineExpired()">
+              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(employe.carteMarine?.dateExpiration) }} jours)
+            </span>
+          </div>
+        </div>
+        <div class="info-row" *ngIf="!employe.carteMarine">
+          <div class="info-value">Aucune carte marine enregistrée</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+.avatar-fallback {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #4361ee;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.employee-avatar,
+.avatar-fallback {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+}

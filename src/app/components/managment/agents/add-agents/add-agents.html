@@ -1,0 +1,404 @@
+<div class="form-container">
+  <div class="form-card">
+    <!-- En-tête -->
+    <div class="form-header">
+      <h2>{{ isEditMode ? 'Modifier l\'employé' : 'Nouvel employé' }}</h2>
+      <p>{{ isEditMode ? 'Modifiez les informations de l\'employé' : 'Remplissez le formulaire pour ajouter un nouvel employé' }}</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #employeeForm="ngForm">
+      <!-- Section 1: Informations personnelles -->
+      <div class="form-section">
+        <h3>Informations personnelles</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nom">Nom *</label>
+            <input type="text" id="nom" name="nom" [(ngModel)]="employee.nom" #nom="ngModel" required>
+            <div class="invalid-feedback" *ngIf="nom.invalid && nom.touched">Le nom est requis</div>
+          </div>
+
+          <div class="form-group">
+            <label for="prenom">Prénom *</label>
+            <input type="text" id="prenom" name="prenom" [(ngModel)]="employee.prenom" #prenom="ngModel" required>
+            <div class="invalid-feedback" *ngIf="prenom.invalid && prenom.touched">Le prénom est requis</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" [(ngModel)]="employee.email" #email="ngModel" required email>
+            <div class="invalid-feedback" *ngIf="email.invalid && email.touched">
+              <span *ngIf="email.errors?.['required']">L'email est requis</span>
+              <span *ngIf="email.errors?.['email']">Email invalide</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="telephone">Téléphone *</label>
+            <input type="tel" id="telephone" name="telephone" [(ngModel)]="employee.telephone" #telephone="ngModel" required pattern="^[0-9]{9}$">
+            <div class="invalid-feedback" *ngIf="telephone.invalid && telephone.touched">
+              Téléphone invalide (09 chiffres)
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="adresse">Adresse</label>
+            <textarea id="adresse" name="adresse" rows="2" [(ngModel)]="employee.adresse"></textarea>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cni">CNI / NINA *</label>
+            <input type="text" id="cni" name="cni" [(ngModel)]="employee.cni" #cni="ngModel" required>
+            <div class="invalid-feedback" *ngIf="cni.invalid && cni.touched">Le CNI est requis</div>
+          </div>
+
+          <div class="form-group">
+            <label for="dateNaissance">Date de naissance *</label>
+            <input type="date" id="dateNaissance" name="dateNaissance" [(ngModel)]="employee.dateNaissance" #dateNaissance="ngModel" required>
+            <div class="invalid-feedback" *ngIf="dateNaissance.invalid && dateNaissance.touched">La date de naissance est requise</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="sexe">Sexe *</label>
+            <select id="sexe" name="sexe" [(ngModel)]="employee.sexe" required>
+              <option value="">Sélectionner</option>
+              <option value="M">Masculin</option>
+              <option value="F">Féminin</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Informations professionnelles -->
+      <div class="form-section">
+        <h3>Informations professionnelles</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fonction">Fonction *</label>
+            <input type="text" id="fonction" name="fonction" [(ngModel)]="employee.fonction" required>
+          </div>
+
+          <div class="form-group">
+            <label for="service">Service *</label>
+            <select id="service" name="service" [(ngModel)]="employee.service" required>
+              <option value="">Sélectionner un service</option>
+              <option value="Développement">Développement</option>
+              <option value="Marketing">Marketing</option>
+              <option value="RH">Ressources Humaines</option>
+              <option value="Finance">Finance</option>
+              <option value="Commercial">Commercial</option>
+              <option value="Direction">Direction</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="typeContrat">Type de contrat *</label>
+            <select id="typeContrat" name="typeContrat" [(ngModel)]="employee.typeContrat" required>
+              <option value="">Sélectionner</option>
+              <option value="CDI">CDI</option>
+              <option value="CDD">CDD</option>
+              <option value="Alternance">Alternance</option>
+              <option value="Stage">Stage</option>
+              <option value="Freelance">Freelance</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="manager">Manager</label>
+            <select id="manager" name="manager" [(ngModel)]="employee.manager">
+              <option value="">Sélectionner un manager</option>
+              <option value="Jean Dupont">Jean Dupont</option>
+              <option value="Sophie Martin">Sophie Martin</option>
+              <option value="Pierre Durand">Pierre Durand</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dateDebut">Date de début *</label>
+            <input type="date" id="dateDebut" name="dateDebut" [(ngModel)]="employee.dateDebut" required>
+          </div>
+
+          <div class="form-group">
+            <label for="dateFin">Date de fin</label>
+            <input type="date" id="dateFin" name="dateFin" [(ngModel)]="employee.dateFin">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="statut">Statut *</label>
+            <select id="statut" name="statut" [(ngModel)]="employee.statut" required>
+              <option value="">Sélectionner</option>
+              <option value="onSite">Sur site</option>
+              <option value="remote">Hors site</option>
+              <option value="sick">Malade</option>
+              <option value="leave">En congé</option>
+              <option value="unavailable">Indisponible</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Documents -->
+      <div class="form-section">
+        <h3>Documents et certifications</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="induction">Induction</label>
+            <select id="induction" name="induction" [(ngModel)]="employee.induction">
+              <option value="">Sélectionner</option>
+              <option value="valid">Validé</option>
+              <option value="pending">En attente</option>
+              <option value="expired">Expiré</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="habilitation">Habilitation</label>
+            <select id="habilitation" name="habilitation" [(ngModel)]="employee.habilitation">
+              <option value="">Sélectionner</option>
+              <option value="valid">Validé</option>
+              <option value="pending">En attente</option>
+              <option value="expired">Expiré</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="certificatMedical">Certificat médical</label>
+            <select id="certificatMedical" name="certificatMedical" [(ngModel)]="employee.certificatMedical">
+              <option value="">Sélectionner</option>
+              <option value="valid">Validé</option>
+              <option value="pending">En attente</option>
+              <option value="expired">Expiré</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="carteMarine">Carte marine</label>
+            <select id="carteMarine" name="carteMarine" [(ngModel)]="employee.carteMarine">
+              <option value="">Sélectionner</option>
+              <option value="valid">Validé</option>
+              <option value="pending">En attente</option>
+              <option value="expired">Expiré</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+<!-- Section 3: Documents et certifications -->
+<div class="form-section">
+  <h3>📋 Documents et certifications</h3>
+  
+  <!-- Induction -->
+  <div class="document-card" *ngIf="employee.induction; else inductionForm">
+    <div class="document-header">
+      <h4>Induction</h4>
+      <button type="button" class="btn-remove" (click)="removeInduction()">🗑️ Supprimer</button>
+    </div>
+    <div class="document-info">
+      <div class="info-row">
+        <span class="label">Date d'émission:</span>
+        <span>{{ employee.induction.dateEmission | date:'dd/MM/yyyy' }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Date d'expiration:</span>
+        <span>{{ employee.induction.dateExpiration | date:'dd/MM/yyyy' }}</span>
+      </div>
+      <div class="info-row" *ngIf="employee.induction.document">
+        <span class="label">Document:</span>
+        <span>{{ employee.induction.document }}</span>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template #inductionForm>
+    <div class="document-form">
+      <h4>➕ Ajouter une induction</h4>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date d'émission *</label>
+          <input type="date" #inductionDate>
+        </div>
+        <div class="form-group">
+          <label>Document (optionnel)</label>
+          <input type="text" #inductionDoc placeholder="Nom du fichier">
+        </div>
+      </div>
+      <button type="button" class="btn-small btn-validation" (click)="addInduction()">
+        Ajouter l'induction
+      </button>
+    </div>
+  </ng-template>
+
+  <!-- Habilitation -->
+  <div class="document-card" *ngIf="employee.habilitation; else habilitationForm">
+    <div class="document-header">
+      <h4>Habilitation</h4>
+      <button type="button" class="btn-remove" (click)="removeHabilitation()">🗑️ Supprimer</button>
+    </div>
+    <div class="document-info">
+      <div class="info-row">
+        <span class="label">Type:</span>
+        <span>{{ employee.habilitation.type }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Date d'obtention:</span>
+        <span>{{ employee.habilitation.dateObtention | date:'dd/MM/yyyy' }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Date d'expiration:</span>
+        <span>{{ employee.habilitation.dateExpiration | date:'dd/MM/yyyy' }}</span>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template #habilitationForm>
+    <div class="document-form">
+      <h4>➕ Ajouter une habilitation</h4>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Type d'habilitation *</label>
+          <input type="text" #habilitationType placeholder="Ex: Sécurité électrique">
+        </div>
+        <div class="form-group">
+          <label>Date d'obtention *</label>
+          <input type="date" #habilitationDate>
+        </div>
+      </div>
+      <button type="button" class="btn-small btn-validation" (click)="addHabilitation()">
+        Ajouter l'habilitation
+      </button>
+    </div>
+  </ng-template>
+
+  <!-- Certificat Médical -->
+  <div class="document-card" *ngIf="employee.certificatMedical; else certificatForm">
+    <div class="document-header">
+      <h4>Certificat Médical</h4>
+      <button type="button" class="btn-remove" (click)="removeCertificatMedical()">🗑️ Supprimer</button>
+    </div>
+    <div class="document-info">
+      <div class="info-row">
+        <span class="label">Date d'émission:</span>
+        <span>{{ employee.certificatMedical.date | date:'dd/MM/yyyy' }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Date d'expiration:</span>
+        <span>{{ employee.certificatMedical.dateExpiration | date:'dd/MM/yyyy' }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Médecin:</span>
+        <span>{{ employee.certificatMedical.medecin }}</span>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template #certificatForm>
+    <div class="document-form">
+      <h4>➕ Ajouter un certificat médical</h4>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date d'émission *</label>
+          <input type="date" #certificatDate>
+        </div>
+        <div class="form-group">
+          <label>Médecin *</label>
+          <input type="text" #certificatMedecin placeholder="Nom du médecin">
+        </div>
+      </div>
+      <button type="button" class="btn-small btn-validation" (click)="addCertificatMedical()">
+        Ajouter le certificat médical
+      </button>
+    </div>
+  </ng-template>
+
+  <!-- Carte Marine -->
+  <div class="document-card" *ngIf="employee.carteMarine; else carteMarineForm">
+    <div class="document-header">
+      <h4>Carte Marine</h4>
+      <button type="button" class="btn-remove" (click)="removeCarteMarine()">🗑️ Supprimer</button>
+    </div>
+    <div class="document-info">
+      <div class="info-row">
+        <span class="label">Numéro:</span>
+        <span>{{ employee.carteMarine.numero }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Date de délivrance:</span>
+        <span>{{ employee.carteMarine.dateDelivrance | date:'dd/MM/yyyy' }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Date d'expiration:</span>
+        <span>{{ employee.carteMarine.dateExpiration | date:'dd/MM/yyyy' }}</span>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template #carteMarineForm>
+    <div class="document-form">
+      <h4>➕ Ajouter une carte marine</h4>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Numéro *</label>
+          <input type="text" #carteNumero placeholder="Ex: CM-2024-001">
+        </div>
+        <div class="form-group">
+          <label>Date de délivrance *</label>
+          <input type="date" #carteDate>
+        </div>
+      </div>
+      <button type="button" class="btn-small btn-validation" (click)="addCarteMarine()">
+        Ajouter la carte marine
+      </button>
+    </div>
+  </ng-template>
+</div>
+
+      <!-- Section 4: Avatar -->
+      <div class="form-section">
+        <h3>Photo de profil</h3>
+        <div class="avatar-section">
+          <div class="avatar-preview" *ngIf="employee.avatar">
+            <img [src]="employee.avatar" alt="Avatar">
+          </div>
+          <div class="form-group">
+            <label for="avatar">URL de l'avatar</label>
+            <input type="url" id="avatar" name="avatar" [(ngModel)]="employee.avatar" placeholder="https://example.com/avatar.jpg">
+          </div>
+        </div>
+      </div>
+
+      <!-- ID généré automatiquement -->
+      <div class="form-section info-section">
+        <div class="info-box">
+          <strong>ID généré automatiquement :</strong> {{ employee.id || 'En attente...' }}
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondaire" (click)="onCancel()">Annuler</button>
+        <button type="submit" class="btn btn-validation" [disabled]="employeeForm.invalid || isLoading">
+          <span *ngIf="!isLoading">{{ isEditMode ? 'Mettre à jour' : 'Créer' }}</span>
+          <span *ngIf="isLoading" class="spinner"></span>
+          <span *ngIf="isLoading" style="margin-left: 0.5rem;">Chargement...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,268 @@
+<div class="dashboard-container">
+  <!-- En-tête du dashboard -->
+  <div class="dashboard-header">
+    <div>
+      <h1 style="color: white;">Tableau de bord</h1>
+      <p style="color: var(--gray-300);">Bienvenue, {{ userName }} ! Voici un aperçu de votre activité</p>
+    </div>
+    <div class="header-actions">
+      <div class="date-range">
+        <input type="date" [(ngModel)]="startDate" (change)="loadDashboardData()">
+        <span>à</span>
+        <input type="date" [(ngModel)]="endDate" (change)="loadDashboardData()">
+      </div>
+      <button class="btn btn-secondaire" (click)="refreshData()">
+        <span>🔄</span> Actualiser
+      </button>
+    </div>
+  </div>
+
+  <!-- Cartes statistiques -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon blue">
+        <span>👥</span>
+      </div>
+      <div class="stat-info">
+        <h3>Employés</h3>
+        <div class="stat-value">{{ stats.totalEmployees }}</div>
+        <div class="stat-change positive">
+          <span>▲</span> +{{ stats.newEmployees }} ce mois
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon green">
+        <span>✅</span>
+      </div>
+      <div class="stat-info">
+        <h3>Présents</h3>
+        <div class="stat-value">{{ stats.presentToday }}</div>
+        <div class="stat-change">{{ stats.presenceRate }}% du total</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon orange">
+        <span>🏖️</span>
+      </div>
+      <div class="stat-info">
+        <h3>Congés</h3>
+        <div class="stat-value">{{ stats.totalLeaves }}</div>
+        <div class="stat-change">{{ stats.pendingLeaves }} en attente</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon purple">
+        <span>⏰</span>
+      </div>
+      <div class="stat-info">
+        <h3>Retards</h3>
+        <div class="stat-value">{{ stats.totalLate }}</div>
+        <div class="stat-change">ce mois</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon red">
+        <span>⚠️</span>
+      </div>
+      <div class="stat-info">
+        <h3>Absences</h3>
+        <div class="stat-value">{{ stats.totalAbsences }}</div>
+        <div class="stat-change">non justifiées</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon cyan">
+        <span>📊</span>
+      </div>
+      <div class="stat-info">
+        <h3>Satisfaction</h3>
+        <div class="stat-value">{{ stats.satisfactionRate }}%</div>
+        <div class="stat-change positive">
+          <span>▲</span> +5% ce trimestre
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Graphiques et calendrier -->
+  <div class="dashboard-grid">
+    <!-- Graphique des présences -->
+    <div class="card chart-card">
+      <div class="card-header">
+        <h3>Présences cette semaine</h3>
+        <div class="chart-legend">
+          <span><span class="legend-dot present"></span> Présents</span>
+          <span><span class="legend-dot absent"></span> Absents</span>
+          <span><span class="legend-dot late"></span> Retards</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <canvas id="attendanceChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Calendrier -->
+    <div class="card calendar-card">
+      <div class="card-header">
+        <h3>Calendrier des événements</h3>
+        <div class="calendar-nav">
+          <button (click)="previousMonth()" class="icon-btn">◀</button>
+          <span>{{ currentMonthName }} {{ currentYear }}</span>
+          <button (click)="nextMonth()" class="icon-btn">▶</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="calendar">
+          <div class="calendar-weekdays">
+            <div *ngFor="let day of weekDays">{{ day }}</div>
+          </div>
+          <div class="calendar-days">
+            <div *ngFor="let day of calendarDays" 
+                 class="calendar-day"
+                 [class.other-month]="day.isOtherMonth"
+                 [class.today]="day.isToday"
+                 [class.has-event]="day.hasEvent"
+                 (click)="selectDay(day)">
+              <span class="day-number">{{ day.date.getDate() }}</span>
+              <div class="day-events">
+                <div *ngFor="let event of day.events" 
+                     class="event-badge"
+                     [class]="'event-' + event.type">
+                  {{ event.title }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Distribution des services -->
+    <div class="card chart-card">
+      <div class="card-header">
+        <h3>Répartition par service</h3>
+      </div>
+      <div class="card-body">
+        <canvas id="departmentChart"></canvas>
+        <div class="department-stats">
+          <div *ngFor="let dept of departmentStats" class="dept-item">
+            <div class="dept-name">{{ dept.name }}</div>
+            <div class="dept-bar">
+              <div class="dept-bar-fill" [style.width.%]="dept.percentage"></div>
+            </div>
+            <div class="dept-count">{{ dept.count }} employés</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prochains anniversaires -->
+    <div class="card birthdays-card">
+      <div class="card-header">
+        <h3>🎂 Prochains anniversaires</h3>
+      </div>
+      <div class="card-body">
+        <div *ngFor="let birthday of upcomingBirthdays" class="birthday-item">
+          <div class="birthday-avatar">
+            <img [src]="birthday.avatar || 'assets/default-avatar.png'" alt="Avatar">
+          </div>
+          <div class="birthday-info">
+            <h4>{{ birthday.name }}</h4>
+            <p>{{ birthday.position }}</p>
+          </div>
+          <div class="birthday-date">
+            <span class="date">{{ birthday.date | date: 'dd/MM' }}</span>
+            <span class="age">{{ birthday.age }} ans</span>
+          </div>
+        </div>
+        <div *ngIf="upcomingBirthdays.length === 0" class="no-data">
+          Aucun anniversaire à venir
+        </div>
+      </div>
+    </div>
+
+    <!-- Demandes de congés en attente -->
+    <div class="card leave-requests-card">
+      <div class="card-header">
+        <h3>📋 Demandes de congés en attente</h3>
+        <button class="btn-link" (click)="viewAllLeaveRequests()">Voir tout</button>
+      </div>
+      <div class="card-body">
+        <div *ngFor="let request of pendingLeaveRequests" class="leave-request-item">
+          <div class="request-info">
+            <div class="request-employee">
+              <strong>{{ request.employeeName }}</strong>
+              <span class="request-type" [class]="'type-' + request.type">
+                {{ request.type }}
+              </span>
+            </div>
+            <div class="request-dates">
+              {{ request.startDate | date: 'dd/MM/yyyy' }} - {{ request.endDate | date: 'dd/MM/yyyy' }}
+            </div>
+          </div>
+          <div class="request-actions">
+            <button class="btn-small btn-validation" (click)="approveLeave(request)">Approuver</button>
+            <button class="btn-small btn-supprimer" (click)="rejectLeave(request)">Refuser</button>
+          </div>
+        </div>
+        <div *ngIf="pendingLeaveRequests.length === 0" class="no-data">
+          Aucune demande en attente
+        </div>
+      </div>
+    </div>
+
+    <!-- Activités récentes -->
+    <div class="card activities-card">
+      <div class="card-header">
+        <h3>🔄 Activités récentes</h3>
+      </div>
+      <div class="card-body">
+        <div class="timeline">
+          <div *ngFor="let activity of recentActivities" class="timeline-item">
+            <div class="timeline-icon" [class]="'icon-' + activity.type">
+              {{ activity.icon }}
+            </div>
+            <div class="timeline-content">
+              <p>{{ activity.description }}</p>
+              <span class="timeline-time">{{ activity.time | date: 'HH:mm' }} - {{ activity.date | date: 'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Performance par employé -->
+    <div class="card performance-card">
+      <div class="card-header">
+        <h3>⭐ Top performances</h3>
+        <select [(ngModel)]="performancePeriod" (change)="loadPerformance()">
+          <option value="month">Ce mois</option>
+          <option value="quarter">Ce trimestre</option>
+          <option value="year">Cette année</option>
+        </select>
+      </div>
+      <div class="card-body">
+        <div class="performance-list">
+          <div *ngFor="let emp of topPerformers; let i = index" class="performer-item">
+            <div class="performer-rank">#{{ i + 1 }}</div>
+            <div class="performer-info">
+              <div class="performer-name">{{ emp.name }}</div>
+              <div class="performer-score">
+                <div class="stars">
+                  <span *ngFor="let star of getStars(emp.score)">⭐</span>
+                </div>
+                <span class="score-value">{{ emp.score }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
