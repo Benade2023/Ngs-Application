@@ -1,0 +1,252 @@
+<div class="projets-container">
+  <!-- En-tête -->
+  <div class="page-header">
+    <div>
+      <h1>Gestion des projets</h1>
+      <p>Suivi et gestion de tous les projets</p>
+    </div>
+    <button class="btn btn-validation" (click)="openAddModal()">
+      <span>➕</span> Nouveau projet
+    </button>
+  </div>
+
+  <!-- Cartes statistiques -->
+  <div class="stats-cards">
+    <div class="stat-card-projet">
+      <div class="stat-icon en-cours">
+        <span>🟢</span>
+      </div>
+      <div class="stat-details">
+        <h3>En cours</h3>
+        <div class="stat-number">{{ stats.enCours }}</div>
+        <span class="stat-trend">Projets actifs</span>
+      </div>
+    </div>
+
+    <div class="stat-card-projet">
+      <div class="stat-icon termine">
+        <span>✅</span>
+      </div>
+      <div class="stat-details">
+        <h3>Terminés</h3>
+        <div class="stat-number">{{ stats.termine }}</div>
+        <span class="stat-trend">Projets finalisés</span>
+      </div>
+    </div>
+
+    <div class="stat-card-projet">
+      <div class="stat-icon annule">
+        <span>❌</span>
+      </div>
+      <div class="stat-details">
+        <h3>Annulés</h3>
+        <div class="stat-number">{{ stats.annule }}</div>
+        <span class="stat-trend">Projets annulés</span>
+      </div>
+    </div>
+
+    <div class="stat-card-projet">
+      <div class="stat-icon total">
+        <span>📊</span>
+      </div>
+      <div class="stat-details">
+        <h3>Total</h3>
+        <div class="stat-number">{{ stats.total }}</div>
+        <span class="stat-trend">Tous projets</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters-section">
+    <div class="search-box">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (input)="onSearchChange()"
+        placeholder="🔍 Rechercher par nom, client, site..."
+        class="search-input">
+    </div>
+    <div class="filter-buttons">
+      <button class="filter-btn" [class.active]="filterStatus === ''" (click)="filterStatus = ''; applyFilters()">
+        Tous
+      </button>
+      <button class="filter-btn" [class.active]="filterStatus === 'En cours'" (click)="filterStatus = 'En cours'; applyFilters()">
+        En cours
+      </button>
+      <button class="filter-btn" [class.active]="filterStatus === 'Terminé'" (click)="filterStatus = 'Terminé'; applyFilters()">
+        Terminés
+      </button>
+      <button class="filter-btn" [class.active]="filterStatus === 'Annulé'" (click)="filterStatus = 'Annulé'; applyFilters()">
+        Annulés
+      </button>
+    </div>
+  </div>
+
+  <!-- Vue tableau (Desktop) -->
+  <div class="table-wrapper desktop-view">
+    <table class="projets-table">
+      <thead>
+        <tr>
+          <th>Projet</th>
+          <th>Client</th>
+          <th>Site</th>
+          <th>Date début</th>
+          <th>Date fin</th>
+          <th>Statut</th>
+          <th>Progression</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let projet of filteredProjets">
+          <td class="projet-info">
+            <strong>{{ projet.nom }}</strong>
+            <div class="projet-desc">{{ projet.description | slice:0:50 }}{{ projet.description.length > 50 ? '...' : '' }}</div>
+          </td>
+          <td>{{ projet.client }}</td>
+          <td>{{ projet.site }}</td>
+          <td>{{ formatDate(projet.dateDebut) }}</td>
+          <td>{{ formatDate(projet.dateFin) }}</td>
+          <td>
+            <span class="status-badge" [class]="getStatusClass(projet.status)">
+              {{ getStatusIcon(projet.status) }} {{ projet.status }}
+            </span>
+          </td>
+          <td>
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="getProgressPercentage(projet.dateDebut, projet.dateFin)"></div>
+              <span class="progress-text">{{ getProgressPercentage(projet.dateDebut, projet.dateFin) }}%</span>
+            </div>
+          </td>
+          <td class="actions">
+            <button class="action-btn view" (click)="viewProjetDetails(projet)" title="Voir détails">
+              👁️
+            </button>
+            <button class="action-btn edit" (click)="openEditModal(projet)" title="Modifier">
+              ✏️
+            </button>
+            <button class="action-btn delete" (click)="deleteProjet(projet)" title="Supprimer">
+              🗑️
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Vue cartes (Mobile/Tablette) -->
+  <div class="cards-view">
+    <div *ngFor="let projet of filteredProjets" class="projet-card">
+      <div class="card-header">
+        <div>
+          <h3>{{ projet.nom }}</h3>
+          <span class="client">{{ projet.client }}</span>
+        </div>
+        <span class="status-badge" [class]="getStatusClass(projet.status)">
+          {{ getStatusIcon(projet.status) }} {{ projet.status }}
+        </span>
+      </div>
+
+      <div class="card-body">
+        <div class="info-row">
+          <span class="label">📍 Site:</span>
+          <span class="value">{{ projet.site }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">📅 Début:</span>
+          <span class="value">{{ formatDate(projet.dateDebut) }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">📅 Fin:</span>
+          <span class="value">{{ formatDate(projet.dateFin) }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">📝 Description:</span>
+          <span class="value">{{ projet.description | slice:0:80 }}{{ projet.description.length > 80 ? '...' : '' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">📊 Progression:</span>
+          <div class="progress-bar-small">
+            <div class="progress-fill-small" [style.width.%]="getProgressPercentage(projet.dateDebut, projet.dateFin)"></div>
+            <span>{{ getProgressPercentage(projet.dateDebut, projet.dateFin) }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="action-card view" (click)="viewProjetDetails(projet)">
+          👁️ Voir
+        </button>
+        <button class="action-card edit" (click)="openEditModal(projet)">
+          ✏️ Modifier
+        </button>
+        <button class="action-card delete" (click)="deleteProjet(projet)">
+          🗑️ Supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button (click)="previousPage()" [disabled]="currentPage === 1">◀ Précédent</button>
+    <span>Page {{ currentPage }} sur {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">Suivant ▶</button>
+  </div>
+
+  <!-- Modal Ajout/Modification -->
+  <div class="modal" [class.active]="showModal" (click)="closeModalOnOutside($event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>{{ isEditMode ? 'Modifier le projet' : 'Nouveau projet' }}</h3>
+        <button class="close-btn" (click)="closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Nom du projet *</label>
+          <input type="text" [(ngModel)]="selectedProjet.nom" placeholder="Nom du projet">
+        </div>
+        <div class="form-group">
+          <label>Client *</label>
+          <input type="text" [(ngModel)]="selectedProjet.client" placeholder="Nom du client">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Site *</label>
+            <input type="text" [(ngModel)]="selectedProjet.site" placeholder="Site d'exécution">
+          </div>
+          <div class="form-group">
+            <label>Statut *</label>
+            <select [(ngModel)]="selectedProjet.status">
+              <option value="En cours">En cours</option>
+              <option value="Terminé">Terminé</option>
+              <option value="Annulé">Annulé</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date de début *</label>
+            <input type="date" [(ngModel)]="selectedProjet.dateDebut">
+          </div>
+          <div class="form-group">
+            <label>Date de fin</label>
+            <input type="date" [(ngModel)]="selectedProjet.dateFin">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea rows="4" [(ngModel)]="selectedProjet.description" placeholder="Description détaillée du projet..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondaire" (click)="closeModal()">Annuler</button>
+        <button class="btn btn-validation" (click)="saveProjet()" [disabled]="isLoading">
+          <span *ngIf="!isLoading">{{ isEditMode ? 'Mettre à jour' : 'Créer' }}</span>
+          <span *ngIf="isLoading" class="spinner"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

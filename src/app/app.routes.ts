@@ -14,4 +14,6 @@ export const routes: Routes = [
     { path: 'mouvement-personnel', loadComponent: () => import('./components/managment/mouvementDuPersonnel/liste-mouvement/liste-mouvement').then(m => m.ListeMouvement) },
     { path: 'add-mouvement', loadComponent: () => import('./components/managment/mouvementDuPersonnel/add-mouvement/add-mouvement').then(m => m.AddMouvement) },
     { path: 'detail-mouvement-personnel/:id', loadComponent: () => import('./components/managment/mouvementDuPersonnel/detail-mouvement/detail-mouvement').then(m => m.DetailMouvement) },
+    //Projet routes//
+    { path: 'projets', loadComponent: () => import('./components/managment/projets/liste-projets/liste-projets').then(m => m.ListeProjets) },
 ];

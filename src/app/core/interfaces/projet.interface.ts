@@ -6,4 +6,5 @@ export interface Projets {
     site: string;
     dateDebut: Date;
     dateFin: Date | null;
+    status: 'En cours' | 'Terminé' | 'Annulé';
 }

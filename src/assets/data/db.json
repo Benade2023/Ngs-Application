@@ -472,7 +472,8 @@
       "client": "PERENCO",
       "site": "HYLIA SM",
       "dateDebut": "2024-01-01",
-      "dateFin": null
+      "dateFin": null,
+      "status": "En cours"
     },
     {
       "id": "PROJ002",
@@ -481,7 +482,8 @@
       "client": "PERENCO",
       "site": "HYLIA M",
       "dateDebut": "2024-02-01",
-      "dateFin": null
+      "dateFin": null,
+      "status": "En cours"
     },
     {
       "id": "PROJ003",
@@ -490,7 +492,8 @@
       "client": "PERENCO",
       "site": "OBA",
       "dateDebut": "2024-03-01",
-      "dateFin": null
+      "dateFin": null,
+      "status": "Terminé"
     }
   ]
 }
