@@ -5,8 +5,11 @@
       <h1>Mouvement du personnel</h1>
       <p>Suivi des affectations et déplacements du personnel</p>
     </div>
-    <button class="btn btn-validation" (click)="exportToExcel()">
+    <!-- <button class="btn btn-validation" (click)="exportToExcel()">
       <span>📊</span> Exporter Excel
+    </button> -->
+   <button class="btn btn-validation" (click)="addMouvement()">
+      <span>➕</span> Nouveau mouvement
     </button>
   </div>
 
@@ -128,7 +131,7 @@
           <!-- <td>{{ agent.projet }}</td> -->
           <td>{{ agent.mobilisation | date:'dd/MM/yyyy' }}</td>
           <td>{{ agent.demobilisation | date:'dd/MM/yyyy' }}</td>
-          <td>{{ agent.nombreJours || calculateJours(agent.mobilisation, agent.demobilisation) }}</td>
+          <td>{{ agent.nombreJours || calculateJoursData(agent.mobilisation, agent.demobilisation) }}</td>
           <td>
             <span class="status-badge" [class]="getStatusClass(agent.status)">
               {{ agent.status }}
@@ -151,7 +154,7 @@
             <button class="action-btn view" (click)="viewDetails(agent)" title="Voir détails">
               👁️
             </button>
-            <button class="action-btn edit" (click)="editAgent(agent)" title="Modifier">
+            <button class="action-btn edit" (click)="openEditModal(agent)" title="Modifier">
               ✏️
             </button>
           </td>
@@ -197,7 +200,7 @@
           </div>
           <div class="info-item">
             <label>Jours</label>
-            <span>{{ agent.nombreJours || calculateJours(agent.mobilisation, agent.demobilisation) }}</span>
+            <span>{{ agent.nombreJours || calculateJoursData(agent.mobilisation, agent.demobilisation) }}</span>
           </div>
           <div class="info-item">
             <label>Démob estimée</label>
@@ -222,7 +225,7 @@
         <button class="action-card view" (click)="viewDetails(agent)">
           👁️ Voir détails
         </button>
-        <button class="action-card edit" (click)="editAgent(agent)">
+        <button class="action-card edit" (click)="openEditModal(agent)">
           ✏️ Modifier
         </button>
       </div>
@@ -235,4 +238,130 @@
     <span>Page {{ currentPage }} sur {{ totalPages }}</span>
     <button (click)="nextPage()" [disabled]="currentPage === totalPages">Suivant ▶</button>
   </div>
+
+    <!-- Modal Ajout/Modification -->
+ <div class="modal" [class.active]="showModal" (click)="closeModalOnOutside($event)">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>{{ isEditMode ? 'Modifier le mouvement' : 'Nouveau mouvement' }}</h3>
+      <button class="close-btn" (click)="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <!-- Sélection de l'employé -->
+      <div class="form-group">
+        <label>Employé *</label>
+        <select [(ngModel)]="selectedMouvement.employe" (change)="onEmployeChange()">
+          <option value="">Sélectionner un employé</option>
+          <option *ngFor="let emp of listEmployes" [ngValue]="emp">
+            {{ emp.nom }} {{ emp.prenom }} - {{ emp.fonction }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Informations pré-remplies de l'employé -->
+      <div class="info-panel" *ngIf="selectedMouvement.employe?.id">
+        <h4>Informations employé</h4>
+        <div class="info-row">
+          <span class="label">Nom complet:</span>
+          <span class="value">{{ selectedMouvement.employe.nom }} {{ selectedMouvement.employe.prenom }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Fonction:</span>
+          <span class="value">{{ selectedMouvement.employe.fonction }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Email:</span>
+          <span class="value">{{ selectedMouvement.employe.email }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Téléphone:</span>
+          <span class="value">{{ selectedMouvement.employe.telephone }}</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Projet *</label>
+          <!-- <input type="text" [(ngModel)]="selectedMouvement.projet" placeholder="Nom du projet"> -->
+        <select name="projet" id="projet" [(ngModel)]="selectedMouvement.projet">
+          <option value="">Sélectionner un projet</option>
+          <option *ngFor="let projet of listProjets" [value]="projet.nom">
+            {{ projet.nom }}
+          </option>
+        </select>
+        </div>
+        <div class="form-group">
+          <label>Entreprise *</label>
+          <select [(ngModel)]="selectedMouvement.entreprise">
+            <option value="">Sélectionner une entreprise</option>
+            <option *ngFor="let entreprise of listClient" [value]="entreprise.nom">{{ entreprise.nom }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Site *</label>
+          <input type="text" [(ngModel)]="selectedMouvement.site" placeholder="Site d'exécution">
+        </div>
+        <div class="form-group">
+          <label>Statut *</label>
+          <select [(ngModel)]="selectedMouvement.status">
+            <option value="Sur site">Sur site</option>
+            <option value="Hors site">Hors site</option>
+            <option value="En attente">En attente</option>
+            <option value="Démobilisé">Démobilisé</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date de mobilisation *</label>
+          <!-- <input type="date" [(ngModel)]="selectedMouvement.mobilisation"> -->
+        <input type="date" [value]="formatDateToString(selectedMouvement.mobilisation)" (change)="updateMobilisation($event)">
+        </div>
+        <div class="form-group">
+          <label>Date de démobilisation estimée *</label>
+          <input type="date" [value]="formatDateToString(selectedMouvement.dateEstimeDemob)" (change)="updateDateEstimeDemob($event)">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date de démobilisation réelle</label>
+          <input type="date" [value]="formatDateToString(selectedMouvement.demobilisation)" (change)="updateDemobilisation($event)">
+        </div>
+        <div class="form-group">
+          <label>Nombre de jours</label>
+          <input type="number" [(ngModel)]="selectedMouvement.nombreJours" placeholder="Calculé automatiquement">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Activités *</label>
+        <textarea rows="3" [(ngModel)]="selectedMouvement.activites" placeholder="Description des activités..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Observations</label>
+        <textarea rows="2" [(ngModel)]="selectedMouvement.adresse" placeholder="Observations supplémentaires..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="selectedMouvement.etat">
+          <span>Mouvement actif</span>
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondaire" (click)="closeModal()">Annuler</button>
+      <button type="button" class="btn btn-validation" (click)="saveMouvement()" [disabled]="isLoading || !isFormValid()">
+        <span *ngIf="!isLoading">{{ isEditMode ? 'Mettre à jour' : 'Créer' }}</span>
+        <span *ngIf="isLoading" class="spinner"></span>
+      </button>
+    </div>
+  </div>
+</div>
 </div>

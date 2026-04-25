@@ -113,9 +113,9 @@ export class DetailMouvement implements OnInit, AfterViewInit {
 
   loadData(id: string) {
     // Données mockées avec 20 rotations pour tester
-    this.mouvementService.getMouvementPersonnelById(id).subscribe({
+    this.mouvementService.getMouvementPersonnel().subscribe({
       next: (res => {
-        this.agent = res;
+        this.agent = res.find(m => m.employe.id === id) || {} as MouvementPersonnel;
 
       })
     })
@@ -441,7 +441,7 @@ export class DetailMouvement implements OnInit, AfterViewInit {
       next: () => {
         this.isLoading = false;
         this.alert.toast(this.isEditMode ? 'Rotation mise à jour avec succès' : 'Rotation ajoutée avec succès');
-        this.loadData(this.agent.id);
+        this.loadData(this.agent.employe.id); // Recharger les données de l'agent pour afficher la nouvelle rotation
         this.cdr.markForCheck();
         this.rotations.unshift(this.rotation);
         this.calculateStats();

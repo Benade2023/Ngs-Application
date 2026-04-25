@@ -4,6 +4,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Projets } from '../../../../core/interfaces/projet.interface';
 import { Router } from '@angular/router';
 import { ProjetsService } from '../../../../core/services/projet.service';
+import { ListeEntreprises } from '../../../../core/interfaces/entreprise.data';
+import { AlertService } from '../../../../core/services/alert.service';
 
 @Component({
   selector: 'app-liste-projets',
@@ -13,7 +15,7 @@ import { ProjetsService } from '../../../../core/services/projet.service';
 })
 export class ListeProjets implements OnInit {
 
-    projets: Projets[] = [];
+  projets: Projets[] = [];
   filteredProjets: Projets[] = [];
   searchTerm = '';
   filterStatus = '';
@@ -22,6 +24,7 @@ export class ListeProjets implements OnInit {
   totalPages = 1;
   isBrowser: boolean;
   private searchTimeout: any;
+  listClient = ListeEntreprises;
 
   // Modal
   showModal = false;
@@ -40,7 +43,8 @@ export class ListeProjets implements OnInit {
     @Inject(PLATFORM_ID) private platformId: Object,
     private router: Router,
     private projetsService: ProjetsService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private alert: AlertService
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
@@ -89,6 +93,7 @@ export class ListeProjets implements OnInit {
       },
       error: (error) => {
         console.error('Erreur lors du chargement des projets:', error);
+        this.alert.error('Erreur lors du chargement des projets');
       }
     });
   }
@@ -146,11 +151,11 @@ export class ListeProjets implements OnInit {
     }
 
     this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
-    
+
     if (this.currentPage > this.totalPages && this.totalPages > 0) {
       this.currentPage = this.totalPages;
     }
-    
+
     const start = (this.currentPage - 1) * this.itemsPerPage;
     this.filteredProjets = filtered.slice(start, start + this.itemsPerPage);
   }
@@ -194,7 +199,7 @@ export class ListeProjets implements OnInit {
 
   saveProjet() {
     if (!this.selectedProjet.nom || !this.selectedProjet.client || !this.selectedProjet.site) {
-      alert('Veuillez remplir tous les champs obligatoires');
+      this.alert.error('Veuillez remplir tous les champs obligatoires');
       return;
     }
 
@@ -206,9 +211,11 @@ export class ListeProjets implements OnInit {
           this.loadData();
           this.closeModal();
           this.isLoading = false;
+          this.alert.success('Projet mis à jour avec succès');
         },
         error: (error) => {
           console.error('Erreur lors de la modification:', error);
+          this.alert.error('Erreur lors de la modification');
           this.isLoading = false;
         }
       });
@@ -221,6 +228,7 @@ export class ListeProjets implements OnInit {
         },
         error: (error) => {
           console.error('Erreur lors de l\'ajout:', error);
+          this.alert.error('Erreur lors de l\'ajout');
           this.isLoading = false;
         }
       });
@@ -229,7 +237,7 @@ export class ListeProjets implements OnInit {
 
   deleteProjet(projet: Projets) {
     if (!this.isBrowser) return;
-    
+
     if (confirm(`Supprimer le projet "${projet.nom}" ?`)) {
       this.projetsService.deleteProjet(projet.id).subscribe({
         next: () => {
@@ -237,6 +245,7 @@ export class ListeProjets implements OnInit {
         },
         error: (error) => {
           console.error('Erreur lors de la suppression:', error);
+          this.alert.error('Erreur lors de la suppression');
         }
       });
     }
@@ -262,16 +271,16 @@ export class ListeProjets implements OnInit {
     const start = this.toDate(dateDebut);
     const end = this.toDate(dateFin);
     if (!start) return 0;
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     if (!end || today > end) return 100;
     if (today < start) return 0;
-    
+
     const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
     const elapsedDays = Math.ceil((today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-    
+
     return Math.min(100, Math.max(0, Math.round((elapsedDays / totalDays) * 100)));
   }
 
