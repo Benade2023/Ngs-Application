@@ -533,5 +533,295 @@
       "dateFin": null,
       "status": "En cours"
     }
+  ],
+  "rapports": [
+    {
+      "id": "RAP-2026-02-01-001",
+      "projet": "HYLIA SOUTH MARINE",
+      "projetId": "PROJ001",
+      "date": "2026-02-01T00:00:00.000Z",
+      "superviseurClient": "MARIE-AMÉLIE GAIDE",
+      "chefEquipe": "Merlin NGOULOU",
+      "equipe": {
+        "pax": [
+          {
+            "nom": "Ange BOUESSA",
+            "fonction": "Electricien / Instrum"
+          },
+          {
+            "nom": "Hermann METHOGUET",
+            "fonction": "Electricien / Instrum"
+          },
+          {
+            "nom": "Toussaint ETOUGUET",
+            "fonction": "Aide électricien"
+          },
+          {
+            "nom": "Merlin NGOULOU",
+            "fonction": "Chef d'équipe"
+          }
+        ],
+        "totalPax": 4
+      },
+      "securite": {
+        "reglesRespectees": true,
+        "remarques": "Les règles de sécurité ont été respectées durant l'ensemble des interventions. La manutention et le tirage des câbles ont été réalisés en appliquant les gestes et postures adaptés, avec port des EPI obligatoires."
+      },
+      "travaux": [
+        {
+          "tache": "Tirages et raccordement des armoires hydrauliques",
+          "executeurs": ["Toussaint ETOUGUET", "Hermann METHOGUET", "Merlin NGOULOU", "Ange BOUESSA"],
+          "avancement": 80
+        },
+        {
+          "tache": "Pose fixation des CDC pour la descente de liners vers la zone puits",
+          "executeurs": ["Toussaint ETOUGUET", "Hermann METHOGUET", "Merlin NGOULOU", "Ange BOUESSA"],
+          "avancement": 80
+        },
+        {
+          "tache": "Tuyauterie liner du HYSM 01",
+          "executeurs": ["Toussaint ETOUGUET", "Hermann METHOGUET", "Merlin NGOULOU", "Ange BOUESSA"],
+          "avancement": 80
+        },
+        {
+          "tache": "Suite de fermeture de couvercles des CDC",
+          "executeurs": ["Toussaint ETOUGUET", "Hermann METHOGUET", "Merlin NGOULOU", "Ange BOUESSA"],
+          "avancement": 80
+        },
+        {
+          "tache": "Assistance de la sensibilisation sur l'utilisation de défibrillateurs automatisés externes (DAE) et massage cardiaque",
+          "executeurs": ["Toussaint ETOUGUET", "Hermann METHOGUET", "Merlin NGOULOU", "Ange BOUESSA"],
+          "avancement": 100
+        }
+      ],
+      "photos": [
+        {
+          "titre": "Tirages et raccordement des armoires hydrauliques",
+          "url": "/assets/photos/raccordement-armoires.jpg"
+        },
+        {
+          "titre": "Pose fixation des CDC pour la descente de liners",
+          "url": "/assets/photos/pose-cdc.jpg"
+        },
+        {
+          "titre": "Tuyauterie liner du HYSM 01",
+          "url": "/assets/photos/tuyauterie-liner.jpg"
+        },
+        {
+          "titre": "Fermeture de couvercles des CDC",
+          "url": "/assets/photos/fermeture-couvercles.jpg"
+        }
+      ],
+      "logistique": {
+        "mobilisation": "pendant toute la période",
+        "demobilisation": "-",
+        "personnel": ["Juste GHANDAZ", "Yonel NDOUBANGA"],
+        "materiel": ["Outillage électriques", "Équipements de protection individuelle"]
+      },
+      "validation": {
+        "nom": "Merlin NGOULOU",
+        "fonction": "Chef d'équipe",
+        "signe": true
+      }
+    },
+    {
+      "id": "RAP-2026-02-02-002",
+      "projet": "HYLIA SOUTH MARINE",
+      "projetId": "PROJ001",
+      "date": "2026-02-02T00:00:00.000Z",
+      "superviseurClient": "MARIE-AMÉLIE GAIDE",
+      "chefEquipe": "Merlin NGOULOU",
+      "equipe": {
+        "pax": [
+          {
+            "nom": "Ange BOUESSA",
+            "fonction": "Electricien / Instrum"
+          },
+          {
+            "nom": "Hermann METHOGUET",
+            "fonction": "Electricien / Instrum"
+          },
+          {
+            "nom": "Toussaint ETOUGUET",
+            "fonction": "Aide électricien"
+          },
+          {
+            "nom": "Merlin NGOULOU",
+            "fonction": "Chef d'équipe"
+          },
+          {
+            "nom": "Jean Paul MBOULA",
+            "fonction": "Stagiaire"
+          }
+        ],
+        "totalPax": 5
+      },
+      "securite": {
+        "reglesRespectees": true,
+        "remarques": "Point sécurité réalisé le matin. Aucun incident à signaler. Tous les EPI étaient conformes."
+      },
+      "travaux": [
+        {
+          "tache": "Continuation tirage des câbles instrumentation",
+          "executeurs": ["Ange BOUESSA", "Hermann METHOGUET"],
+          "avancement": 90
+        },
+        {
+          "tache": "Raccordement des armoires électriques",
+          "executeurs": ["Toussaint ETOUGUET", "Merlin NGOULOU"],
+          "avancement": 70
+        },
+        {
+          "tache": "Test de continuité des circuits",
+          "executeurs": ["Ange BOUESSA", "Hermann METHOGUET"],
+          "avancement": 50
+        }
+      ],
+      "photos": [
+        {
+          "titre": "Tirage des câbles instrumentation",
+          "url": "/assets/photos/tirage-cables.jpg"
+        },
+        {
+          "titre": "Raccordement armoires",
+          "url": "/assets/photos/raccordement-armoires-jour2.jpg"
+        }
+      ],
+      "logistique": {
+        "mobilisation": "Toute l'équipe présente",
+        "demobilisation": "Aucune",
+        "personnel": [],
+        "materiel": ["Multimètres", "Pinces ampèremétriques"]
+      },
+      "validation": {
+        "nom": "Merlin NGOULOU",
+        "fonction": "Chef d'équipe",
+        "signe": true
+      }
+    },
+    {
+      "id": "RAP-2026-01-15-003",
+      "projet": "HYLIA MAIN",
+      "projetId": "PROJ002",
+      "date": "2026-01-15T00:00:00.000Z",
+      "superviseurClient": "Pierre MABIALA",
+      "chefEquipe": "Bertrand MOUENGUE",
+      "equipe": {
+        "pax": [
+          {
+            "nom": "Bertrand MOUENGUE",
+            "fonction": "Electricien HT"
+          },
+          {
+            "nom": "Frank NZAMBA",
+            "fonction": "Monteur de lignes"
+          },
+          {
+            "nom": "Christian OSSA",
+            "fonction": "Aide électricien"
+          },
+          {
+            "nom": "Loïc MBOUMBA",
+            "fonction": "Electricien"
+          }
+        ],
+        "totalPax": 4
+      },
+      "securite": {
+        "reglesRespectees": true,
+        "remarques": "Travaux en hauteur : harnais de sécurité utilisés. Zone de travail balisée."
+      },
+      "travaux": [
+        {
+          "tache": "Tirage et crampage de câble HT",
+          "executeurs": ["Bertrand MOUENGUE", "Frank NZAMBA", "Christian OSSA"],
+          "avancement": 60
+        },
+        {
+          "tache": "Installation des supports de câbles",
+          "executeurs": ["Frank NZAMBA", "Loïc MBOUMBA"],
+          "avancement": 80
+        }
+      ],
+      "photos": [
+        {
+          "titre": "Tirage câble HT",
+          "url": "/assets/photos/tirage-ht.jpg"
+        }
+      ],
+      "logistique": {
+        "mobilisation": "Toute la période",
+        "demobilisation": "-",
+        "personnel": [],
+        "materiel": ["Treuil", "Échelles", "Outillage spécifique HT"]
+      },
+      "validation": {
+        "nom": "Bertrand MOUENGUE",
+        "fonction": "Chef d'équipe",
+        "signe": true
+      }
+    },
+    {
+      "id": "RAP-2026-01-20-004",
+      "projet": "BATANGA - OBA",
+      "projetId": "PROJ003",
+      "date": "2026-01-20T00:00:00.000Z",
+      "superviseurClient": "Jean-Claude ONDO",
+      "chefEquipe": "J Arnauld NZAMBA MOMBO",
+      "equipe": {
+        "pax": [
+          {
+            "nom": "J Arnauld NZAMBA MOMBO",
+            "fonction": "Monteur de lignes"
+          },
+          {
+            "nom": "Stéphane MBOULA",
+            "fonction": "Electricien"
+          },
+          {
+            "nom": "Claude NDONG",
+            "fonction": "Aide monteur"
+          },
+          {
+            "nom": "Roland ABESSOLO",
+            "fonction": "Manœuvre"
+          }
+        ],
+        "totalPax": 4
+      },
+      "securite": {
+        "reglesRespectees": true,
+        "remarques": "Zone sécurisée, arrêté de circulation établi. EPI conformes."
+      },
+      "travaux": [
+        {
+          "tache": "Pose de câble optique",
+          "executeurs": ["J Arnauld NZAMBA MOMBO", "Stéphane MBOULA", "Claude NDONG", "Roland ABESSOLO"],
+          "avancement": 95
+        },
+        {
+          "tache": "Raccordement des boîtiers de jonction",
+          "executeurs": ["J Arnauld NZAMBA MOMBO", "Stéphane MBOULA"],
+          "avancement": 75
+        }
+      ],
+      "photos": [
+        {
+          "titre": "Pose câble optique",
+          "url": "/assets/photos/pose-cable-optique.jpg"
+        }
+      ],
+      "logistique": {
+        "mobilisation": "Toute l'équipe",
+        "demobilisation": "-",
+        "personnel": [],
+        "materiel": ["Fuseuse optique", "Testeur de continuité"]
+      },
+      "validation": {
+        "nom": "J Arnauld NZAMBA MOMBO",
+        "fonction": "Monteur de lignes",
+        "signe": true
+      }
+    }
   ]
 }

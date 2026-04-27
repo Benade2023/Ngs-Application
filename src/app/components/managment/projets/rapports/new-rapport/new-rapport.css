@@ -1,0 +1,542 @@
+.form-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.form-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.form-header {
+  background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+  color: white;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.form-header h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+}
+
+.form-header p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.form-section {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.form-section h3 {
+  margin: 0 0 1rem 0;
+  color: var(--gray-700);
+  font-size: 1.1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--gray-700);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius);
+  font-family: inherit;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.checkbox-label input {
+  width: auto;
+}
+
+/* Équipe */
+.equipe-list {
+  margin-bottom: 1rem;
+}
+
+.equipe-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: var(--gray-50);
+  border-radius: var(--radius);
+  margin-bottom: 0.5rem;
+}
+
+/* Travaux */
+.travaux-list {
+  margin-bottom: 1rem;
+}
+
+.travail-card {
+  background: var(--gray-50);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.travail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.travail-avancement {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.travail-avancement input[type="range"] {
+  width: 150px;
+}
+
+/* Photos */
+.photos-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.photo-item {
+  text-align: center;
+}
+
+.photo-item img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
+.photo-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+}
+
+/* Tags input */
+.tags-input {
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius);
+  padding: 0.5rem;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tag {
+  background: var(--primary-color);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.tag button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.tags-add {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tags-add input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius);
+}
+
+.tags-add button {
+  padding: 0.5rem 1rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+/* Boutons */
+.btn-add {
+  background: none;
+  border: 1px dashed var(--primary-color);
+  color: var(--primary-color);
+  padding: 0.5rem;
+  width: 100%;
+  border-radius: var(--radius);
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.btn-remove {
+  background: rgba(239, 71, 111, 0.1);
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  color: #ef476f;
+}
+
+.btn-remove-small {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* .btn-small {
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8rem;
+} */
+
+.form-actions-inline {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.add-form {
+  background: var(--gray-50);
+  padding: 1rem;
+  border-radius: var(--radius);
+  margin-top: 0.5rem;
+}
+
+
+/* Information projet */
+.info-projet {
+  background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(17, 138, 178, 0.1));
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.info-projet-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.info-projet-content .label {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.info-projet-content .value {
+  color: var(--gray-800);
+  font-weight: 500;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--gray-50);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 1rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .travail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .photos-list {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .form-section {
+    padding: 1rem;
+  }
+}
+
+
+
+/* Container pour la sélection des exécutants */
+.executeurs-select {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  align-items: center;
+}
+
+.executeurs-select select {
+  flex: 1;
+  padding: 0.6rem 0.75rem;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius);
+  background-color: white;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--gray-700);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.executeurs-select select:hover {
+  border-color: var(--primary-color);
+}
+
+.executeurs-select select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+.executeurs-select button {
+  padding: 0.6rem 1.2rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.executeurs-select button:hover {
+  background: #3151d3;
+  transform: translateY(-1px);
+}
+
+.executeurs-select button:active {
+  transform: translateY(0);
+}
+
+/* Container des badges des exécutants sélectionnés */
+.selected-executeurs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  background: var(--gray-50);
+  border-radius: var(--radius);
+  min-height: 50px;
+  align-items: center;
+}
+
+/* Message quand aucun exécutant n'est sélectionné */
+.selected-executeurs:empty::before {
+  content: "Aucun exécutant sélectionné";
+  color: var(--gray-400);
+  font-style: italic;
+  font-size: 0.8rem;
+  width: 100%;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+/* Style des badges */
+.executeur-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+  color: white;
+  padding: 0.35rem 0.75rem;
+  border-radius: 25px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: var(--transition);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.executeur-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Bouton de suppression dans le badge */
+.executeur-tag button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  padding: 0;
+  line-height: 1;
+}
+
+.executeur-tag button:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
+}
+
+/* Version alternative avec des couleurs différentes par fonction */
+.executeur-tag.electricien {
+  background: linear-gradient(135deg, #4361ee, #3a56d4);
+}
+
+.executeur-tag.aide {
+  background: linear-gradient(135deg, #06d6a0, #05b386);
+}
+
+.executeur-tag.chef {
+  background: linear-gradient(135deg, #ffd166, #e6bc3e);
+  color: var(--gray-800);
+}
+
+/* Pour le select quand il y a peu d'options */
+.executeurs-select select option {
+  padding: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .executeurs-select {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .executeurs-select select {
+    width: 100%;
+  }
+  
+  .executeurs-select button {
+    width: 100%;
+  }
+  
+  .selected-executeurs {
+    padding: 0.5rem;
+  }
+  
+  .executeur-tag {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+  }
+}
+
+/* Animation pour l'ajout d'un badge */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.executeur-tag {
+  animation: slideIn 0.2s ease;
+}
+
+
+/* Avec icônes devant chaque badge */
+.executeur-tag::before {
+  content: "👤";
+  margin-right: 0.25rem;
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+/* Pour le chef d'équipe */
+.executeur-tag.chef::before {
+  content: "👔";
+}
+
+/* Pour l'électricien */
+.executeur-tag.electricien::before {
+  content: "⚡";
+}
+
+/* Pour l'aide */
+.executeur-tag.aide::before {
+  content: "🛠️";
+}
+
+@media (max-width: 480px) {
+  .selected-executeurs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .executeur-tag {
+    justify-content: space-between;
+    width: 100%;
+  }
+}

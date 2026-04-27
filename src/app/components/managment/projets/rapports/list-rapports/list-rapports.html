@@ -1,0 +1,290 @@
+<div class="rapports-container">
+  <!-- En-tête -->
+  <div class="page-header">
+    <div>
+      <h1>📋 Rapports journaliers</h1>
+      <p>Suivi et gestion des rapports d'activités par projet</p>
+    </div>
+    <button class="btn btn-validation" (click)="addRapport()">
+      <span>➕</span> Nouveau rapport
+    </button>
+  </div>
+
+  <!-- Cartes statistiques -->
+  <div class="stats-cards">
+    <div class="stat-card">
+      <div class="stat-icon total">
+        <span>📄</span>
+      </div>
+      <div class="stat-details">
+        <h3>Total rapports</h3>
+        <div class="stat-number">{{ stats.total }}</div>
+        <span class="stat-trend">Rapports enregistrés</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon pax">
+        <span>👥</span>
+      </div>
+      <div class="stat-details">
+        <h3>Total personnel</h3>
+        <div class="stat-number">{{ stats.totalPax }}</div>
+        <span class="stat-trend">Intervenants comptabilisés</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon en-cours">
+        <span>🔄</span>
+      </div>
+      <div class="stat-details">
+        <h3>Travaux en cours</h3>
+        <div class="stat-number">{{ stats.travauxEnCours }}</div>
+        <span class="stat-trend">Rapports avec travaux actifs</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon termine">
+        <span>✅</span>
+      </div>
+      <div class="stat-details">
+        <h3>Travaux terminés</h3>
+        <div class="stat-number">{{ stats.travauxTermines }}</div>
+        <span class="stat-trend">Rapports complets</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters-section">
+    <div class="search-box">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (input)="applyFilters()"
+        placeholder="🔍 Rechercher par superviseur, chef d'équipe..."
+        class="search-input">
+    </div>
+    <div class="filter-group">
+      <!-- <select [(ngModel)]="selectedProjet" (change)="applyFilters()" class="filter-select">
+        <option value="">Tous les projets</option>
+        <option *ngFor="let projet of projets" [value]="projet.nom">{{ projet.nom }}</option>
+      </select> -->
+      <input type="date" [(ngModel)]="selectedDate" (change)="applyFilters()" class="filter-date" placeholder="Filtrer par date">
+      <button class="btn-reset" (click)="resetFilters()">Réinitialiser</button>
+    </div>
+  </div>
+
+  <!-- Liste des rapports -->
+  <div class="rapports-list">
+    <div *ngFor="let rapport of filteredRapports" class="rapport-card">
+      <div class="card-header">
+        <div class="project-info">
+          <h3>{{ rapport.projet }}</h3>
+          <span class="date">{{ formatDate(rapport.date) }}</span>
+        </div>
+        <div class="rapport-actions">
+          <button class="action-btn view" (click)="openDetailModal(rapport)" title="Voir les détails du rapport">
+            👁️ 
+          </button>
+          <button class="action-btn edit" (click)="viewRapportDetails(rapport)" title="Modifier le rapport">
+            ✏️ 
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- Encadrement -->
+        <div class="info-grid">
+          <div class="info-item">
+            <label>👔 Superviseur client</label>
+            <span>{{ rapport.superviseurClient }}</span>
+          </div>
+          <div class="info-item">
+            <label>👷 Chef d'équipe</label>
+            <span>{{ rapport.chefEquipe }}</span>
+          </div>
+          <div class="info-item">
+            <label>👥 Effectif</label>
+            <span>{{ rapport.equipe.totalPax }} personnes</span>
+          </div>
+          <div class="info-item">
+            <label>📊 Avancement moyen</label>
+            <span class="avancement-value">{{ getMoyenneAvancement(rapport) }}%</span>
+          </div>
+        </div>
+
+        <!-- Équipe -->
+        <div class="equipe-section">
+          <label>Équipe sur site :</label>
+          <div class="equipe-list">
+            <span *ngFor="let pax of rapport.equipe.pax" class="pax-badge">
+              {{ pax.nom }} ({{ pax.fonction }})
+            </span>
+          </div>
+        </div>
+
+        <!-- Travaux -->
+        <div class="travaux-section">
+          <label>Travaux réalisés :</label>
+          <div class="travaux-list">
+            <div *ngFor="let travail of rapport.travaux" class="travail-item">
+              <div class="travail-header">
+                <span class="travail-nom">{{ travail.tache }}</span>
+                <span class="travail-avancement" [class]="getAvancementClass(travail.avancement)">
+                  {{ travail.avancement }}%
+                </span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width.%]="travail.avancement"></div>
+              </div>
+              <div class="travail-executeurs">
+                <span class="label">Executeurs :</span>
+                <span *ngFor="let exec of travail.executeurs" class="executeur-badge">
+                  {{ exec }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logistique -->
+        <div class="logistique-section">
+          <div class="logistique-item">
+            <label>📦 Mobilisation</label>
+            <span>{{ rapport.logistique.mobilisation }}</span>
+          </div>
+          <div class="logistique-item">
+            <label>📤 Démobilisation</label>
+            <span>{{ rapport.logistique.demobilisation }}</span>
+          </div>
+        </div>
+
+        <!-- Validation -->
+        <div class="validation-section">
+          <div class="validation-badge" [class.signe]="rapport.validation.signe">
+            {{ rapport.validation.signe ? '✅ Validé par ' + rapport.validation.nom : '⏳ En attente de validation' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button (click)="previousPage()" [disabled]="currentPage === 1">◀ Précédent</button>
+    <span>Page {{ currentPage }} sur {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">Suivant ▶</button>
+  </div>
+
+  <!-- Modal Détails -->
+  <div class="modal" [class.active]="showDetailModal" (click)="closeModalOnOutside($event)">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h3>📄 Détail du rapport</h3>
+        <button class="close-btn" (click)="closeDetailModal()">×</button>
+      </div>
+      <div class="modal-body" *ngIf="selectedRapport">
+        <!-- En-tête -->
+        <div class="detail-header">
+          <h2>{{ selectedRapport.projet }}</h2>
+          <p class="detail-date">Date : {{ formatDate(selectedRapport.date) }}</p>
+        </div>
+
+        <!-- Encadrement -->
+        <div class="detail-section">
+          <h4>👥 Encadrement</h4>
+          <div class="detail-grid">
+            <div><strong>Superviseur client :</strong> {{ selectedRapport.superviseurClient }}</div>
+            <div><strong>Chef d'équipe :</strong> {{ selectedRapport.chefEquipe }}</div>
+            <div><strong>Effectif total :</strong> {{ selectedRapport.equipe.totalPax }} personnes</div>
+          </div>
+        </div>
+
+        <!-- Équipe détaillée -->
+        <div class="detail-section">
+          <h4>👷 Équipe détaillée</h4>
+          <table class="detail-table">
+            <thead>
+              <tr><th>Nom</th><th>Fonction</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let pax of selectedRapport.equipe.pax">
+                <td>{{ pax.nom }}</td><td>{{ pax.fonction }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Sécurité -->
+        <div class="detail-section">
+          <h4>🛡️ Sécurité</h4>
+          <div class="securite-box">
+            <span class="securite-status" [class.respectee]="selectedRapport.securite.reglesRespectees">
+              {{ selectedRapport.securite.reglesRespectees ? '✅ Règles respectées' : '❌ Non-conformités' }}
+            </span>
+            <p>{{ selectedRapport.securite.remarques }}</p>
+          </div>
+        </div>
+
+        <!-- Travaux détaillés -->
+        <div class="detail-section">
+          <h4>🔧 Travaux réalisés</h4>
+          <div *ngFor="let travail of selectedRapport.travaux" class="travail-detail">
+            <div class="travail-title">
+              <strong>{{ travail.tache }}</strong>
+              <span class="avancement-badge" [class]="getAvancementClass(travail.avancement)">
+                {{ travail.avancement }}%
+              </span>
+            </div>
+            <div class="travail-executeurs">
+              <strong>Executeurs :</strong> {{ travail.executeurs.join(', ') }}
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="travail.avancement"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Photos -->
+        <div class="detail-section" *ngIf="selectedRapport.photos.length">
+          <h4>📸 Galerie photo</h4>
+          <div class="photos-grid">
+            <div *ngFor="let photo of selectedRapport.photos" class="photo-item">
+              <!-- <img [src]="photo.url" [alt]="photo.titre" (error)="$event.target.src='assets/placeholder-image.jpg'"> -->
+              <p>{{ photo.titre }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logistique -->
+        <div class="detail-section">
+          <h4>📦 Logistique & Mobilisation</h4>
+          <div class="detail-grid">
+            <div><strong>Mobilisation :</strong> {{ selectedRapport.logistique.mobilisation }}</div>
+            <div><strong>Démobilisation :</strong> {{ selectedRapport.logistique.demobilisation }}</div>
+            <div><strong>Personnel :</strong> {{ selectedRapport.logistique.personnel.join(', ') || '-' }}</div>
+            <div><strong>Matériel :</strong> {{ selectedRapport.logistique.materiel.join(', ') || '-' }}</div>
+          </div>
+        </div>
+
+        <!-- Validation -->
+        <div class="detail-section validation-footer">
+          <div class="validation-box">
+            <strong>Validation :</strong>
+            <span *ngIf="selectedRapport.validation.signe">
+              ✅ Signé par {{ selectedRapport.validation.nom }} ({{ selectedRapport.validation.fonction }})
+            </span>
+            <span *ngIf="!selectedRapport.validation.signe">⏳ En attente de signature</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondaire" (click)="closeDetailModal()">Fermer</button>
+        <button class="btn btn-validation" (click)="printRapport(selectedRapport!)">Imprimer</button>
+      </div>
+    </div>
+  </div>
+</div>

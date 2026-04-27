@@ -253,7 +253,7 @@ export class ListeProjets implements OnInit {
 
   viewProjetDetails(projet: Projets) {
     if (!this.isBrowser) return;
-    this.router.navigate(['/detail-projet', projet.id]);
+    this.router.navigate(['/rapports', projet.id]);
   }
 
   getDaysRemaining(dateFin: Date | null): number {

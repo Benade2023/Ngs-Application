@@ -1,0 +1,272 @@
+<div class="form-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h2>{{ isEditMode ? 'Modifier le rapport' : 'Nouveau rapport journalier' }}</h2>
+      <p *ngIf="!isEditMode">Projet: <strong>{{ rapport.projet }}</strong></p>
+      <p *ngIf="isEditMode">{{ isEditMode ? 'Modifiez les informations du rapport' : 'Remplissez le formulaire pour créer un nouveau rapport' }}</p>
+    </div>
+
+    <!-- Information du projet (lecture seule) -->
+    <div class="info-projet" *ngIf="!isEditMode">
+      <div class="info-projet-content">
+        <span class="label">📁 Projet :</span>
+        <span class="value">{{ rapport.projet }}</span>
+      </div>
+    </div>
+
+    <!-- Section 1: Informations générales -->
+    <div class="form-section">
+      <h3>📋 Informations générales</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date *</label>
+          <input type="date" [(ngModel)]="rapport.date" required>
+        </div>
+        <div class="form-group">
+          <label>Superviseur client *</label>
+          <input type="text" [(ngModel)]="rapport.superviseurClient" placeholder="Nom du superviseur client" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Chef d'équipe *</label>
+          <input type="text" [(ngModel)]="rapport.chefEquipe" placeholder="Nom du chef d'équipe" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Équipe -->
+    <div class="form-section">
+      <h3>👥 Équipe sur site</h3>
+      
+      <div class="equipe-list">
+        <div *ngFor="let pax of rapport.equipe.pax; let i = index" class="equipe-item">
+          <div class="equipe-info">
+            <strong>{{ (pax.nom) + ' ' + (pax.prenom) }}</strong> - {{ pax.fonction }}
+          </div>
+          <button type="button" class="btn-remove" (click)="removePax(i)">🗑️</button>
+        </div>
+      </div>
+
+      <div class="add-form" *ngIf="showAddPaxForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom</label>
+            <!-- <input type="text" [(ngModel)]="newPax.nom" placeholder="Nom de l'agent"> -->
+          <select [(ngModel)]="newPax.nom">
+              <option value="">Sélectionner un agent</option>
+              <option *ngFor="let agent of listPersonel" [value]="agent.nom">{{ (agent.nom) + ' ' + (agent.prenom) }}</option>
+            </select>
+        </div>
+          <div class="form-group">
+            <label>Fonction</label>
+            <select [(ngModel)]="newPax.fonction">
+              <option value="">Sélectionner</option>
+              <option *ngFor="let fonction of fonctionsOptions" [value]="fonction">{{ fonction }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions-inline">
+          <button type="button" class="btn-small btn-validation" (click)="addPax()">Ajouter</button>
+          <button type="button" class="btn-small btn-secondaire" (click)="showAddPaxForm = false">Annuler</button>
+        </div>
+      </div>
+
+      <button type="button" class="btn-add" (click)="showAddPaxForm = true" *ngIf="!showAddPaxForm">
+        + Ajouter un agent
+      </button>
+    </div>
+
+    <!-- Section 3: Sécurité -->
+    <div class="form-section">
+      <h3>🛡️ Sécurité</h3>
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="rapport.securite.reglesRespectees">
+          <span>Les règles de sécurité ont été respectées</span>
+        </label>
+      </div>
+      <div class="form-group">
+        <label>Remarques sécurité</label>
+        <textarea rows="4" [(ngModel)]="rapport.securite.remarques" placeholder="Détail des mesures de sécurité mises en place..."></textarea>
+      </div>
+    </div>
+
+    <!-- Section 4: Travaux réalisés -->
+    <div class="form-section">
+      <h3>🔧 Travaux réalisés</h3>
+      
+      <div class="travaux-list">
+        <div *ngFor="let travail of rapport.travaux; let i = index" class="travail-card">
+          <div class="travail-header">
+            <div class="travail-info">
+              <strong>{{ travail.tache }}</strong>
+              <div class="travail-executeurs">Executeurs: {{ travail.executeurs.join(', ') }}</div>
+            </div>
+            <div class="travail-avancement">
+              <input type="range" min="0" max="100" [(ngModel)]="travail.avancement" (change)="updateTravailAvancement(i, travail.avancement)">
+              <span>{{ travail.avancement }}%</span>
+              <button type="button" class="btn-remove-small" (click)="removeTravail(i)">🗑️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="add-form" *ngIf="showAddTravailForm">
+        <div class="form-group">
+          <label>Tâche</label>
+          <input type="text" [(ngModel)]="newTravail.tache" placeholder="Description de la tâche">
+        </div>
+        <div class="form-group">
+          <label>Executeurs</label>
+          <div class="executeurs-select">
+            <select #execSelect>
+              <option *ngFor="let p of rapport.equipe.pax" [value]="p.nom">{{ p.nom }}</option>
+            </select>
+            <button style="margin-top: 15px;" type="button" class="btn-small btn-validation" (click)="addExecuteur(execSelect.value); execSelect.value=''">Ajouter un exécutant</button>
+          </div>
+          <div class="selected-executeurs">
+            <!-- <span *ngFor="let exec of newTravail.executeurs; let idx = index" class="executeur-tag">
+              {{ exec }}
+              <button type="button" (click)="removeExecuteurByIndex(idx)">×</button>
+            </span> -->
+            <!-- Dans le template -->
+            <span *ngFor="let exec of newTravail.executeurs; let idx = index" 
+                class="executeur-tag" 
+                [class]="getExecuteurClass(exec)">
+            {{ exec }}
+            <button type="button" (click)="removeExecuteurByIndex(idx)">×</button>
+            </span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Avancement (%)</label>
+          <input type="range" min="0" max="100" [(ngModel)]="newTravail.avancement">
+          <span>{{ newTravail.avancement }}%</span>
+        </div>
+        <div class="form-actions-inline">
+          <button type="button" class="btn-small btn-validation" (click)="addTravail()">Ajouter</button>
+          <button type="button" class="btn-small btn-secondaire" (click)="showAddTravailForm = false">Annuler</button>
+        </div>
+      </div>
+
+      <button type="button" class="btn-add" (click)="showAddTravailForm = true" *ngIf="!showAddTravailForm">
+        + Ajouter un travail
+      </button>
+    </div>
+
+    <!-- Section 5: Photos -->
+    <div class="form-section">
+      <h3>📸 Galerie photo</h3>
+      
+      <div class="photos-list">
+        <div *ngFor="let photo of rapport.photos; let i = index" class="photo-item">
+          <img [src]="photo.url || 'assets/placeholder-image.jpg'" [alt]="photo.titre">
+          <div class="photo-info">
+            <span>{{ photo.titre }}</span>
+            <button type="button" class="btn-remove-small" (click)="removePhoto(i)">🗑️</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="add-form" *ngIf="showAddPhotoForm">
+        <div class="form-group">
+          <label>Titre</label>
+          <input type="text" [(ngModel)]="newPhoto.titre" placeholder="Titre de la photo">
+        </div>
+        <div class="form-group">
+          <label>Photo</label>
+          <input type="file" accept="image/*" (change)="onFileSelected($event)">
+        </div>
+        <div class="form-actions-inline">
+          <button type="button" class="btn-small btn-validation" (click)="addPhoto()">Ajouter</button>
+          <button type="button" class="btn-small btn-secondaire" (click)="showAddPhotoForm = false">Annuler</button>
+        </div>
+      </div>
+
+      <button type="button" class="btn-add" (click)="showAddPhotoForm = true" *ngIf="!showAddPhotoForm">
+        + Ajouter une photo
+      </button>
+    </div>
+
+    <!-- Section 6: Logistique -->
+    <div class="form-section">
+      <h3>📦 Logistique & Mobilisation</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Mobilisation</label>
+          <input type="text" [(ngModel)]="rapport.logistique.mobilisation" placeholder="Ex: pendant toute la période">
+        </div>
+        <div class="form-group">
+          <label>Démobilisation</label>
+          <input type="text" [(ngModel)]="rapport.logistique.demobilisation" placeholder="Ex: -">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Personnel mobilisé</label>
+        <div class="tags-input">
+          <div class="tags-list">
+            <span *ngFor="let pers of rapport.logistique.personnel; let i = index" class="tag">
+              {{ pers }}
+              <button type="button" (click)="removePersonnelLogistique(i)">×</button>
+            </span>
+          </div>
+          <div class="tags-add">
+            <input type="text" #newPersonnel (keyup.enter)="addPersonnelLogistique(newPersonnel.value); newPersonnel.value=''" placeholder="Ajouter un nom">
+            <button type="button" (click)="addPersonnelLogistique(newPersonnel.value); newPersonnel.value=''">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Matériel utilisé</label>
+        <div class="tags-input">
+          <div class="tags-list">
+            <span *ngFor="let mat of rapport.logistique.materiel; let i = index" class="tag">
+              {{ mat }}
+              <button type="button" (click)="removeMateriel(i)">×</button>
+            </span>
+          </div>
+          <div class="tags-add">
+            <input type="text" #newMateriel (keyup.enter)="addMateriel(newMateriel.value); newMateriel.value=''" placeholder="Ajouter du matériel">
+            <button type="button" (click)="addMateriel(newMateriel.value); newMateriel.value=''">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 7: Validation -->
+    <div class="form-section">
+      <h3>✅ Validation</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nom du validateur</label>
+          <input type="text" [(ngModel)]="rapport.validation.nom" placeholder="Nom du signataire">
+        </div>
+        <div class="form-group">
+          <label>Fonction</label>
+          <input type="text" [(ngModel)]="rapport.validation.fonction" placeholder="Fonction">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="rapport.validation.signe">
+          <span>Signé</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondaire" (click)="cancel()">Annuler</button>
+      <button type="button" class="btn btn-validation" (click)="saveRapport()" [disabled]="isLoading || !isFormValid()">
+        <span *ngIf="!isLoading">{{ isEditMode ? 'Mettre à jour' : 'Créer le rapport' }}</span>
+        <span *ngIf="isLoading" class="spinner"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+

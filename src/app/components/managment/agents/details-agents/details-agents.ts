@@ -215,6 +215,10 @@ getInductionStatus(employe?: Employes): string {
     this.router.navigate(['/employes/modifier', this.employe.id]);
   }
 
+  viewEmployeeMovements(){
+    this.router.navigate(['/detail-mouvement-personnel', this.employe.id]);
+  }
+
   deleteEmployee() {
     if (!this.isBrowser) return;
     this.alert.confirm(`Supprimer ${this.employe.nom} ${this.employe.prenom} ?`)
