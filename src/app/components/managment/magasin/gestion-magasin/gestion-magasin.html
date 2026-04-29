@@ -1,0 +1,398 @@
+<div class="magasin-container">
+  <!-- En-tête -->
+  <div class="page-header">
+    <div>
+      <h1>🏪 Gestion du magasin</h1>
+      <p>Suivi des stocks, entrées/sorties et locations de matériel</p>
+    </div>
+    <button class="btn btn-validation" (click)="ouvrirMateriel()">
+      <span>➕</span> Nouveau matériel
+    </button>
+  </div>
+
+  <!-- Cartes statistiques -->
+  <div class="stats-cards">
+    <div class="stat-card">
+      <div class="stat-icon materiel">
+        <span>📦</span>
+      </div>
+      <div class="stat-details">
+        <h3>Matériels</h3>
+        <div class="stat-number">{{ stats.totalMateriaux }}</div>
+        <span class="stat-trend">{{ stats.totalMaterielTravail }} outils + {{ stats.totalConsommable }} consommables</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon alerte">
+        <span>⚠️</span>
+      </div>
+      <div class="stat-details">
+        <h3>Alertes stock</h3>
+        <div class="stat-number" [class.alerte]="stats.alertesStock > 0">{{ stats.alertesStock }}</div>
+        <span class="stat-trend">Matériels sous seuil</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon location">
+        <span>🔄</span>
+      </div>
+      <div class="stat-details">
+        <h3>Locations en cours</h3>
+        <div class="stat-number">{{ stats.locationsEncours }}</div>
+        <span class="stat-trend">Matériels empruntés</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon mouvement">
+        <span>📊</span>
+      </div>
+      <div class="stat-details">
+        <h3>Mouvements aujourd'hui</h3>
+        <div class="stat-number">{{ stats.mouvementsJour }}</div>
+        <span class="stat-trend">Entrées / Sorties</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Onglets -->
+  <div class="tabs">
+    <button class="tab" [class.active]="activeTab === 'stock'" (click)="activeTab = 'stock'">
+      📦 Stock
+    </button>
+    <button class="tab" [class.active]="activeTab === 'mouvements'" (click)="activeTab = 'mouvements'">
+      🔄 Mouvements
+    </button>
+    <button class="tab" [class.active]="activeTab === 'locations'" (click)="activeTab = 'locations'">
+      📋 Locations
+    </button>
+  </div>
+
+  <!-- Onglet Stock -->
+  <div class="tab-content" *ngIf="activeTab === 'stock'">
+    <div class="filters-section">
+      <div class="search-box">
+        <input type="text" [(ngModel)]="searchTerm" (input)="applyFilters()" placeholder="🔍 Rechercher par nom, code..." class="search-input">
+      </div>
+      <div class="filter-group">
+        <select [(ngModel)]="selectedCategorie" (change)="applyFilters()" class="filter-select">
+          <option value="">Toutes catégories</option>
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.nom }}</option>
+        </select>
+        <select [(ngModel)]="selectedType" (change)="applyFilters()" class="filter-select">
+          <option value="">Tous types</option>
+          <option value="consommable">Consommable</option>
+          <option value="materiel_travail">Matériel de travail</option>
+          <option value="equipement">Équipement</option>
+          <option value="outillage">Outillage</option>
+        </select>
+        <button class="btn-reset" (click)="resetFilters()">Réinitialiser</button>
+      </div>
+    </div>
+
+    <div class="stock-grid">
+      <div *ngFor="let materiel of materiaux" class="materiel-card">
+        <div class="materiel-header">
+          <div class="materiel-code">{{ materiel.code }}</div>
+          <div class="materiel-actions">
+            <button class="action-icon edit" (click)="ouvrirMateriel(materiel)" title="Modifier">✏️</button>
+            <button class="action-icon delete" (click)="deleteMateriel(materiel.id)" title="Supprimer">🗑️</button>
+          </div>
+        </div>
+        <div class="materiel-body">
+          <h4>{{ materiel.nom }}</h4>
+          <div class="materiel-desc">{{ materiel.description }}</div>
+          <div class="materiel-info">
+            <span class="badge-type" [class]="materiel.type">{{ getTypeLabel(materiel.type) }}</span>
+            <span class="badge-categorie">{{ materiel.categorieNom }}</span>
+          </div>
+          <div class="stock-info">
+            <div class="stock-quantite">
+              <span class="label">Stock:</span>
+              <span class="valeur" [class]="getStockAlertClass(materiel.quantiteStock, materiel.quantiteMinimale)">
+                {{ materiel.quantiteStock }} {{ materiel.unite }}
+              </span>
+            </div>
+            <div class="stock-min">
+              <span class="label">Seuil min:</span>
+              <span>{{ materiel.quantiteMinimale }} {{ materiel.unite }}</span>
+            </div>
+          </div>
+          <div class="materiel-emplacement">
+            📍 {{ materiel.emplacement }}
+          </div>
+        </div>
+        <div class="materiel-footer">
+          <button class="btn-small entree" (click)="ouvrirMouvement('entree', materiel)">📥 Entrée</button>
+          <button class="btn-small sortie" (click)="ouvrirMouvement('sortie', materiel)">📤 Sortie</button>
+          <button class="btn-small location" (click)="ouvrirLocation(materiel)">🔁 Location</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button (click)="currentPage = currentPage - 1; applyFilters()" [disabled]="currentPage === 1">◀ Précédent</button>
+      <span>Page {{ currentPage }} sur {{ totalPages }}</span>
+      <button (click)="currentPage = currentPage + 1; applyFilters()" [disabled]="currentPage === totalPages">Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- Onglet Mouvements -->
+  <div class="tab-content" *ngIf="activeTab === 'mouvements'">
+    <div class="timeline-mouvements">
+      <div *ngFor="let mouvement of mouvements" class="mouvement-item" [class]="getMouvementTypeClass(mouvement.type)">
+        <div class="mouvement-icon">
+          <span *ngIf="mouvement.type === 'entree'">📥</span>
+          <span *ngIf="mouvement.type === 'sortie'">📤</span>
+          <span *ngIf="mouvement.type === 'retour'">🔄</span>
+        </div>
+        <div class="mouvement-content">
+          <div class="mouvement-header">
+            <strong>{{ mouvement.materielNom }}</strong>
+            <span class="mouvement-date">{{ mouvement.date | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="mouvement-body">
+            <div>Quantité: <strong>{{ mouvement.quantite }}</strong></div>
+            <div>Motif: {{ mouvement.motif }}</div>
+            <div *ngIf="mouvement.destination">Destination: {{ mouvement.destination }}</div>
+            <div *ngIf="mouvement.provenance">Provenance: {{ mouvement.provenance }}</div>
+            <div>Utilisateur: {{ mouvement.utilisateur }}</div>
+            <div *ngIf="mouvement.reference">Rèf: {{ mouvement.reference }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Onglet Locations -->
+  <div class="tab-content" *ngIf="activeTab === 'locations'">
+    <div class="locations-list">
+      <div *ngFor="let location of locations" class="location-card" [class]="getStatutClass(location.statut)">
+        <div class="location-header">
+          <div class="location-materiel">
+            <strong>{{ location.materielNom }}</strong>
+            <span class="location-code">{{ location.materielCode }}</span>
+          </div>
+          <div class="location-statut" [class]="getStatutClass(location.statut)">
+            {{ location.statut === 'en_cours' ? 'En cours' : location.statut === 'termine' ? 'Terminé' : 'En retard' }}
+          </div>
+        </div>
+        <div class="location-body">
+          <div class="info-row">
+            <span class="label">Emprunteur:</span>
+            <span>{{ location.emprunteur }} ({{ location.emprunteurContact }})</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Quantité:</span>
+            <span>{{ location.quantite }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Période:</span>
+            <span>du {{ location.dateDebut | date:'dd/MM/yyyy' }} au {{ location.dateFinPrevue | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="info-row" *ngIf="location.dateFinReelle">
+            <span class="label">Retour effectif:</span>
+            <span>{{ location.dateFinReelle | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Motif:</span>
+            <span>{{ location.motif }}</span>
+          </div>
+          <div class="info-row" *ngIf="location.projetNom">
+            <span class="label">Projet:</span>
+            <span>{{ location.projetNom }}</span>
+          </div>
+        </div>
+        <div class="location-footer" *ngIf="location.statut === 'en_cours'">
+          <button class="btn-retour" (click)="retourLocation(location)">✔️ Confirmer retour</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Matériel -->
+<div class="modal" [class.active]="showMaterielModal" (click)="closeModalOnOutside($event)">
+  <div class="modal-content modal-medium">
+    <div class="modal-header">
+      <h3>{{ isEditMode ? 'Modifier le matériel' : 'Nouveau matériel' }}</h3>
+      <button class="close-btn" (click)="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Code *</label>
+        <input type="text" [(ngModel)]="materielForm.code" placeholder="Code unique">
+      </div>
+      <div class="form-group">
+        <label>Nom *</label>
+        <input type="text" [(ngModel)]="materielForm.nom" placeholder="Nom du matériel">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Catégorie *</label>
+          <select [(ngModel)]="materielForm.categorieId">
+            <option value="">Sélectionner</option>
+            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.nom }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Type *</label>
+          <select [(ngModel)]="materielForm.type">
+            <option value="consommable">Consommable</option>
+            <option value="materiel_travail">Matériel de travail</option>
+            <option value="equipement">Équipement</option>
+            <option value="outillage">Outillage</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea rows="3" [(ngModel)]="materielForm.description" placeholder="Description détaillée"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Unité</label>
+          <select [(ngModel)]="materielForm.unite">
+            <option value="pièce">pièce</option>
+            <option value="rouleau">rouleau</option>
+            <option value="mètre">mètre</option>
+            <option value="kg">kg</option>
+            <option value="litre">litre</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Emplacement</label>
+          <input type="text" [(ngModel)]="materielForm.emplacement" placeholder="Ex: Rayon A1">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Quantité initiale</label>
+          <input type="number" [(ngModel)]="materielForm.quantiteStock">
+        </div>
+        <div class="form-group">
+          <label>Seuil d'alerte</label>
+          <input type="number" [(ngModel)]="materielForm.quantiteMinimale">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Fournisseur</label>
+          <select [(ngModel)]="materielForm.fournisseurId">
+            <option value="">Sélectionner</option>
+            <option *ngFor="let four of fournisseurs" [value]="four.id">{{ four.nom }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Prix unitaire (FCFA)</label>
+          <input type="number" [(ngModel)]="materielForm.prixUnitaire">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondaire" (click)="closeModal()">Annuler</button>
+      <button class="btn btn-validation" (click)="saveMateriel()">Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Mouvement -->
+<div class="modal" [class.active]="showMouvementModal" (click)="closeModalOnOutside($event)">
+  <div class="modal-content modal-small">
+    <div class="modal-header">
+      <h3>{{ mouvementForm.type === 'entree' ? '📥 Entrée en stock' : '📤 Sortie de stock' }}</h3>
+      <button class="close-btn" (click)="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Matériel</label>
+        <input type="text" [value]="mouvementForm.materielNom" disabled class="disabled-input">
+      </div>
+      <div class="form-group">
+        <label>Quantité *</label>
+        <input type="number" [(ngModel)]="mouvementForm.quantite" min="1">
+      </div>
+      <div class="form-group">
+        <label>Motif *</label>
+        <input type="text" [(ngModel)]="mouvementForm.motif" placeholder="Raison du mouvement">
+      </div>
+      <div *ngIf="mouvementForm.type === 'sortie'" class="form-group">
+        <label>Destination *</label>
+        <!-- <input type="text" [(ngModel)]="mouvementForm.destination" placeholder="Chantier / Projet"> -->
+        <select name="destination" id="destination" [(ngModel)]="mouvementForm.destination">
+          <option value="">Selectionner une destination</option>
+          <option value="Chantier">Chantier</option>
+          <option value="Projet">Projet</option>
+        </select>
+      </div>
+      <div *ngIf="mouvementForm.type === 'entree'" class="form-group">
+        <label>Provenance</label>
+        <input type="text" [(ngModel)]="mouvementForm.provenance" placeholder="Fournisseur / Source">
+      </div>
+      <div class="form-group">
+        <label>Référence</label>
+        <input type="text" [(ngModel)]="mouvementForm.reference" placeholder="N° Bon de commande / Livraison">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondaire" (click)="closeModal()">Annuler</button>
+      <button class="btn btn-validation" (click)="saveMouvement()">Valider</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Location -->
+<div class="modal" [class.active]="showLocationModal" (click)="closeModalOnOutside($event)">
+  <div class="modal-content modal-medium">
+    <div class="modal-header">
+      <h3>🔁 Location de matériel</h3>
+      <button class="close-btn" (click)="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Matériel</label>
+        <input type="text" [value]="locationForm.materielNom" disabled class="disabled-input">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Quantité *</label>
+          <input type="number" [(ngModel)]="locationForm.quantite" min="1">
+        </div>
+        <div class="form-group">
+          <label>Date fin prévue *</label>
+          <input type="date" [(ngModel)]="locationForm.dateFinPrevue">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Emprunteur *</label>
+          <input type="text" [(ngModel)]="locationForm.emprunteur" placeholder="Nom de l'emprunteur">
+        </div>
+        <div class="form-group">
+          <label>Contact *</label>
+          <input type="text" [(ngModel)]="locationForm.emprunteurContact" placeholder="Téléphone">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Motif *</label>
+        <input type="text" [(ngModel)]="locationForm.motif" placeholder="Raison de la location">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Projet associé</label>
+          <input type="text" [(ngModel)]="locationForm.projetNom" placeholder="Nom du projet">
+        </div>
+        <div class="form-group">
+          <label>Responsable</label>
+          <input type="text" [(ngModel)]="locationForm.responsable" placeholder="Responsable">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondaire" (click)="closeModal()">Annuler</button>
+      <button class="btn btn-validation" (click)="saveLocation()">Valider la location</button>
+    </div>
+  </div>
+</div>

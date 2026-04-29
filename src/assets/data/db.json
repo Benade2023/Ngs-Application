@@ -570,27 +570,52 @@
       "travaux": [
         {
           "tache": "Tirages et raccordement des armoires hydrauliques",
-          "executeurs": ["Toussaint ETOUGUET", "Hermann METHOGUET", "Merlin NGOULOU", "Ange BOUESSA"],
+          "executeurs": [
+            "Toussaint ETOUGUET",
+            "Hermann METHOGUET",
+            "Merlin NGOULOU",
+            "Ange BOUESSA"
+          ],
           "avancement": 80
         },
         {
           "tache": "Pose fixation des CDC pour la descente de liners vers la zone puits",
-          "executeurs": ["Toussaint ETOUGUET", "Hermann METHOGUET", "Merlin NGOULOU", "Ange BOUESSA"],
+          "executeurs": [
+            "Toussaint ETOUGUET",
+            "Hermann METHOGUET",
+            "Merlin NGOULOU",
+            "Ange BOUESSA"
+          ],
           "avancement": 80
         },
         {
           "tache": "Tuyauterie liner du HYSM 01",
-          "executeurs": ["Toussaint ETOUGUET", "Hermann METHOGUET", "Merlin NGOULOU", "Ange BOUESSA"],
+          "executeurs": [
+            "Toussaint ETOUGUET",
+            "Hermann METHOGUET",
+            "Merlin NGOULOU",
+            "Ange BOUESSA"
+          ],
           "avancement": 80
         },
         {
           "tache": "Suite de fermeture de couvercles des CDC",
-          "executeurs": ["Toussaint ETOUGUET", "Hermann METHOGUET", "Merlin NGOULOU", "Ange BOUESSA"],
+          "executeurs": [
+            "Toussaint ETOUGUET",
+            "Hermann METHOGUET",
+            "Merlin NGOULOU",
+            "Ange BOUESSA"
+          ],
           "avancement": 80
         },
         {
           "tache": "Assistance de la sensibilisation sur l'utilisation de défibrillateurs automatisés externes (DAE) et massage cardiaque",
-          "executeurs": ["Toussaint ETOUGUET", "Hermann METHOGUET", "Merlin NGOULOU", "Ange BOUESSA"],
+          "executeurs": [
+            "Toussaint ETOUGUET",
+            "Hermann METHOGUET",
+            "Merlin NGOULOU",
+            "Ange BOUESSA"
+          ],
           "avancement": 100
         }
       ],
@@ -615,8 +640,14 @@
       "logistique": {
         "mobilisation": "pendant toute la période",
         "demobilisation": "-",
-        "personnel": ["Juste GHANDAZ", "Yonel NDOUBANGA"],
-        "materiel": ["Outillage électriques", "Équipements de protection individuelle"]
+        "personnel": [
+          "Juste GHANDAZ",
+          "Yonel NDOUBANGA"
+        ],
+        "materiel": [
+          "Outillage électriques",
+          "Équipements de protection individuelle"
+        ]
       },
       "validation": {
         "nom": "Merlin NGOULOU",
@@ -663,17 +694,26 @@
       "travaux": [
         {
           "tache": "Continuation tirage des câbles instrumentation",
-          "executeurs": ["Ange BOUESSA", "Hermann METHOGUET"],
+          "executeurs": [
+            "Ange BOUESSA",
+            "Hermann METHOGUET"
+          ],
           "avancement": 90
         },
         {
           "tache": "Raccordement des armoires électriques",
-          "executeurs": ["Toussaint ETOUGUET", "Merlin NGOULOU"],
+          "executeurs": [
+            "Toussaint ETOUGUET",
+            "Merlin NGOULOU"
+          ],
           "avancement": 70
         },
         {
           "tache": "Test de continuité des circuits",
-          "executeurs": ["Ange BOUESSA", "Hermann METHOGUET"],
+          "executeurs": [
+            "Ange BOUESSA",
+            "Hermann METHOGUET"
+          ],
           "avancement": 50
         }
       ],
@@ -691,7 +731,10 @@
         "mobilisation": "Toute l'équipe présente",
         "demobilisation": "Aucune",
         "personnel": [],
-        "materiel": ["Multimètres", "Pinces ampèremétriques"]
+        "materiel": [
+          "Multimètres",
+          "Pinces ampèremétriques"
+        ]
       },
       "validation": {
         "nom": "Merlin NGOULOU",
@@ -734,12 +777,19 @@
       "travaux": [
         {
           "tache": "Tirage et crampage de câble HT",
-          "executeurs": ["Bertrand MOUENGUE", "Frank NZAMBA", "Christian OSSA"],
+          "executeurs": [
+            "Bertrand MOUENGUE",
+            "Frank NZAMBA",
+            "Christian OSSA"
+          ],
           "avancement": 60
         },
         {
           "tache": "Installation des supports de câbles",
-          "executeurs": ["Frank NZAMBA", "Loïc MBOUMBA"],
+          "executeurs": [
+            "Frank NZAMBA",
+            "Loïc MBOUMBA"
+          ],
           "avancement": 80
         }
       ],
@@ -753,7 +803,11 @@
         "mobilisation": "Toute la période",
         "demobilisation": "-",
         "personnel": [],
-        "materiel": ["Treuil", "Échelles", "Outillage spécifique HT"]
+        "materiel": [
+          "Treuil",
+          "Échelles",
+          "Outillage spécifique HT"
+        ]
       },
       "validation": {
         "nom": "Bertrand MOUENGUE",
@@ -796,12 +850,20 @@
       "travaux": [
         {
           "tache": "Pose de câble optique",
-          "executeurs": ["J Arnauld NZAMBA MOMBO", "Stéphane MBOULA", "Claude NDONG", "Roland ABESSOLO"],
+          "executeurs": [
+            "J Arnauld NZAMBA MOMBO",
+            "Stéphane MBOULA",
+            "Claude NDONG",
+            "Roland ABESSOLO"
+          ],
           "avancement": 95
         },
         {
           "tache": "Raccordement des boîtiers de jonction",
-          "executeurs": ["J Arnauld NZAMBA MOMBO", "Stéphane MBOULA"],
+          "executeurs": [
+            "J Arnauld NZAMBA MOMBO",
+            "Stéphane MBOULA"
+          ],
           "avancement": 75
         }
       ],
@@ -815,13 +877,190 @@
         "mobilisation": "Toute l'équipe",
         "demobilisation": "-",
         "personnel": [],
-        "materiel": ["Fuseuse optique", "Testeur de continuité"]
+        "materiel": [
+          "Fuseuse optique",
+          "Testeur de continuité"
+        ]
       },
       "validation": {
         "nom": "J Arnauld NZAMBA MOMBO",
         "fonction": "Monteur de lignes",
         "signe": true
       }
+    }
+  ],
+  "categories": [
+    {
+      "id": "CAT-001",
+      "nom": "Câbles",
+      "description": "Câbles électriques"
+    },
+    {
+      "id": "CAT-002",
+      "nom": "Outillage",
+      "description": "Outils électroportatifs"
+    },
+    {
+      "id": "CAT-003",
+      "nom": "Protection",
+      "description": "EPI"
+    },
+    {
+      "id": "CAT-004",
+      "nom": "Consommables",
+      "description": "Consommables divers"
+    }
+  ],
+  "fournisseurs": [
+    {
+      "id": "FOUR-001",
+      "nom": "SOTRAG",
+      "contact": "Jean NDONG",
+      "telephone": "06 12 34 56",
+      "email": "contact@sotrag.com",
+      "adresse": "Libreville"
+    },
+    {
+      "id": "FOUR-002",
+      "nom": "BTP Gabon",
+      "contact": "Pierre MABIALA",
+      "telephone": "06 23 45 67",
+      "email": "contact@btpgabon.com",
+      "adresse": "Port-Gentil"
+    }
+  ],
+  "mouvementsMateriel": [
+    {
+      "id": "MOV-001",
+      "materielId": "MAT-001",
+      "materielCode": "CAB-001",
+      "materielNom": "Câble électrique 2.5mm²",
+      "type": "sortie",
+      "quantite": 2,
+      "date": "2026-04-25",
+      "motif": "Travaux HYLIA SM",
+      "destination": "HYLIA SM",
+      "utilisateur": "Merlin NGOULOU",
+      "projetId": "PROJ-001",
+      "projetNom": "HYLIA SOUTH MARINE"
+    },
+    {
+      "id": "MOV-002",
+      "materielId": "MAT-001",
+      "materielCode": "CAB-001",
+      "materielNom": "Câble électrique 2.5mm²",
+      "type": "entree",
+      "quantite": 10,
+      "date": "2026-04-20",
+      "motif": "Réapprovisionnement",
+      "provenance": "SOTRAG",
+      "utilisateur": "Admin",
+      "reference": "BL-2026-0042"
+    }
+  ],
+  "locations": [
+    {
+      "id": "LOC-001",
+      "materielId": "MAT-003",
+      "materielCode": "OUT-001",
+      "materielNom": "Perforateur",
+      "quantite": 1,
+      "dateDebut": "2026-04-20",
+      "dateFinPrevue": "2026-04-27",
+      "statut": "en_cours",
+      "emprunteur": "Jean Dupont",
+      "emprunteurContact": "06 12 34 56",
+      "projetId": "PROJ-001",
+      "projetNom": "HYLIA SOUTH MARINE",
+      "motif": "Perçage pour tirage câbles",
+      "responsable": "Merlin NGOULOU"
+    }
+  ],
+  "materiels": [
+    {
+      "id": "MAT-001",
+      "code": "CAB-001",
+      "nom": "Câble électrique 2.5mm²",
+      "description": "Câble électrique cuivre 2.5mm² rouleau 100m",
+      "categorieId": "CAT-001",
+      "categorieNom": "Câbles",
+      "type": "materiel_travail",
+      "unite": "rouleau",
+      "quantiteStock": 15,
+      "quantiteMinimale": 5,
+      "emplacement": "Rayon A1",
+      "fournisseurId": "FOUR-001",
+      "prixUnitaire": 85000,
+      "dateAjout": "2025-01-15",
+      "actif": true
+    },
+    {
+      "id": "MAT-002",
+      "code": "CAB-002",
+      "nom": "Câble électrique 4mm²",
+      "description": "Câble électrique cuivre 4mm² rouleau 100m",
+      "categorieId": "CAT-001",
+      "categorieNom": "Câbles",
+      "type": "materiel_travail",
+      "unite": "rouleau",
+      "quantiteStock": 8,
+      "quantiteMinimale": 3,
+      "emplacement": "Rayon A1",
+      "fournisseurId": "FOUR-001",
+      "prixUnitaire": 125000,
+      "dateAjout": "2025-01-15",
+      "actif": true
+    },
+    {
+      "id": "MAT-003",
+      "code": "OUT-001",
+      "nom": "Perforateur",
+      "description": "Perforateur électrique 1500W",
+      "categorieId": "CAT-002",
+      "categorieNom": "Outillage",
+      "type": "equipement",
+      "unite": "pièce",
+      "quantiteStock": 3,
+      "quantiteMinimale": 1,
+      "emplacement": "Rayon B2",
+      "fournisseurId": "FOUR-002",
+      "prixUnitaire": 250000,
+      "dateAjout": "2025-02-10",
+      "actif": true
+    },
+    {
+      "id": "MAT-004",
+      "code": "EPI-001",
+      "nom": "Casque de sécurité",
+      "description": "Casque de sécurité avec jugulaire",
+      "categorieId": "CAT-003",
+      "categorieNom": "Protection",
+      "type": "consommable",
+      "unite": "pièce",
+      "quantiteStock": 25,
+      "quantiteMinimale": 10,
+      "emplacement": "Rayon C1",
+      "fournisseurId": "FOUR-001",
+      "prixUnitaire": 7500,
+      "dateAjout": "2025-03-01",
+      "actif": true
+    },
+    {
+      "id": "MAT-005",
+      "code": "EPI-002",
+      "nom": "Gants de protection",
+      "description": "Gants en cuir renforcé",
+      "categorieId": "CAT-003",
+      "categorieNom": "Protection",
+      "type": "consommable",
+      "unite": "paire",
+      "quantiteStock": 12,
+      "quantiteMinimale": 5,
+      "emplacement": "Rayon C1",
+      "fournisseurId": "FOUR-001",
+      "prixUnitaire": 3500,
+      "dateAjout": "2025-03-01",
+      "actif": true
     }
   ]
 }

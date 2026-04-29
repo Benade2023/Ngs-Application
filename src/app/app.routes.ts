@@ -20,4 +20,6 @@ export const routes: Routes = [
     { path: 'rapports/:projetId', loadComponent: () => import('./components/managment/projets/rapports/list-rapports/list-rapports').then(m => m.ListRapports) },
     { path: 'detail-rapport/:rapportId', loadComponent: () => import('./components/managment/projets/rapports/detail-rapports/detail-rapports').then(m => m.DetailRapports) },
     { path: 'add-rapport/:projetId', loadComponent: () => import('./components/managment/projets/rapports/new-rapport/new-rapport').then(m => m.NewRapport) },
+    //Magasin routes//
+    { path: 'magasin', loadComponent: () => import('./components/managment/magasin/gestion-magasin/gestion-magasin').then(m => m.GestionMagasin) },
 ];
