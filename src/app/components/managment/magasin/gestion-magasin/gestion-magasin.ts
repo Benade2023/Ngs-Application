@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Categorie, Fournisseur, LocationMateriel, Materiel, MouvementStock } from '../../../../core/interfaces/materiel.interface';
 import { Router } from '@angular/router';
 import { MouvementStockService } from '../../../../core/services/gestionStock.service';
+import { AlertService } from '../../../../core/services/alert.service';
 
 @Component({
   selector: 'app-gestion-magasin',
@@ -65,7 +66,8 @@ export class GestionMagasin implements OnInit {
     @Inject(PLATFORM_ID) private platformId: Object,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private mouvementStockService: MouvementStockService
+    private mouvementStockService: MouvementStockService,
+    private alert: AlertService
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
@@ -289,14 +291,25 @@ export class GestionMagasin implements OnInit {
         id: `MAT-${Date.now()}`,
         dateAjout: new Date()
       } as Materiel;
-      this.materiaux.push(newMateriel);
+      // this.materiaux.push(newMateriel);
+      this.mouvementStockService.addMateriel(newMateriel).subscribe({
+        next: (data) => {
+          this.alert.success("Materiel ajouter avec success, 'success'");
+          console.log("Materiel ajouter");
+          this.calculateStats();
+          this.closeModal();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.alert.error("Erreur lors de l'ajout du materiel");
+          console.error("erreur d'ajout");
+
+        }
+      })
     }
 
-    this.calculateStats();
-    this.closeModal();
-    this.cdr.detectChanges();
-  }
 
+  }
   saveMouvement() {
     if (!this.mouvementForm.materielId || !this.mouvementForm.quantite) {
       alert('Veuillez remplir tous les champs obligatoires');
@@ -304,89 +317,268 @@ export class GestionMagasin implements OnInit {
     }
 
     const materiel = this.getMaterielById(this.mouvementForm.materielId);
-    if (materiel) {
-      if (this.mouvementForm.type === 'sortie') {
-        if (materiel.quantiteStock < (this.mouvementForm.quantite || 0)) {
-          alert('Stock insuffisant !');
-          return;
-        }
-        materiel.quantiteStock -= (this.mouvementForm.quantite || 0);
-        materiel.dateDerniereSortie = new Date();
-      } else {
-        materiel.quantiteStock += (this.mouvementForm.quantite || 0);
-        materiel.dateDerniereEntree = new Date();
+    if (!materiel) {
+      alert('Matériel non trouvé');
+      return;
+    }
+
+    // Vérification du stock pour les sorties
+    if (this.mouvementForm.type === 'sortie') {
+      if (materiel.quantiteStock < (this.mouvementForm.quantite || 0)) {
+        alert('Stock insuffisant !');
+        return;
       }
     }
 
-    const newMouvement = {
-      ...this.mouvementForm,
-      id: `MOV-${Date.now()}`,
-      date: new Date()
-    } as MouvementStock;
+    // Mettre à jour le stock du matériel
+    let stockUpdateObservable;
+    if (this.mouvementForm.type === 'sortie') {
+      materiel.quantiteStock -= (this.mouvementForm.quantite || 0);
+      materiel.dateDerniereSortie = new Date();
+    } else {
+      materiel.quantiteStock += (this.mouvementForm.quantite || 0);
+      materiel.dateDerniereEntree = new Date();
+    }
 
-    this.mouvements.unshift(newMouvement);
-    this.calculateStats();
-    this.closeModal();
-    this.cdr.detectChanges();
+    // Sauvegarder d'abord la mise à jour du stock
+    this.mouvementStockService.updateMateriel(materiel.id, materiel).subscribe({
+      next: () => {
+        // Après mise à jour du stock, ajouter le mouvement
+        const newMouvement = {
+          ...this.mouvementForm,
+          id: `MOV-${Date.now()}`,
+          date: new Date()
+        } as MouvementStock;
+
+        this.mouvementStockService.addMouvementStock(newMouvement).subscribe({
+          next: (data) => {
+            this.mouvements.unshift(newMouvement);
+            this.alert.success("Mouvement ajouté avec succès");
+            console.log("Mouvement et stock mis à jour");
+            this.calculateStats();
+            this.closeModal();
+            this.cdr.detectChanges();
+          },
+          error: (err) => {
+            this.alert.error("Erreur lors de l'ajout du mouvement");
+            console.error("erreur d'ajout", err);
+            // Optionnel: restaurer le stock si l'ajout du mouvement échoue
+          }
+        });
+      },
+      error: (err) => {
+        this.alert.error("Erreur lors de la mise à jour du stock");
+        console.error("erreur de mise à jour du stock", err);
+      }
+    });
   }
+
 
   saveLocation() {
-    if (!this.locationForm.materielId || !this.locationForm.emprunteur || !this.locationForm.dateFinPrevue) {
-      alert('Veuillez remplir tous les champs obligatoires');
-      return;
-    }
-
-    const materiel = this.getMaterielById(this.locationForm.materielId);
-    if (materiel && materiel.quantiteStock < (this.locationForm.quantite || 1)) {
-      alert('Stock insuffisant pour la location !');
-      return;
-    }
-
-    if (materiel) {
-      materiel.quantiteStock -= (this.locationForm.quantite || 1);
-    }
-
-    const newLocation = {
-      ...this.locationForm,
-      id: `LOC-${Date.now()}`,
-      dateDebut: new Date(),
-      statut: 'en_cours'
-    } as LocationMateriel;
-
-    this.locations.unshift(newLocation);
-    this.calculateStats();
-    this.closeModal();
-    this.cdr.detectChanges();
+  if (!this.locationForm.materielId || !this.locationForm.emprunteur || !this.locationForm.dateFinPrevue) {
+    this.alert.toast('Veuillez remplir tous les champs obligatoires');
+    return;
   }
+
+  const materiel = this.getMaterielById(this.locationForm.materielId);
+  if (!materiel) {
+    this.alert.error('Matériel non trouvé');
+    return;
+  }
+
+  const quantiteLocation = this.locationForm.quantite || 1;
+  
+  // Vérification du stock
+  if (materiel.quantiteStock < quantiteLocation) {
+    this.alert.error(`Stock insuffisant ! Stock disponible: ${materiel.quantiteStock}`);
+    return;
+  }
+
+  // Sauvegarder l'état original du stock pour restauration possible
+  const stockOriginal = materiel.quantiteStock;
+  
+  // Mettre à jour le stock du matériel
+  materiel.quantiteStock -= quantiteLocation;
+  materiel.dateDerniereSortie = new Date();
+
+  // Sauvegarder d'abord la mise à jour du stock
+  this.mouvementStockService.updateMateriel(materiel.id, materiel).subscribe({
+    next: () => {
+      // Après mise à jour du stock, ajouter la location
+      const newLocation = {
+        ...this.locationForm,
+        id: `LOC-${Date.now()}`,
+        dateDebut: new Date(),
+        statut: 'en_cours'
+      } as LocationMateriel;
+
+      this.mouvementStockService.addLocation(newLocation).subscribe({
+        next: (data) => {
+          this.locations.unshift(newLocation);
+          this.alert.success("Location ajoutée avec succès");
+          console.log("Location et stock mis à jour");
+          this.calculateStats();
+          this.closeModal();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          // Restaurer le stock en cas d'échec
+          materiel.quantiteStock = stockOriginal;
+          this.mouvementStockService.updateMateriel(materiel.id, materiel).subscribe({
+            next: () => {
+              this.alert.error("Erreur lors de l'ajout de la location. Stock restauré.");
+            },
+            error: () => {
+              this.alert.error("Erreur critique : Stock non restauré. Vérifiez manuellement.");
+            }
+          });
+          console.error("Erreur d'ajout de la location", err);
+        }
+      });
+    },
+    error: (err) => {
+      // Restaurer le stock localement car la mise à jour a échoué
+      materiel.quantiteStock = stockOriginal;
+      this.alert.error("Erreur lors de la mise à jour du stock");
+      console.error("Erreur de mise à jour du stock", err);
+    }
+  });
+}
+
+  // saveLocation() {
+  //   if (!this.locationForm.materielId || !this.locationForm.emprunteur || !this.locationForm.dateFinPrevue) {
+  //     alert('Veuillez remplir tous les champs obligatoires');
+  //     return;
+  //   }
+
+  //   const materiel = this.getMaterielById(this.locationForm.materielId);
+  //   if (materiel && materiel.quantiteStock < (this.locationForm.quantite || 1)) {
+  //     alert('Stock insuffisant pour la location !');
+  //     return;
+  //   }
+
+  //   if (materiel) {
+  //     materiel.quantiteStock -= (this.locationForm.quantite || 1);
+  //   }
+
+  //   const newLocation = {
+  //     ...this.locationForm,
+  //     id: `LOC-${Date.now()}`,
+  //     dateDebut: new Date(),
+  //     statut: 'en_cours'
+  //   } as LocationMateriel;
+
+  //   this.mouvementStockService.addLocation(newLocation).subscribe({
+  //     next: (data) => {
+  //       this.locations.unshift(newLocation);
+  //       this.calculateStats();
+  //       this.closeModal();
+  //       this.cdr.detectChanges();
+  //     }
+  //   })
+  // }
 
   retourLocation(location: LocationMateriel) {
-    if (confirm(`Confirmer le retour du matériel "${location.materielNom}" ?`)) {
-      const materiel = this.getMaterielById(location.materielId);
-      if (materiel) {
-        materiel.quantiteStock += location.quantite;
-      }
-
-      location.statut = 'termine';
-      location.dateFinReelle = new Date();
-
-      // Ajouter un mouvement de retour
-      this.mouvements.unshift({
-        id: `MOV-${Date.now()}`,
-        materielId: location.materielId,
-        materielCode: location.materielCode,
-        materielNom: location.materielNom,
-        type: 'retour',
-        quantite: location.quantite,
-        date: new Date(),
-        motif: `Retour de location - ${location.motif}`,
-        destination: 'Magasin',
-        utilisateur: location.responsable
-      });
-
-      this.calculateStats();
-      this.cdr.detectChanges();
+  if (confirm(`Confirmer le retour du matériel "${location.materielNom}" ?`)) {
+    const materiel = this.getMaterielById(location.materielId);
+    if (!materiel) {
+      this.alert.error('Matériel non trouvé');
+      return;
     }
+
+    // Sauvegarder l'état original pour restauration possible
+    const stockOriginal = materiel.quantiteStock;
+    
+    // Mettre à jour le stock localement
+    materiel.quantiteStock += location.quantite;
+    materiel.dateDerniereEntree = new Date();
+
+    // Sauvegarder d'abord la mise à jour du stock
+    this.mouvementStockService.updateMateriel(materiel.id, materiel).subscribe({
+      next: () => {
+        // Après mise à jour du stock, mettre à jour la location
+        location.statut = 'termine';
+        location.dateFinReelle = new Date();
+
+        // Mettre à jour la location dans la base de données
+        this.mouvementStockService.updateLocation(location.id, location).subscribe({
+          next: () => {
+            // Ajouter un mouvement de retour
+            const newMouvement = {
+              id: `MOV-${Date.now()}`,
+              materielId: location.materielId,
+              materielCode: location.materielCode,
+              materielNom: location.materielNom,
+              type: 'retour',
+              quantite: location.quantite,
+              date: new Date(),
+              motif: `Retour de location - ${location.motif}`,
+              destination: 'Magasin',
+              utilisateur: location.responsable
+            } as MouvementStock;
+
+            this.mouvementStockService.addMouvementStock(newMouvement).subscribe({
+              next: () => {
+                this.mouvements.unshift(newMouvement);
+                this.alert.success("Retour de location effectué avec succès");
+                console.log("Retour de location et stock mis à jour");
+                this.calculateStats();
+                this.cdr.detectChanges();
+              },
+              error: (err) => {
+                this.alert.error("Erreur lors de l'ajout du mouvement de retour");
+                console.error("Erreur d'ajout du mouvement", err);
+                // Restaurer le stock si l'ajout du mouvement échoue
+                materiel.quantiteStock = stockOriginal;
+                this.mouvementStockService.updateMateriel(materiel.id, materiel).subscribe();
+              }
+            });
+          },
+          error: (err) => {
+            this.alert.error("Erreur lors de la mise à jour de la location");
+            console.error("Erreur de mise à jour de la location", err);
+            // Restaurer le stock si la mise à jour de la location échoue
+            materiel.quantiteStock = stockOriginal;
+            this.mouvementStockService.updateMateriel(materiel.id, materiel).subscribe();
+          }
+        });
+      },
+      error: (err) => {
+        this.alert.error("Erreur lors de la mise à jour du stock");
+        console.error("Erreur de mise à jour du stock", err);
+      }
+    });
   }
+}
+
+  // retourLocation(location: LocationMateriel) {
+  //   if (confirm(`Confirmer le retour du matériel "${location.materielNom}" ?`)) {
+  //     const materiel = this.getMaterielById(location.materielId);
+  //     if (materiel) {
+  //       materiel.quantiteStock += location.quantite;
+  //     }
+
+  //     location.statut = 'termine';
+  //     location.dateFinReelle = new Date();
+
+  //     // Ajouter un mouvement de retour
+  //     this.mouvements.unshift({
+  //       id: `MOV-${Date.now()}`,
+  //       materielId: location.materielId,
+  //       materielCode: location.materielCode,
+  //       materielNom: location.materielNom,
+  //       type: 'retour',
+  //       quantite: location.quantite,
+  //       date: new Date(),
+  //       motif: `Retour de location - ${location.motif}`,
+  //       destination: 'Magasin',
+  //       utilisateur: location.responsable
+  //     });
+
+  //     this.calculateStats();
+  //     this.cdr.detectChanges();
+  //   }
+  // }
 
   deleteMateriel(id: string) {
     if (confirm('Supprimer ce matériel ?')) {

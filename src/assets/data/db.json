@@ -956,6 +956,83 @@
       "provenance": "SOTRAG",
       "utilisateur": "Admin",
       "reference": "BL-2026-0042"
+    },
+    {
+      "type": "sortie",
+      "materielId": "MAT-001",
+      "materielCode": "CAB-001",
+      "materielNom": "Câble électrique 2.5mm²",
+      "quantite": 2,
+      "date": "2026-04-30T09:12:05.151Z",
+      "utilisateur": "Admin",
+      "motif": "Travaux E&I",
+      "destination": "Chantier",
+      "reference": "Alpha5",
+      "id": "MOV-1777540325151"
+    },
+    {
+      "type": "entree",
+      "materielId": "MAT-001",
+      "materielCode": "CAB-001",
+      "materielNom": "Câble électrique 2.5mm²",
+      "quantite": 3,
+      "date": "2026-04-30T09:14:39.127Z",
+      "utilisateur": "Admin",
+      "motif": "Complement",
+      "provenance": "Source",
+      "reference": "PaBHJ45",
+      "id": "MOV-1777540479127"
+    },
+    {
+      "type": "sortie",
+      "materielId": "MAT-003",
+      "materielCode": "OUT-001",
+      "materielNom": "Perforateur",
+      "quantite": 1,
+      "date": "2026-04-30T09:22:56.566Z",
+      "utilisateur": "Admin",
+      "motif": "Travaux",
+      "destination": "Chantier",
+      "reference": "AZE1245",
+      "id": "MOV-1777540976566"
+    },
+    {
+      "type": "entree",
+      "materielId": "MAT-003",
+      "materielCode": "OUT-001",
+      "materielNom": "Perforateur",
+      "quantite": 5,
+      "date": "2026-04-30T09:23:30.096Z",
+      "utilisateur": "Admin",
+      "motif": "Complement materiel",
+      "provenance": "Source",
+      "reference": "JHIUGUI124685",
+      "id": "MOV-1777541010096"
+    },
+    {
+      "id": "MOV-1777541947250",
+      "materielId": "MAT-003",
+      "materielCode": "OUT-001",
+      "materielNom": "Perforateur",
+      "type": "retour",
+      "quantite": 2,
+      "date": "2026-04-30T09:39:07.250Z",
+      "motif": "Retour de location - Travaux ",
+      "destination": "Magasin",
+      "utilisateur": "Charlie"
+    },
+    {
+      "type": "sortie",
+      "materielId": "MAT-003",
+      "materielCode": "OUT-001",
+      "materielNom": "Perforateur",
+      "quantite": 1,
+      "date": "2026-04-30T09:39:46.047Z",
+      "utilisateur": "Admin",
+      "motif": "AAA",
+      "destination": "Chantier",
+      "reference": "AAAA",
+      "id": "MOV-1777541986047"
     }
   ],
   "locations": [
@@ -974,6 +1051,22 @@
       "projetNom": "HYLIA SOUTH MARINE",
       "motif": "Perçage pour tirage câbles",
       "responsable": "Merlin NGOULOU"
+    },
+    {
+      "materielId": "MAT-003",
+      "materielCode": "OUT-001",
+      "materielNom": "Perforateur",
+      "quantite": 2,
+      "dateDebut": "2026-04-30T09:33:21.970Z",
+      "dateFinPrevue": "2026-05-02",
+      "statut": "termine",
+      "emprunteur": "Benade",
+      "emprunteurContact": "077006031",
+      "motif": "Travaux ",
+      "responsable": "Charlie",
+      "projetNom": "CNSS",
+      "id": "LOC-1777541601970",
+      "dateFinReelle": "2026-04-30T09:39:07.186Z"
     }
   ],
   "materiels": [
@@ -1020,13 +1113,15 @@
       "categorieNom": "Outillage",
       "type": "equipement",
       "unite": "pièce",
-      "quantiteStock": 3,
+      "quantiteStock": 6,
       "quantiteMinimale": 1,
       "emplacement": "Rayon B2",
       "fournisseurId": "FOUR-002",
       "prixUnitaire": 250000,
       "dateAjout": "2025-02-10",
-      "actif": true
+      "actif": true,
+      "dateDerniereSortie": "2026-04-30T09:39:46.019Z",
+      "dateDerniereEntree": "2026-04-30T09:39:07.133Z"
     },
     {
       "id": "MAT-004",
@@ -1061,6 +1156,22 @@
       "prixUnitaire": 3500,
       "dateAjout": "2025-03-01",
       "actif": true
+    },
+    {
+      "code": "MAT-0006",
+      "nom": "Perceuse autonome",
+      "description": "Perceuse autome avec 2 batterie",
+      "categorieId": "CAT-002",
+      "type": "equipement",
+      "unite": "pièce",
+      "quantiteStock": 1,
+      "quantiteMinimale": 2,
+      "emplacement": "Rayon A1",
+      "fournisseurId": "FOUR-002",
+      "prixUnitaire": 268000,
+      "dateAjout": "2026-04-30T08:15:40.294Z",
+      "actif": true,
+      "id": "MAT-1777536940294"
     }
   ]
 }
