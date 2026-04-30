@@ -2,14 +2,17 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { MouvementPersonnel } from "../interfaces/mobDemob.interface";
+import { EnvironmentProduction } from "../../../environment/environment.production";
 
 @Injectable({
     providedIn: 'root'
 })
 export class MouvementService {
-    apiUrl = "http://localhost:3000/mouvements";
+    // apiUrl = "http://localhost:3000/mouvements";
+    apiUrl = EnvironmentProduction.apiUrlExtern + '/mouvements';
 
-    constructor(private http: HttpClient) {}
+
+    constructor(private http: HttpClient) { }
 
     //Get all MouvementPersonneles
     getMouvementPersonnel(): Observable<MouvementPersonnel[]> {
@@ -22,12 +25,12 @@ export class MouvementService {
     }
 
     //get MouvementPersonnele by id//
-  getMouvementPersonnelById(id: string): Observable<MouvementPersonnel>{
-    return this.http.get<MouvementPersonnel>(`${this.apiUrl}/${id}`);
-  }
+    getMouvementPersonnelById(id: string): Observable<MouvementPersonnel> {
+        return this.http.get<MouvementPersonnel>(`${this.apiUrl}/${id}`);
+    }
 
-  //update MouvementPersonnele//
-    updateMouvementPersonnel(id: string, MouvementPersonnele: MouvementPersonnel): Observable<MouvementPersonnel> {  
+    //update MouvementPersonnele//
+    updateMouvementPersonnel(id: string, MouvementPersonnele: MouvementPersonnel): Observable<MouvementPersonnel> {
         return this.http.put<MouvementPersonnel>(`${this.apiUrl}/${id}`, MouvementPersonnele);
     }
 

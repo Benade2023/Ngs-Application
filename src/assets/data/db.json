@@ -397,7 +397,7 @@
       "mobilisation": "2026-04-25T13:17:47.642Z",
       "demobilisation": null,
       "nombreJours": 6,
-      "status": "Sur site",
+      "status": "Démobilisé",
       "dateEstimeDemob": "2026-05-01T00:00:00.000Z",
       "etat": true,
       "activites": "Travaux de conception des boite de jonction FO",
@@ -439,7 +439,7 @@
       "mobilisation": "2026-04-25T13:20:34.231Z",
       "demobilisation": null,
       "nombreJours": 12,
-      "status": "Sur site",
+      "status": "Hors site",
       "dateEstimeDemob": "2026-05-07T00:00:00.000Z",
       "etat": true,
       "activites": "Travaux d'électricité et instrum",
@@ -1033,6 +1033,19 @@
       "destination": "Chantier",
       "reference": "AAAA",
       "id": "MOV-1777541986047"
+    },
+    {
+      "type": "entree",
+      "materielId": "MAT-003",
+      "materielCode": "OUT-001",
+      "materielNom": "Perforateur",
+      "quantite": 2,
+      "date": "2026-04-30T16:59:22.714Z",
+      "utilisateur": "Admin",
+      "motif": "Renforcement du stock",
+      "provenance": "NGS",
+      "reference": "ApjA45",
+      "id": "MOV-1777568362714"
     }
   ],
   "locations": [
@@ -1113,7 +1126,7 @@
       "categorieNom": "Outillage",
       "type": "equipement",
       "unite": "pièce",
-      "quantiteStock": 6,
+      "quantiteStock": 8,
       "quantiteMinimale": 1,
       "emplacement": "Rayon B2",
       "fournisseurId": "FOUR-002",
@@ -1121,7 +1134,7 @@
       "dateAjout": "2025-02-10",
       "actif": true,
       "dateDerniereSortie": "2026-04-30T09:39:46.019Z",
-      "dateDerniereEntree": "2026-04-30T09:39:07.133Z"
+      "dateDerniereEntree": "2026-04-30T16:59:22.446Z"
     },
     {
       "id": "MAT-004",

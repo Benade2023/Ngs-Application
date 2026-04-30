@@ -2,19 +2,26 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Categorie, Fournisseur, LocationMateriel, Materiel, MouvementStock } from "../interfaces/materiel.interface";
+import { EnvironmentProduction } from "../../../environment/environment.production";
 
 @Injectable({
     providedIn: 'root'
 })
 export class MouvementStockService {
-    apiUrlCategorie = "http://localhost:3000/categories";
-    apiUrlFournisseur = "http://localhost:3000/fournisseurs";
-    apiUrlMouvement = "http://localhost:3000/mouvementsMateriel";
-    apiUrlLocation = "http://localhost:3000/locations";
-    apiUrlMateriel = "http://localhost:3000/materiels";
+    // apiUrlCategorie = "http://localhost:3000/categories";
+    apiUrlCategorie = EnvironmentProduction.apiUrlExtern + '/categories';
+    apiUrlFournisseur = EnvironmentProduction.apiUrlExtern + '/fournisseurs';
+    apiUrlMouvement = EnvironmentProduction.apiUrlExtern + '/mouvementsMateriel';
+    apiUrlLocation = EnvironmentProduction.apiUrlExtern + '/locations';
+    apiUrlMateriel = EnvironmentProduction.apiUrlExtern + '/materiels';
+
+    // apiUrlFournisseur = "http://localhost:3000/fournisseurs";
+    // apiUrlMouvement = "http://localhost:3000/mouvementsMateriel";
+    // apiUrlLocation = "http://localhost:3000/locations";
+    // apiUrlMateriel = "http://localhost:3000/materiels";
 
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
     //Get all MouvementStockes
     getMouvementStocks(): Observable<MouvementStock[]> {
@@ -25,11 +32,11 @@ export class MouvementStockService {
         return this.http.post<MouvementStock>(this.apiUrlMouvement, mouvementStock);
     }
     //get stock movement by id//
-    getMouvementStockById(id: string): Observable<MouvementStock>{
+    getMouvementStockById(id: string): Observable<MouvementStock> {
         return this.http.get<MouvementStock>(`${this.apiUrlMouvement}/${id}`);
     }
     //update stock movement//
-    updateMouvementStock(id: string, mouvementStock: MouvementStock): Observable<MouvementStock> {  
+    updateMouvementStock(id: string, mouvementStock: MouvementStock): Observable<MouvementStock> {
         return this.http.put<MouvementStock>(`${this.apiUrlMouvement}/${id}`, mouvementStock);
     }
     //delete stock movement//
@@ -48,12 +55,12 @@ export class MouvementStockService {
     }
 
     //get category by id//
-  getCategoryById(id: string): Observable<Categorie>{
-    return this.http.get<Categorie>(`${this.apiUrlCategorie}/${id}`);
-  }
+    getCategoryById(id: string): Observable<Categorie> {
+        return this.http.get<Categorie>(`${this.apiUrlCategorie}/${id}`);
+    }
 
-  //update Category//
-    updateCategory(id: string, categorie: Categorie): Observable<Categorie> {  
+    //update Category//
+    updateCategory(id: string, categorie: Categorie): Observable<Categorie> {
         return this.http.put<Categorie>(`${this.apiUrlCategorie}/${id}`, categorie);
     }
 
@@ -71,11 +78,11 @@ export class MouvementStockService {
         return this.http.post<Fournisseur>(this.apiUrlFournisseur, fournisseur);
     }
     //get fournisseur by id//
-    getFournisseurById(id: string): Observable<Fournisseur>{
+    getFournisseurById(id: string): Observable<Fournisseur> {
         return this.http.get<Fournisseur>(`${this.apiUrlFournisseur}/${id}`);
     }
     //update fournisseur//
-    updateFournisseur(id: string, fournisseur: Fournisseur): Observable<Fournisseur> {  
+    updateFournisseur(id: string, fournisseur: Fournisseur): Observable<Fournisseur> {
         return this.http.put<Fournisseur>(`${this.apiUrlFournisseur}/${id}`, fournisseur);
     }
     //delete fournisseur//
@@ -92,11 +99,11 @@ export class MouvementStockService {
         return this.http.post<LocationMateriel>(this.apiUrlLocation, location);
     }
     //get location by id//
-    getLocationById(id: string): Observable<LocationMateriel>{
+    getLocationById(id: string): Observable<LocationMateriel> {
         return this.http.get<LocationMateriel>(`${this.apiUrlLocation}/${id}`);
     }
     //update location//
-    updateLocation(id: string, location: LocationMateriel): Observable<LocationMateriel> {  
+    updateLocation(id: string, location: LocationMateriel): Observable<LocationMateriel> {
         return this.http.put<LocationMateriel>(`${this.apiUrlLocation}/${id}`, location);
     }
     //delete location//
@@ -148,11 +155,11 @@ export class MouvementStockService {
         return this.http.post<Materiel>(this.apiUrlMateriel, materiel);
     }
     // get materiel by id//
-    getMaterielById(id: string): Observable<Materiel>{
+    getMaterielById(id: string): Observable<Materiel> {
         return this.http.get<Materiel>(`${this.apiUrlMateriel}/${id}`);
     }
     // update materiel//
-    updateMateriel(id: string, materiel: Materiel): Observable<Materiel> {  
+    updateMateriel(id: string, materiel: Materiel): Observable<Materiel> {
         return this.http.put<Materiel>(`${this.apiUrlMateriel}/${id}`, materiel);
     }
     // delete materiel//
