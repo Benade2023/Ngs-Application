@@ -1,0 +1,2 @@
+Allumage server  http: npx http-server -p 8081
+allumage json-server : npx json-server --watch db.json --host 0.0.0.0 --port 3000 --no-cors

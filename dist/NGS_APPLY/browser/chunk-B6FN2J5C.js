@@ -1,0 +1,1 @@
+import{Db as a,Ya as n,ob as o,pb as m}from"./chunk-T2J4EGTX.js";var d=class t{static \u0275fac=function(e){return new(e||t)};static \u0275cmp=n({type:t,selectors:[["app-add-mouvement"]],decls:2,vars:0,template:function(e,i){e&1&&(o(0,"p"),a(1,"add-mouvement works!"),m())},encapsulation:2})};export{d as AddMouvement};

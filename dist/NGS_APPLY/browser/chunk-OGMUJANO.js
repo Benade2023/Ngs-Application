@@ -1,0 +1,1 @@
+import{Db as n,Ya as s,ob as i,pb as r}from"./chunk-T2J4EGTX.js";var o=class t{static \u0275fac=function(e){return new(e||t)};static \u0275cmp=s({type:t,selectors:[["app-register"]],decls:2,vars:0,template:function(e,p){e&1&&(i(0,"p"),n(1,"register works!"),r())},encapsulation:2})};export{o as Register};
