@@ -50,6 +50,7 @@ export class Dashboard implements OnInit, AfterViewInit {
   currentYear = 0;
   weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
   calendarDays: any[] = [];
+  currentUserConnect: any;
 
   // Données
   departmentStats = [
@@ -86,6 +87,8 @@ export class Dashboard implements OnInit, AfterViewInit {
 
     // Calculer les pourcentages
     this.calculateDepartmentPercentages();
+    this.currentUserConnect = JSON.parse(localStorage.getItem('user_ngs') || '{}');
+    this.userName = this.currentUserConnect.prenom + ' ' + this.currentUserConnect.nom
   }
 
   ngAfterViewInit() {

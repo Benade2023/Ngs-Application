@@ -1,0 +1,631 @@
+.presence-container {
+  padding: 1.5rem;
+  background: var(--gray-100);
+  min-height: 100vh;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.page-header h1 {
+  font-size: 1.8rem;
+  color: var(--gray-800);
+  margin-bottom: 0.25rem;
+}
+
+.page-header p {
+  color: var(--gray-600);
+}
+
+.view-toggle {
+  display: flex;
+  gap: 0.5rem;
+  background: white;
+  border-radius: var(--radius);
+  padding: 0.25rem;
+}
+
+.toggle-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.toggle-btn.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* Date navigation */
+.date-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.nav-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--gray-300);
+  background: white;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.date-display {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.date-display .date {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--gray-800);
+}
+
+.today-btn {
+  padding: 0.25rem 0.75rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+/* Stats cards */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.stat-icon.total { background: rgba(108, 117, 125, 0.1); }
+.stat-icon.present { background: rgba(6, 214, 160, 0.1); }
+.stat-icon.absent { background: rgba(239, 71, 111, 0.1); }
+.stat-icon.retard { background: rgba(255, 209, 102, 0.1); }
+.stat-icon.conge { background: rgba(67, 97, 238, 0.1); }
+.stat-icon.maladie { background: rgba(118, 75, 162, 0.1); }
+
+.stat-details {
+  flex: 1;
+}
+
+.stat-details h3 {
+  font-size: 0.8rem;
+  color: var(--gray-600);
+  margin-bottom: 0.25rem;
+}
+
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--gray-800);
+}
+
+.stat-trend {
+  font-size: 0.7rem;
+  color: var(--gray-500);
+}
+
+/* Filtres */
+.filters-section {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  flex: 1;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius);
+}
+
+.filter-select {
+  padding: 0.75rem;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius);
+  background: white;
+  min-width: 180px;
+}
+
+/* Tableau des présences */
+.presence-table-wrapper {
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  box-shadow: var(--shadow);
+}
+
+.presence-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.presence-table th,
+.presence-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.presence-table th {
+  background: var(--gray-50);
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+.employe-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.employe-avatar {
+  width: 35px;
+  height: 35px;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.statut-select {
+  padding: 0.5rem;
+  border-radius: 20px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.statut-select.status-present { background: rgba(6, 214, 160, 0.2); color: #06d6a0; }
+.statut-select.status-absent { background: rgba(239, 71, 111, 0.2); color: #ef476f; }
+.statut-select.status-retard { background: rgba(255, 209, 102, 0.2); color: #ffd166; }
+.statut-select.status-congé { background: rgba(67, 97, 238, 0.2); color: #4361ee; }
+.statut-select.status-maladie { background: rgba(118, 75, 162, 0.2); color: #764ba2; }
+
+.heure-input, .motif-input {
+  padding: 0.5rem;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  width: 100px;
+}
+
+.motif-input {
+  width: 150px;
+}
+
+/* Boutons action */
+.action-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-validation {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* Rapport mensuel */
+.rapport-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.rapport-header h2 {
+  margin: 0;
+}
+
+.rapport-controls {
+  display: flex;
+  gap: 1rem;
+}
+
+.rapport-controls select {
+  padding: 0.5rem;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius);
+}
+
+.btn-excel {
+  padding: 0.5rem 1rem;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.rapport-table-wrapper {
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  box-shadow: var(--shadow);
+}
+
+.rapport-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.rapport-table th,
+.rapport-table td {
+  padding: 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.rapport-table th {
+  background: var(--gray-50);
+  font-weight: 600;
+}
+
+.text-success { color: #06d6a0; font-weight: bold; }
+.text-danger { color: #ef476f; font-weight: bold; }
+.text-warning { color: #ffd166; font-weight: bold; }
+.text-info { color: #4361ee; font-weight: bold; }
+.text-purple { color: #764ba2; font-weight: bold; }
+
+.taux-cell {
+  position: relative;
+  width: 80px;
+  display: inline-block;
+}
+
+.taux-barre {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: rgba(6, 214, 160, 0.2);
+  border-radius: 4px;
+  z-index: 0;
+}
+
+/* Suite du CSS pour presence-employe.component.css */
+
+.taux-cell span {
+  position: relative;
+  z-index: 1;
+  font-weight: bold;
+}
+
+/* Spinner */
+.spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .stats-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .presence-container {
+    padding: 1rem;
+  }
+
+  .stats-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .date-navigation {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .nav-btn {
+    width: 100%;
+  }
+
+  .date-display {
+    order: -1;
+    justify-content: center;
+  }
+
+  .filters-section {
+    flex-direction: column;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
+
+  .rapport-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .rapport-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .action-buttons button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .view-toggle {
+    width: 100%;
+  }
+
+  .toggle-btn {
+    flex: 1;
+    text-align: center;
+  }
+
+  .employe-info {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .statut-select, .heure-input, .motif-input {
+    width: 100%;
+  }
+
+  .rapport-controls {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .rapport-controls select, .btn-excel {
+    width: 100%;
+  }
+}
+
+/* Tooltip */
+[data-tooltip] {
+  position: relative;
+  cursor: help;
+}
+
+[data-tooltip]:before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem;
+  background: var(--gray-800);
+  color: white;
+  font-size: 0.7rem;
+  border-radius: var(--radius);
+  white-space: nowrap;
+  display: none;
+  z-index: 1000;
+}
+
+[data-tooltip]:hover:before {
+  display: block;
+}
+
+/* Animation de chargement */
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.loading-row {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Badge pour les retards */
+.retard-badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  background: rgba(255, 209, 102, 0.2);
+  color: #ffd166;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+/* Message vide */
+.empty-message {
+  text-align: center;
+  padding: 3rem;
+  color: var(--gray-500);
+}
+
+.empty-message span {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+/* Légende des statuts */
+.legend {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: var(--radius);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-color.present { background: #06d6a0; }
+.legend-color.absent { background: #ef476f; }
+.legend-color.retard { background: #ffd166; }
+.legend-color.conge { background: #4361ee; }
+.legend-color.maladie { background: #764ba2; }
+
+/* Impression */
+@media print {
+  .page-header .header-actions,
+  .date-navigation,
+  .filters-section,
+  .action-buttons,
+  .rapport-controls,
+  .btn-excel {
+    display: none;
+  }
+
+  .presence-container {
+    padding: 0;
+    background: white;
+  }
+
+  .presence-table,
+  .rapport-table {
+    font-size: 10pt;
+  }
+
+  .statut-select,
+  .heure-input,
+  .motif-input {
+    border: none;
+    background: transparent;
+  }
+
+  .stats-cards {
+    break-inside: avoid;
+  }
+}
+
+/* Scrollbar personnalisée */
+.presence-table-wrapper::-webkit-scrollbar,
+.rapport-table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.presence-table-wrapper::-webkit-scrollbar-track,
+.rapport-table-wrapper::-webkit-scrollbar-track {
+  background: var(--gray-100);
+  border-radius: 4px;
+}
+
+.presence-table-wrapper::-webkit-scrollbar-thumb,
+.rapport-table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--gray-400);
+  border-radius: 4px;
+}
+
+.presence-table-wrapper::-webkit-scrollbar-thumb:hover,
+.rapport-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-500);
+}
+
+/* Focus states */
+input:focus, select:focus, button:focus {
+  outline: none;
+  ring: 2px solid var(--primary-color);
+  ring-offset: 2px;
+}
+
+/* Disabled states */
+input:disabled, select:disabled {
+  background-color: var(--gray-100);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Hover effects */
+tr:hover {
+  background-color: var(--gray-50);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn:active {
+  transform: translateY(0);
+}

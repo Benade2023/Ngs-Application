@@ -48,13 +48,21 @@
             <label for="adresse">Adresse</label>
             <textarea id="adresse" name="adresse" rows="2" [(ngModel)]="employee.adresse"></textarea>
           </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
+              <div class="form-group">
             <label for="cni">CNI / NINA *</label>
             <input type="text" id="cni" name="cni" [(ngModel)]="employee.cni" #cni="ngModel" required>
             <div class="invalid-feedback" *ngIf="cni.invalid && cni.touched">Le CNI est requis</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+        <div class="form-group">
+            <label for="sexe">Sexe *</label>
+            <select id="sexe" name="sexe" [(ngModel)]="employee.sexe" required>
+              <option value="">Sélectionner</option>
+              <option value="M">Masculin</option>
+              <option value="F">Féminin</option>
+            </select>
           </div>
 
           <div class="form-group">
@@ -64,16 +72,9 @@
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="sexe">Sexe *</label>
-            <select id="sexe" name="sexe" [(ngModel)]="employee.sexe" required>
-              <option value="">Sélectionner</option>
-              <option value="M">Masculin</option>
-              <option value="F">Féminin</option>
-            </select>
-          </div>
-        </div>
+        <!-- <div class="form-row">
+        
+        </div> -->
       </div>
 
       <!-- Section 2: Informations professionnelles -->
@@ -83,19 +84,33 @@
         <div class="form-row">
           <div class="form-group">
             <label for="fonction">Fonction *</label>
-            <input type="text" id="fonction" name="fonction" [(ngModel)]="employee.fonction" required>
+            <!-- <input type="text" id="fonction" name="fonction" [(ngModel)]="employee.fonction" required> -->
+          <select id="fonction" name="fonction" [(ngModel)]="employee.fonction" required>
+              <option value="">Sélectionner</option>
+              <option value="Directeur Général">Directeur Général</option>
+              <option value="Manager">Manager</option>
+              <option value="Chargé d'affaires">Chargé d'affaires</option>
+              <option value="Magasinier">Magasinier</option>
+              <option value="Assistant Technique">Assistant Technique</option>
+              <option value="Electricien HT">Electricien HT</option>
+              <option value="Elec - Instrun">Elec - Instrun</option>
+              <option value="Instrumentiste">Instrumentiste</option>
+              <option value="HTM">HTM</option>
+              <option value="Soudeur">Soudeur</option>
+            </select>
+          
           </div>
 
           <div class="form-group">
             <label for="service">Service *</label>
             <select id="service" name="service" [(ngModel)]="employee.service" required>
               <option value="">Sélectionner un service</option>
-              <option value="Développement">Développement</option>
+              <option value="Direction">Direction</option>
               <option value="Marketing">Marketing</option>
               <option value="RH">Ressources Humaines</option>
               <option value="Finance">Finance</option>
               <option value="Commercial">Commercial</option>
-              <option value="Direction">Direction</option>
+              <option value="Exploitation">Exploitation</option>
             </select>
           </div>
         </div>

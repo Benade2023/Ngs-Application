@@ -24,4 +24,6 @@ export const routes: Routes = [
     { path: 'add-rapport/:projetId', loadComponent: () => import('./components/managment/projets/rapports/new-rapport/new-rapport').then(m => m.NewRapport) },
     //Magasin routes//
     { path: 'magasin', loadComponent: () => import('./components/managment/magasin/gestion-magasin/gestion-magasin').then(m => m.GestionMagasin) },
+    //Presence-Absence//
+    { path: 'presence-control', loadComponent: () => import('./components/managment/presence-absence/presence-absence').then(m => m.PresenceAbsence) }
 ];

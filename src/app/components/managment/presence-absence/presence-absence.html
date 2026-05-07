@@ -1,0 +1,195 @@
+<div class="presence-container">
+  <!-- En-tête -->
+  <div class="page-header">
+    <div>
+      <h1>📋 Gestion des présences</h1>
+      <p>Suivi journalier des présences et absences</p>
+    </div>
+    <div class="header-actions">
+      <div class="view-toggle">
+        <button class="toggle-btn" [class.active]="vueActuelle === 'journalier'" (click)="vueActuelle = 'journalier'">
+          📅 Journalier
+        </button>
+        <button class="toggle-btn" [class.active]="vueActuelle === 'mensuel'" (click)="genererRapportMensuel()">
+          📊 Rapport mensuel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vue Journalière -->
+  <div class="vue-journalier" *ngIf="vueActuelle === 'journalier'">
+    <!-- Sélecteur de date -->
+    <div class="date-navigation">
+      <button class="nav-btn" (click)="changeJournee('prev')">◀ Jour précédent</button>
+      <div class="date-display">
+        <span class="date">{{ formatDateFr(dateSelectionnee) }}</span>
+        <button class="today-btn" (click)="changeJournee('today')">Aujourd'hui</button>
+      </div>
+      <button class="nav-btn" (click)="changeJournee('next')">Jour suivant ▶</button>
+    </div>
+
+    <!-- Cartes statistiques -->
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-icon total">👥</div>
+        <div class="stat-details">
+          <h3>Total employés</h3>
+          <div class="stat-number">{{ stats.total }}</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon present">✅</div>
+        <div class="stat-details">
+          <h3>Présents</h3>
+          <div class="stat-number">{{ stats.presents }}</div>
+          <span class="stat-trend">{{ stats.tauxPresence }}%</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon absent">❌</div>
+        <div class="stat-details">
+          <h3>Absents</h3>
+          <div class="stat-number">{{ stats.absents }}</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon retard">⏰</div>
+        <div class="stat-details">
+          <h3>Retards</h3>
+          <div class="stat-number">{{ stats.retards }}</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon conge">🏖️</div>
+        <div class="stat-details">
+          <h3>Congés</h3>
+          <div class="stat-number">{{ stats.conges }}</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon maladie">🤒</div>
+        <div class="stat-details">
+          <h3>Maladies</h3>
+          <div class="stat-number">{{ stats.malades }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="filters-section">
+      <div class="search-box">
+        <input type="text" [(ngModel)]="searchTerm" (input)="onSearchChange()" placeholder="🔍 Rechercher un employé...">
+      </div>
+      <select [(ngModel)]="selectedService" (change)="onSearchChange()" class="filter-select">
+        <option value="">Tous les services</option>
+        <option *ngFor="let service of services" [value]="service">{{ service }}</option>
+      </select>
+    </div>
+
+    <!-- Tableau des présences -->
+    <div class="presence-table-wrapper">
+      <table class="presence-table">
+        <thead>
+          <tr>
+            <th>Employé</th>
+            <th>Fonction</th>
+            <th>Service</th>
+            <th>Statut</th>
+            <th>Heure arrivée</th>
+            <th>Heure départ</th>
+            <th>Motif (si absent)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let employe of getFilteredEmployes()">
+            <td class="employe-info">
+              <div class="employe-avatar">{{ employe.prenom.charAt(0) }}{{ employe.nom.charAt(0) }}</div>
+              <div>{{ employe.nom }} {{ employe.prenom }}</div>
+            </td>
+            <td>{{ employe.fonction }}</td>
+            <td>{{ employe.service }}</td>
+            <td>
+              <select [ngModel]="presenceDuJour[employe.id]?.statut" (ngModelChange)="onStatutChange(employe.id, $event)" class="statut-select" [class]="getStatutClass(presenceDuJour[employe.id].statut)">
+                <option value="present">✅ Présent</option>
+                <option value="absent">❌ Absent</option>
+                <option value="retard">⏰ Retard</option>
+                <option value="congé">🏖️ Congé</option>
+                <option value="maladie">🤒 Maladie</option>
+              </select>
+            </td>
+            <td>
+              <input type="time" [ngModel]="heureArrivee[employe.id]" (ngModelChange)="onHeureArriveeChange(employe.id, $event)" class="heure-input" [disabled]="presenceDuJour[employe.id]?.statut === 'absent'">
+            </td>
+            <td>
+              <input type="time" [ngModel]="heureDepart[employe.id]" (ngModelChange)="onHeureDepartChange(employe.id, $event)" class="heure-input" [disabled]="presenceDuJour[employe.id]?.statut === 'absent'">
+            </td>
+            <td>
+              <input type="text" [ngModel]="motifAbsence[employe.id]" (ngModelChange)="onMotifChange(employe.id, $event)" class="motif-input" placeholder="Motif..." [required]="presenceDuJour[employe.id]?.statut === 'absent'">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="action-buttons">
+      <button class="btn btn-validation" (click)="sauvegarderPresences()" [disabled]="isLoading">
+        <span *ngIf="!isLoading">💾 Sauvegarder les présences</span>
+        <span *ngIf="isLoading" class="spinner"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Vue Mensuelle -->
+  <div class="vue-mensuel" *ngIf="vueActuelle === 'mensuel'">
+    <div class="rapport-header">
+      <h2>Rapport mensuel des présences</h2>
+      <div class="rapport-controls">
+        <select [(ngModel)]="moisSelectionne" (change)="genererRapportMensuel()">
+          <option *ngFor="let m of [0,1,2,3,4,5,6,7,8,9,10,11]" [value]="m">{{ getMoisNom(m) }}</option>
+        </select>
+        <select [(ngModel)]="anneeSelectionnee" (change)="genererRapportMensuel()">
+          <option *ngFor="let a of [2023,2024,2025,2026]" [value]="a">{{ a }}</option>
+        </select>
+        <button class="btn-excel" (click)="exporterRapport()">📊 Exporter Excel</button>
+      </div>
+    </div>
+
+    <div class="rapport-table-wrapper">
+      <table class="rapport-table">
+        <thead>
+          <tr>
+            <th>Employé</th>
+            <th>Fonction</th>
+            <th>Service</th>
+            <th>Présents</th>
+            <th>Absents</th>
+            <th>Retards</th>
+            <th>Congés</th>
+            <th>Maladies</th>
+            <th>Taux</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of rapportMensuel">
+            <td>{{ r.nom }}</td>
+            <td>{{ r.fonction }}</td>
+            <td>{{ r.service }}</td>
+            <td class="text-success">{{ r.totalPresents }}</td>
+            <td class="text-danger">{{ r.totalAbsents }}</td>
+            <td class="text-warning">{{ r.totalRetards }}</td>
+            <td class="text-info">{{ r.totalConges }}</td>
+            <td class="text-purple">{{ r.totalMaladies }}</td>
+            <td>
+              <div class="taux-cell">
+                <div class="taux-barre" [style.width.%]="r.tauxPresence"></div>
+                <span>{{ r.tauxPresence }}%</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -496,7 +496,7 @@
 
 .modal-content {
   background: white;
-  border-radius: var(--radius-lg);
+  /* border-radius: var(--radius-lg); */
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
@@ -565,7 +565,8 @@
   justify-content: flex-end;
   gap: 1rem;
   padding: 1rem 1.5rem;
-  background: var(--gray-50);
+  background: white;
+  /* background: var(--gray-50); */
   border-top: 1px solid var(--gray-200);
   position: sticky;
   bottom: 0;

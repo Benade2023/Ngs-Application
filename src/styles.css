@@ -2674,3 +2674,31 @@ tbody tr:hover {
     padding: 1rem;
   }
 }
+
+
+/* // ============ SCROLLBAR STYLES ============ */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #764ba2;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+
+    &:hover {
+        background-color: #0041a3;
+    }
+}
+
+/* // Firefox scrollbar */
+* {
+    scrollbar-color: #764ba2 transparent;
+    scrollbar-width: thin;
+}
