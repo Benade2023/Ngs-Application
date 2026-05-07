@@ -1,1 +1,0 @@
-import{Db as r,Ya as a,ob as p,pb as o}from"./chunk-T2J4EGTX.js";var s=class e{static \u0275fac=function(t){return new(t||e)};static \u0275cmp=a({type:e,selectors:[["app-detail-rapports"]],decls:2,vars:0,template:function(t,i){t&1&&(p(0,"p"),r(1,"detail-rapports works!"),o())},encapsulation:2})};export{s as DetailRapports};

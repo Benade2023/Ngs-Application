@@ -17,34 +17,38 @@ export class Header implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
   private isBrowser: boolean;
 
+  currentUserConnect = JSON.parse(localStorage.getItem('user_ngs') || '{}');
+
   currentUser = {
-  name: 'Benade Lessaya',
-  role: 'Chargé d\'affaires',
-  photo: 'assets/images/Benade01.png' // ou null
-};
+    name: this.currentUserConnect.prenom + ' ' + this.currentUserConnect.nom,
+    role: this.currentUserConnect.fonction,
+    photo: 'assets/images/icon-512x512.png' // ou null
+  };
 
-showNotifications = false;
+  showNotifications = false;
+  isConnect: boolean = false;
 
-notifications = [
-  { message: 'Nouvel employé ajouté', time: 'Il y a 2 min' },
-  { message: 'Document validé', time: 'Il y a 10 min' },
-  { message: 'Mise à jour du profil', time: 'Il y a 1h' }
-];
+  notifications = [
+    { message: 'Nouvel employé ajouté', time: 'Il y a 2 min' },
+    { message: 'Document validé', time: 'Il y a 10 min' },
+    { message: 'Mise à jour du profil', time: 'Il y a 1h' }
+  ];
 
-toggleNotifications() {
-  this.showNotifications = !this.showNotifications;
-}
 
-showUserMenu = false;
+  toggleNotifications() {
+    this.showNotifications = !this.showNotifications;
+  }
 
-toggleUserMenu() {
-  this.showUserMenu = !this.showUserMenu;
-}
+  showUserMenu = false;
+
+  toggleUserMenu() {
+    this.showUserMenu = !this.showUserMenu;
+  }
 
   constructor(
     private sidebarService: SidebarService,
     private router: Router,
-     @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
@@ -57,33 +61,50 @@ toggleUserMenu() {
         this.updateBodyScroll(state);
       }
     );
+    // console.log(this.currentUserConnect);
+
+    this.currentUserConnect = JSON.parse(
+      localStorage.getItem('user_ngs') || '{}'
+    );
+
+    if (Object.keys(this.currentUserConnect).length > 0) {
+      this.isConnect = true;
+    } else {
+      this.isConnect = false
+    }
+
+    // this.isConnect =
+    //   this.currentUserConnect &&
+    //   Object.keys(this.currentUserConnect).length > 0;
   }
 
   goToProfile() {
+    this.showUserMenu = false;
+    this.router.navigate(['/profile']);
+  }
+
+  goToSettings() {
+    this.showUserMenu = false;
+    this.router.navigate(['/settings']);
+  }
+
+ logout() {
   this.showUserMenu = false;
-  this.router.navigate(['/profile']);
-}
 
-goToSettings() {
-  this.showUserMenu = false;
-  this.router.navigate(['/settings']);
-}
+  localStorage.removeItem('user_ngs');
+  localStorage.removeItem('access_token');
 
-logout() {
-  this.showUserMenu = false;
-
-  // Exemple simple
-  localStorage.removeItem('token');
-
-  this.router.navigate(['/login']);
+  this.router.navigate(['/login']).then(() => {
+    window.location.reload();
+  });
 }
 
 
   toggleSidebar() {
-  if (window.innerWidth <= 768) {
-    this.sidebarService.toggleSidebar();
-  } 
-}
+    if (window.innerWidth <= 768) {
+      this.sidebarService.toggleSidebar();
+    }
+  }
 
   private updateBodyScroll(isOpen: boolean) {
     // Vérification cruciale pour SSR
@@ -100,7 +121,7 @@ logout() {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
-     // Nettoyage côté client uniquement
+    // Nettoyage côté client uniquement
     if (this.isBrowser) {
       document.body.style.overflow = '';
     }

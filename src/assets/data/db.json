@@ -70,6 +70,7 @@
       "nom": "LESSAYA",
       "prenom": "Benade",
       "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
       "telephone": "077006031",
       "adresse": "aucune",
       "cni": "3",
@@ -720,5 +721,103 @@
   ],
   "mouvementsMateriel": [],
   "locations": [],
-  "materiels": []
+  "materiels": [],
+  "login": [
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-07",
+      "id": 1
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-07",
+      "id": 2
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-07",
+      "id": 3
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-07",
+      "id": 4
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-07",
+      "id": 5
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-07",
+      "id": 6
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-07",
+      "id": 7
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-07",
+      "id": 8
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-07",
+      "id": 9
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-07",
+      "id": 10
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-07",
+      "id": 11
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-07",
+      "id": 12
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-07",
+      "id": 13
+    },
+    {
+      "email": "projets@ngservices.info",
+      "password": "sdfgsdf",
+      "date": "2026-05-07",
+      "id": 14
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "ergegegeg",
+      "date": "2026-05-07",
+      "id": 15
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-07",
+      "id": 16
+    }
+  ]
 }

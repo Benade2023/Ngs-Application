@@ -1,0 +1,205 @@
+<div class="contact-container">
+  <div class="contact-wrapper">
+    <!-- Carte de contact -->
+    <div class="contact-card">
+      <div class="contact-header">
+        <div class="icon-circle">
+          <span class="support-icon">💬</span>
+        </div>
+        <h2>Contacter l'administrateur</h2>
+        <p>Une question ? Un problème ? N'hésitez pas à nous contacter</p>
+      </div>
+
+      <!-- Message de succès -->
+      <div class="alert alert-success" *ngIf="isSuccess">
+        <span class="success-icon">✓</span>
+        <div class="alert-content">
+          <strong>Message envoyé !</strong>
+          <p>Votre message a été envoyé avec succès. L'administrateur vous répondra dans les plus brefs délais.</p>
+        </div>
+      </div>
+
+      <div class="contact-grid">
+        <!-- Formulaire de contact -->
+        <div class="contact-form-container">
+          <form (ngSubmit)="onSubmit()" [formGroup]="contactForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="nom">Nom complet *</label>
+                <div class="input-icon">
+                  <span class="icon">👤</span>
+                  <input 
+                    type="text" 
+                    id="nom" 
+                    formControlName="nom"
+                    placeholder="Votre nom et prénom"
+                    [class.is-invalid]="contactForm.get('nom')?.invalid && contactForm.get('nom')?.touched">
+                </div>
+                <div class="invalid-feedback" *ngIf="contactForm.get('nom')?.invalid && contactForm.get('nom')?.touched">
+                  <span *ngIf="contactForm.get('nom')?.errors?.['required']">Le nom est requis</span>
+                  <span *ngIf="contactForm.get('nom')?.errors?.['minlength']">Minimum 2 caractères</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email *</label>
+                <div class="input-icon">
+                  <span class="icon">✉️</span>
+                  <input 
+                    type="email" 
+                    id="email" 
+                    formControlName="email"
+                    placeholder="votre@email.com"
+                    [class.is-invalid]="contactForm.get('email')?.invalid && contactForm.get('email')?.touched">
+                </div>
+                <div class="invalid-feedback" *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched">
+                  <span *ngIf="contactForm.get('email')?.errors?.['required']">L'email est requis</span>
+                  <span *ngIf="contactForm.get('email')?.errors?.['email']">Email invalide</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="telephone">Téléphone</label>
+                <div class="input-icon">
+                  <span class="icon">📞</span>
+                  <input 
+                    type="tel" 
+                    id="telephone" 
+                    formControlName="telephone"
+                    placeholder="(+241) 01 23 45 67"
+                    [class.is-invalid]="contactForm.get('telephone')?.invalid && contactForm.get('telephone')?.touched">
+                </div>
+                <div class="invalid-feedback" *ngIf="contactForm.get('telephone')?.invalid && contactForm.get('telephone')?.touched">
+                    Format invalide (9-12 chiffres)
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="sujet">Sujet *</label>
+                <div class="input-icon">
+                  <span class="icon">📝</span>
+                  <input 
+                    type="text" 
+                    id="sujet" 
+                    formControlName="sujet"
+                    placeholder="Objet de votre message"
+                    [class.is-invalid]="contactForm.get('sujet')?.invalid && contactForm.get('sujet')?.touched">
+                </div>
+                <div class="invalid-feedback" *ngIf="contactForm.get('sujet')?.invalid && contactForm.get('sujet')?.touched">
+                  <span *ngIf="contactForm.get('sujet')?.errors?.['required']">Le sujet est requis</span>
+                  <span *ngIf="contactForm.get('sujet')?.errors?.['minlength']">Minimum 5 caractères</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="message">Message *</label>
+              <div class="textarea-icon">
+                <span class="icon">💬</span>
+                <textarea 
+                  id="message" 
+                  formControlName="message"
+                  rows="5"
+                  placeholder="Décrivez votre demande ou problème en détail..."
+                  [class.is-invalid]="contactForm.get('message')?.invalid && contactForm.get('message')?.touched"></textarea>
+              </div>
+              <div class="invalid-feedback" *ngIf="contactForm.get('message')?.invalid && contactForm.get('message')?.touched">
+                <span *ngIf="contactForm.get('message')?.errors?.['required']">Le message est requis</span>
+                <span *ngIf="contactForm.get('message')?.errors?.['minlength']">Minimum 10 caractères</span>
+              </div>
+            </div>
+
+            <div class="form-group checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" formControlName="urgent">
+                <span>⚠️ Ce message est urgent</span>
+              </label>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondaire" (click)="goBack()">
+                Annuler
+              </button>
+              <button type="submit" class="btn btn-validation" [disabled]="isLoading">
+                <span *ngIf="!isLoading">Envoyer le message</span>
+                <span *ngIf="isLoading" class="spinner"></span>
+                <span *ngIf="isLoading" style="margin-left: 0.5rem;">Envoi en cours...</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Informations de contact -->
+        <div class="contact-info-container">
+          <div class="info-card">
+            <h3>📞 Informations de contact</h3>
+            
+            <div class="info-item">
+              <div class="info-icon">👨‍💼</div>
+              <div class="info-details">
+                <div class="info-label">Administrateur</div>
+                <div class="info-value">{{ adminInfo.nom }}</div>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-icon">✉️</div>
+              <div class="info-details">
+                <div class="info-label">Email</div>
+                <div class="info-value">{{ adminInfo.email }}</div>
+                <a [href]="'mailto:' + adminInfo.email" class="info-action">Envoyer un email</a>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-icon">📞</div>
+              <div class="info-details">
+                <div class="info-label">Téléphone</div>
+                <div class="info-value">{{ adminInfo.telephone }}</div>
+                <a [href]="'tel:' + adminInfo.telephone" class="info-action">Appeler</a>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-icon">⏰</div>
+              <div class="info-details">
+                <div class="info-label">Horaires</div>
+                <div class="info-value">{{ adminInfo.horaires }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h3>💡 Avant de contacter</h3>
+            <ul class="tips-list">
+              <li>📖 Consultez la documentation</li>
+              <li>🔍 Vérifiez la FAQ</li>
+              <li>👥 Contactez votre superviseur</li>
+              <li>📧 Utilisez votre email professionnel</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h3>⏱️ Délais de réponse</h3>
+            <div class="response-time">
+              <div class="time-item">
+                <span class="time-badge urgent">Urgent</span>
+                <span>&lt; 2 heures</span>
+              </div>
+              <div class="time-item">
+                <span class="time-badge normal">Normal</span>
+                <span>&lt; 24 heures</span>
+              </div>
+              <div class="time-item">
+                <span class="time-badge week-end">Week-end</span>
+                <span>Lundi suivant</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

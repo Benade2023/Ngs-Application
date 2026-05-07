@@ -75,6 +75,36 @@ export class AddAgents implements OnInit {
     return id;
   }
 
+   generatePassword(length: number = 12): string {
+    const upperCase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowerCase = 'abcdefghijklmnopqrstuvwxyz';
+    const numbers = '0123456789';
+    const symbols = '@$!%*?&';
+
+    const allChars = upperCase + lowerCase + numbers + symbols;
+
+    let password = '';
+
+    // Garantit au moins un caractère de chaque type
+    password += upperCase[Math.floor(Math.random() * upperCase.length)];
+    password += lowerCase[Math.floor(Math.random() * lowerCase.length)];
+    password += numbers[Math.floor(Math.random() * numbers.length)];
+    password += symbols[Math.floor(Math.random() * symbols.length)];
+
+    // Complète le reste
+    for (let i = password.length; i < length; i++) {
+      password += allChars[Math.floor(Math.random() * allChars.length)];
+    }
+
+    // Mélange les caractères
+    password = password
+      .split('')
+      .sort(() => Math.random() - 0.5)
+      .join('');
+
+    return password;
+  }
+
   getEmptyEmployee(): Employes {
     return {
       id: '',
@@ -96,9 +126,12 @@ export class AddAgents implements OnInit {
       induction: undefined,
       habilitation: undefined,
       certificatMedical: undefined,
-      carteMarine: undefined
+      carteMarine: undefined,
+      password: this.generatePassword()
     };
   }
+
+ 
 
   // Méthodes pour ajouter/modifier les documents (version corrigée)
   addInduction() {
@@ -134,7 +167,7 @@ export class AddAgents implements OnInit {
 
     if (!type || !dateObtention) {
       console.log('Type et date d\'obtention requis');
-        this.alert.toast('Type et date d\'obtention requis', 'error');
+      this.alert.toast('Type et date d\'obtention requis', 'error');
       return;
     }
 

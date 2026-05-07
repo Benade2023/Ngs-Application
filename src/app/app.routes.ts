@@ -4,6 +4,8 @@ export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', loadComponent: () => import('./components/auth/login/login').then(m => m.Login) },
     { path: 'register', loadComponent: () => import('./components/auth/register/register').then(m => m.Register) },
+    { path: 'forgate-password', loadComponent: () => import('./components/auth/forgate-password/forgate-password').then(m => m.ForgatePassword) },
+    { path: 'contact-administrator', loadComponent: () => import('./components/auth/contact-administrator/contact-administrator').then(m => m.ContactAdministrator) },
     { path: 'dashboard', loadComponent: () => import('./components/dashboard/dashboard').then(m => m.Dashboard) },
     //Employe routes//
     { path: 'employes', loadComponent: () => import('./components/managment/agents/list-agents/list-agents').then(m => m.ListAgents) },

@@ -60,7 +60,7 @@
                             <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe">
                             <span>Se souvenir de moi</span>
                         </label>
-                        <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+                        <a routerLink="/forgate-password" class="forgot-password">Mot de passe oublié ?</a>
                     </div>
 
                     <!-- Bouton de connexion avec spinner -->
@@ -86,7 +86,7 @@
 
                 <!-- Lien d'inscription -->
                 <div class="login-footer">
-                    <p>Pas encore de compte ? <a href="#">Contacter l'administrateur</a></p>
+                    <p>Pas encore de compte ? <a routerLink="/contact-administrator">Contacter l'administrateur</a></p>
                 </div>
             </div>
         </div>

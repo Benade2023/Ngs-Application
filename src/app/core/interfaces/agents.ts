@@ -25,6 +25,7 @@ export interface Employes {
     service: string;
     manager: string;
     avatar: string;
+    password: string;
 }
 
 export interface EmployeResponse {
