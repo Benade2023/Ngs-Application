@@ -51,7 +51,7 @@ export class Login {
     }
     this.authService.login(authData).subscribe({
       next: (data) => {
-
+        this.isLoading = false;
         this.agentService.getEmployes().subscribe({
           next: response => {
             this.currentAgent = response.find(x => x.email === data.email && x.password === data.password)
@@ -62,9 +62,13 @@ export class Login {
                 email: this.currentAgent.email,
                 fonction: this.currentAgent.fonction
               }));
-              this.router.navigate(['/dashboard'])
+              // this.router.navigate(['/dashboard'])
+              this.router.navigate(['/dashboard']).then(() => {
+                window.location.reload();
+              });
             } else {
-              this.alert.error('Email ou mot de passe incorrect !')
+              this.alert.error('Email ou mot de passe incorrect !');
+              this.isLoading = false;
             }
           }
         })
@@ -76,7 +80,7 @@ export class Login {
     })
   }
 
- 
+
 
   togglePassword() {
     this.showPassword = !this.showPassword;
