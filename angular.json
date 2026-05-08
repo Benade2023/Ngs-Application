@@ -16,7 +16,7 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
-               "src/assets",
+              "src/assets",
               {
                 "glob": "**/*",
                 "input": "public"
@@ -26,7 +26,6 @@
               "src/styles.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
             ]
-            
           },
           "configurations": {
             "production": {
@@ -55,6 +54,13 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "host": "0.0.0.0",
+            "allowedHosts": [
+              "carried-backlight-deftly.ngrok-free.dev"
+            ],
+            "proxyConfig": "src/proxy.config.json"
+          },
           "configurations": {
             "production": {
               "buildTarget": "NGS_APPLY:build:production"

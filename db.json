@@ -69,8 +69,8 @@
       "id": "EMP45580537",
       "nom": "LESSAYA",
       "prenom": "Benade",
-      "email": "benadelessaya@gmail.com",
       "password": "NgService@1011",
+      "email": "benadelessaya@gmail.com",
       "telephone": "077006031",
       "adresse": "aucune",
       "cni": "3",
@@ -653,7 +653,7 @@
       "cni": "3",
       "dateNaissance": "1976-08-23",
       "sexe": "M",
-      "fonction": "Sudeur",
+      "fonction": "Soudeur",
       "typeContrat": "CDI",
       "statut": "remote",
       "dateDebut": "2026-05-05",
@@ -672,12 +672,566 @@
         "valide": true,
         "medecin": "Dr Claude Wilfrid MOUSSAVOU"
       },
-      "carteMarine": "pending"
+      "carteMarine": "pending",
+      "password": "BBVU?ifnJw?0"
+    },
+    {
+      "id": "EMP54721365",
+      "nom": "Makani",
+      "prenom": "Henry",
+      "email": "henry@gmail.com",
+      "telephone": "077556632",
+      "adresse": "Bac Aviation",
+      "cni": "GA123468NHY",
+      "dateNaissance": "1995-10-10",
+      "sexe": "M",
+      "fonction": "Electricien",
+      "typeContrat": "CDD",
+      "statut": "remote",
+      "dateDebut": "2025-05-07",
+      "service": "Développement",
+      "manager": "Jean Dupont",
+      "avatar": "",
+      "induction": {
+        "dateEmission": "2025-10-10",
+        "dateExpiration": "2028-10-10",
+        "document": "INDUCTION PERENCO"
+      },
+      "habilitation": {
+        "type": "Habilitation Electrique",
+        "dateObtention": "2025-11-10",
+        "dateExpiration": "2028-11-10"
+      },
+      "certificatMedical": {
+        "date": "2026-02-10",
+        "dateExpiration": "2027-02-10",
+        "valide": true,
+        "medecin": "Docteur Yves Rolland"
+      },
+      "carteMarine": {
+        "numero": "CM-2026-01",
+        "dateDelivrance": "2026-03-03",
+        "dateExpiration": "2026-09-03"
+      },
+      "password": "DjFcdG2c@zdf",
+      "dateFin": "2027-05-06"
+    },
+    {
+      "id": "EMP85425473",
+      "nom": "DINDOUNGOU MATEKI",
+      "prenom": " Prince",
+      "email": "princemateki18@gmail.com",
+      "telephone": "077586433",
+      "adresse": "Tourrnant SEEG",
+      "cni": "none",
+      "dateNaissance": "1997-08-03",
+      "sexe": "M",
+      "fonction": "Assistant Technique",
+      "typeContrat": "CDD",
+      "statut": "remote",
+      "dateDebut": "2026-04-09",
+      "service": "Direction",
+      "manager": "Pierre Durand",
+      "avatar": "",
+      "induction": "pending",
+      "habilitation": "pending",
+      "certificatMedical": "pending",
+      "carteMarine": "pending",
+      "password": "g8@G&7p5uL@Q",
+      "dateFin": "2026-06-07"
+    },
+    {
+      "id": "EMP27916871",
+      "nom": "METOGHET",
+      "prenom": "Hermann",
+      "email": "non@gmail.com",
+      "telephone": "077553550",
+      "adresse": "",
+      "cni": "xxxxx",
+      "dateNaissance": "1990-06-05",
+      "sexe": "M",
+      "fonction": "Elec - Instrun",
+      "typeContrat": "CDD",
+      "statut": "remote",
+      "dateDebut": "2026-05-08",
+      "service": "RH",
+      "manager": "",
+      "avatar": "",
+      "induction": {
+        "dateEmission": "2023-04-28",
+        "dateExpiration": "2026-04-28",
+        "document": "Induction PERENCO"
+      },
+      "habilitation": "pending",
+      "certificatMedical": {
+        "date": "2025-12-11",
+        "dateExpiration": "2026-12-11",
+        "valide": true,
+        "medecin": "Dr Emile Flaubert BOUWE"
+      },
+      "carteMarine": "pending",
+      "password": "0hAFVmv%6?me"
+    },
+    {
+      "id": "EMP48625945",
+      "nom": "NGOMA BONGO",
+      "prenom": "Jean Felix",
+      "email": "non@gmail.com",
+      "telephone": "077747943",
+      "adresse": "",
+      "cni": "3",
+      "dateNaissance": "1975-04-25",
+      "sexe": "M",
+      "fonction": "Soudeur",
+      "typeContrat": "CDI",
+      "statut": "remote",
+      "dateDebut": "2026-05-08",
+      "service": "RH",
+      "manager": "",
+      "avatar": "",
+      "induction": {
+        "dateEmission": "2026-04-13",
+        "dateExpiration": "2029-04-13",
+        "document": "Induction PERENCO"
+      },
+      "habilitation": "pending",
+      "certificatMedical": {
+        "date": "2026-03-27",
+        "dateExpiration": "2027-03-27",
+        "valide": true,
+        "medecin": "Dr Claude Wilfrid MOUSSAVOU"
+      },
+      "carteMarine": "pending",
+      "password": "lOwP@y5bsF7X"
+    },
+    {
+      "id": "EMP31180836",
+      "nom": "KOMBILA",
+      "prenom": "Daouda ",
+      "email": "non@gmail.com",
+      "telephone": "077829988",
+      "adresse": "",
+      "cni": "3",
+      "dateNaissance": "2000-06-03",
+      "sexe": "M",
+      "fonction": "Elec - Instrun",
+      "typeContrat": "CDI",
+      "statut": "remote",
+      "dateDebut": "2026-05-08",
+      "service": "RH",
+      "manager": "",
+      "avatar": "",
+      "induction": {
+        "dateEmission": "2025-06-16",
+        "dateExpiration": "2028-06-16",
+        "document": "Induction PERENCO"
+      },
+      "habilitation": "pending",
+      "certificatMedical": {
+        "date": "2025-05-31",
+        "dateExpiration": "2026-05-31",
+        "valide": true,
+        "medecin": "Dr Claude Wilfrid MOUSSAVOU"
+      },
+      "carteMarine": "pending",
+      "password": "0OV4y59m@PPy"
+    },
+    {
+      "id": "EMP69069774",
+      "nom": "BOUESSA",
+      "prenom": "Derick",
+      "email": "non@gmail.com",
+      "telephone": "000000000",
+      "adresse": "",
+      "cni": "3",
+      "dateNaissance": "1996-11-22",
+      "sexe": "M",
+      "fonction": "Elec - Instrun",
+      "typeContrat": "CDI",
+      "statut": "remote",
+      "dateDebut": "2026-05-08",
+      "service": "RH",
+      "manager": "",
+      "avatar": "",
+      "induction": {
+        "dateEmission": "2024-01-10",
+        "dateExpiration": "2027-01-10",
+        "document": "Induction PERENCO"
+      },
+      "habilitation": "pending",
+      "certificatMedical": {
+        "date": "2025-05-03",
+        "dateExpiration": "2026-05-03",
+        "valide": true,
+        "medecin": "Dr MBATCHOU Guy"
+      },
+      "carteMarine": {
+        "numero": "CM 4641/25",
+        "dateDelivrance": "2026-03-25",
+        "dateExpiration": "2026-09-25"
+      },
+      "password": "*a@g4&B71KrY"
+    },
+    {
+      "id": "EMP37566422",
+      "nom": "MOUNGUENGUI ",
+      "prenom": "Serge",
+      "email": "non@gmail.com",
+      "telephone": "074834454",
+      "adresse": "",
+      "cni": "5",
+      "dateNaissance": "1994-12-14",
+      "sexe": "M",
+      "fonction": "Elec - Instrun",
+      "typeContrat": "CDD",
+      "statut": "remote",
+      "dateDebut": "2026-05-08",
+      "service": "RH",
+      "manager": "",
+      "avatar": "",
+      "induction": {
+        "dateEmission": "2024-03-29",
+        "dateExpiration": "2027-03-29",
+        "document": "Induction PERENCO"
+      },
+      "habilitation": {
+        "type": "Electrique",
+        "dateObtention": "2025-03-06",
+        "dateExpiration": "2028-03-06"
+      },
+      "certificatMedical": "pending",
+      "carteMarine": {
+        "numero": "CM 6950/26",
+        "dateDelivrance": "2026-03-25",
+        "dateExpiration": "2026-09-25"
+      },
+      "password": "MJz@42E&&QQ@"
+    },
+    {
+      "id": "EMP12718338",
+      "nom": "ASSEKO ",
+      "prenom": "Francois",
+      "email": "non@gmail.com",
+      "telephone": "066371446",
+      "adresse": "",
+      "cni": "3",
+      "dateNaissance": "0001-01-01",
+      "sexe": "M",
+      "fonction": "Elec - Instrun",
+      "typeContrat": "CDD",
+      "statut": "remote",
+      "dateDebut": "2026-05-08",
+      "service": "RH",
+      "manager": "",
+      "avatar": "",
+      "induction": {
+        "dateEmission": "2023-01-17",
+        "dateExpiration": "2026-01-17",
+        "document": "Induction PERENCO"
+      },
+      "habilitation": "pending",
+      "certificatMedical": {
+        "date": "2025-11-05",
+        "dateExpiration": "2026-11-05",
+        "valide": true,
+        "medecin": "xxxxx"
+      },
+      "carteMarine": "pending",
+      "password": "X$nN1Y8xT8gV"
+    },
+    {
+      "id": "EMP88149274",
+      "nom": "DIALLO",
+      "prenom": "Amadou",
+      "email": "non@gmail.com",
+      "telephone": "066911365",
+      "adresse": "",
+      "cni": "5",
+      "dateNaissance": "1999-07-03",
+      "sexe": "M",
+      "fonction": "Elec - Instrun",
+      "typeContrat": "CDD",
+      "statut": "remote",
+      "dateDebut": "2026-05-08",
+      "service": "RH",
+      "manager": "",
+      "avatar": "",
+      "induction": {
+        "dateEmission": "2024-10-21",
+        "dateExpiration": "2027-10-21",
+        "document": "Induction PERENCO"
+      },
+      "habilitation": "pending",
+      "certificatMedical": {
+        "date": "2025-09-15",
+        "dateExpiration": "2026-09-15",
+        "valide": true,
+        "medecin": "Dr Claude Wilfrid MOUSSAVOU"
+      },
+      "carteMarine": "pending",
+      "password": "$QI%Cb7%7WUN"
+    },
+    {
+      "id": "EMP36992091",
+      "nom": "MILANDOU ",
+      "prenom": "Pathou",
+      "email": "non@gmail.com",
+      "telephone": "065295882",
+      "adresse": "",
+      "cni": "2",
+      "dateNaissance": "0001-01-01",
+      "sexe": "M",
+      "fonction": "Elec - Instrun",
+      "typeContrat": "CDD",
+      "statut": "remote",
+      "dateDebut": "2026-05-08",
+      "service": "RH",
+      "manager": "",
+      "avatar": "",
+      "induction": "pending",
+      "habilitation": "pending",
+      "certificatMedical": {
+        "date": "2025-06-26",
+        "dateExpiration": "2026-06-26",
+        "valide": true,
+        "medecin": "xxxxx"
+      },
+      "carteMarine": "pending",
+      "password": "2FnQ!I&6!JhH"
+    },
+    {
+      "id": "EMP27979744",
+      "nom": "MOMBO",
+      "prenom": "Brice",
+      "email": "non@gmail.com",
+      "telephone": "000000000",
+      "adresse": "",
+      "cni": "xxxxx",
+      "dateNaissance": "0001-01-01",
+      "sexe": "M",
+      "fonction": "Elec - Instrun",
+      "typeContrat": "CDD",
+      "statut": "remote",
+      "dateDebut": "2026-05-08",
+      "service": "RH",
+      "manager": "",
+      "avatar": "",
+      "induction": "pending",
+      "habilitation": "pending",
+      "certificatMedical": {
+        "date": "2026-03-04",
+        "dateExpiration": "2027-03-04",
+        "valide": true,
+        "medecin": "xxxxx"
+      },
+      "carteMarine": "pending",
+      "password": "GNXLzzJUs0$y"
+    },
+    {
+      "id": "EMP64969139",
+      "nom": "MOUBILA",
+      "prenom": "Jacques",
+      "email": "non@gmail.com",
+      "telephone": "000000000",
+      "adresse": "",
+      "cni": "1",
+      "dateNaissance": "0001-01-01",
+      "sexe": "M",
+      "fonction": "Elec - Instrun",
+      "typeContrat": "CDD",
+      "statut": "remote",
+      "dateDebut": "2026-05-08",
+      "service": "RH",
+      "manager": "",
+      "avatar": "",
+      "induction": "pending",
+      "habilitation": "pending",
+      "certificatMedical": "pending",
+      "carteMarine": "pending",
+      "password": "GKsbmi9!xf35"
+    },
+    {
+      "id": "EMP59863449",
+      "nom": "LANGUI",
+      "prenom": "Idriss",
+      "email": "non@gmail.com",
+      "telephone": "000000000",
+      "adresse": "",
+      "cni": "2",
+      "dateNaissance": "0001-01-01",
+      "sexe": "M",
+      "fonction": "Elec - Instrun",
+      "typeContrat": "CDD",
+      "statut": "remote",
+      "dateDebut": "2026-05-08",
+      "service": "RH",
+      "manager": "",
+      "avatar": "",
+      "induction": "pending",
+      "habilitation": "pending",
+      "certificatMedical": {
+        "date": "2025-04-05",
+        "dateExpiration": "2026-04-05",
+        "valide": true,
+        "medecin": "xxxxx"
+      },
+      "carteMarine": "pending",
+      "password": "xXhj2R$dC$iA"
+    },
+    {
+      "id": "EMP11294682",
+      "nom": "BOUSSOUGOU",
+      "prenom": "Joseph",
+      "email": "non@gmail.com",
+      "telephone": "000000000",
+      "adresse": "",
+      "cni": "2",
+      "dateNaissance": "0001-01-01",
+      "sexe": "M",
+      "fonction": "Elec - Instrun",
+      "typeContrat": "CDD",
+      "statut": "remote",
+      "dateDebut": "2026-05-08",
+      "service": "RH",
+      "manager": "",
+      "avatar": "",
+      "induction": {
+        "dateEmission": "2025-06-16",
+        "dateExpiration": "2028-06-16",
+        "document": "Induction PERENCO"
+      },
+      "habilitation": "pending",
+      "certificatMedical": {
+        "date": "2025-03-05",
+        "dateExpiration": "2026-03-05",
+        "valide": true,
+        "medecin": "XXXXX"
+      },
+      "carteMarine": "pending",
+      "password": "J5sTFR$KhG6F"
+    },
+    {
+      "id": "EMP52086967",
+      "nom": "MANTINOU ",
+      "prenom": "Owen",
+      "email": "non@gmail.com",
+      "telephone": "000000000",
+      "adresse": "",
+      "cni": "2",
+      "dateNaissance": "0001-01-01",
+      "sexe": "M",
+      "fonction": "Elec - Instrun",
+      "typeContrat": "CDD",
+      "statut": "remote",
+      "dateDebut": "2026-05-08",
+      "service": "RH",
+      "manager": "",
+      "avatar": "",
+      "induction": {
+        "dateEmission": "2025-08-06",
+        "dateExpiration": "2028-08-06",
+        "document": "Induction PERENCO"
+      },
+      "habilitation": "pending",
+      "certificatMedical": "pending",
+      "carteMarine": "pending",
+      "password": "uTBO$Tsn7V99"
+    },
+    {
+      "id": "EMP57659549",
+      "nom": "RENZANOREMA ",
+      "prenom": "Dean Prudent",
+      "email": "non@gmail.com",
+      "telephone": "000000000",
+      "adresse": "",
+      "cni": "5",
+      "dateNaissance": "1987-10-22",
+      "sexe": "M",
+      "fonction": "Elec - Instrun",
+      "typeContrat": "CDI",
+      "statut": "remote",
+      "dateDebut": "2026-05-08",
+      "service": "RH",
+      "manager": "",
+      "avatar": "",
+      "induction": {
+        "dateEmission": "2024-12-27",
+        "dateExpiration": "2027-12-27",
+        "document": "Induction PERENCO"
+      },
+      "habilitation": {
+        "type": "Electrique",
+        "dateObtention": "2026-03-06",
+        "dateExpiration": "2029-03-06"
+      },
+      "certificatMedical": {
+        "date": "2026-01-13",
+        "dateExpiration": "2027-01-13",
+        "valide": true,
+        "medecin": "xxxxx"
+      },
+      "carteMarine": {
+        "numero": "CM 6765/26",
+        "dateDelivrance": "2026-02-16",
+        "dateExpiration": "2026-08-16"
+      },
+      "password": "0T$r5!GYVxmV"
     }
   ],
   "mouvements": [],
   "rotations": [],
-  "projets": [],
+  "projets": [
+    {
+      "id": 1,
+      "nom": "TURNIX",
+      "description": "Travaux Elec + Instrum\nMise en service de 3 puits FOLOLO\n",
+      "client": "PERENCO",
+      "site": "EXOMNA",
+      "dateDebut": "2026-05-02",
+      "dateFin": null,
+      "status": "En cours"
+    },
+    {
+      "id": 2,
+      "nom": "COBEA",
+      "description": "Test câble sous marin",
+      "client": "PERENCO",
+      "site": "COBEA",
+      "dateDebut": "2026-05-10",
+      "dateFin": "2026-05-12",
+      "status": "En cours"
+    },
+    {
+      "id": 3,
+      "nom": "HYLIA",
+      "description": "Mise en service de 8 puits via VSD-SUT",
+      "client": "PERENCO",
+      "site": "SIANA",
+      "dateDebut": "2025-11-05",
+      "dateFin": "2026-05-01",
+      "status": "Terminé"
+    },
+    {
+      "id": 4,
+      "nom": "TOTAL",
+      "description": "Réparation câble sous marin entre PG2-Anguille",
+      "client": "TOTAL",
+      "site": "OTTO-2",
+      "dateDebut": "2026-05-08",
+      "dateFin": null,
+      "status": "En cours"
+    },
+    {
+      "id": 5,
+      "nom": "CB1",
+      "description": "Localisation des défaut de câble entre CB1-Turnix",
+      "client": "PERENCO",
+      "site": "EXOMNA",
+      "dateDebut": "2026-05-11",
+      "dateFin": null,
+      "status": "En cours"
+    }
+  ],
   "rapports": [],
   "categories": [
     {
@@ -736,8 +1290,8 @@
       "id": 2
     },
     {
-      "email": "benadelessaya@gmail.com",
-      "password": "NgService@1011",
+      "email": "projets@ngservices.info",
+      "password": "dsfgsdfgsdfg",
       "date": "2026-05-07",
       "id": 3
     },
@@ -756,73 +1310,73 @@
     {
       "email": "benadelessaya@gmail.com",
       "password": "NgService@1011",
-      "date": "2026-05-07",
+      "date": "2026-05-08",
       "id": 6
     },
     {
-      "email": "benadelessaya@gmail.com",
-      "password": "NgService@1011",
-      "date": "2026-05-07",
+      "email": "princemateki18@gmail.com",
+      "password": "g8@G&7p5uL@Q",
+      "date": "2026-05-08",
       "id": 7
     },
     {
       "email": "benadelessaya@gmail.com",
       "password": "NgService@1011",
-      "date": "2026-05-07",
+      "date": "2026-05-08",
       "id": 8
     },
     {
-      "email": "benadelessaya@gmail.com",
-      "password": "NgService@1011",
-      "date": "2026-05-07",
+      "email": "princemateki@18gmail.com",
+      "password": "g8@G&7p5uL@Q",
+      "date": "2026-05-08",
       "id": 9
     },
     {
-      "email": "benadelessaya@gmail.com",
-      "password": "NgService@1011",
-      "date": "2026-05-07",
+      "email": "princemateki18@gmail.com",
+      "password": "g8@G&7p5uL@Q",
+      "date": "2026-05-08",
       "id": 10
     },
     {
       "email": "benadelessaya@gmail.com",
       "password": "NgService@1011",
-      "date": "2026-05-07",
+      "date": "2026-05-08",
       "id": 11
     },
     {
       "email": "benadelessaya@gmail.com",
       "password": "NgService@1011",
-      "date": "2026-05-07",
+      "date": "2026-05-08",
       "id": 12
     },
     {
       "email": "benadelessaya@gmail.com",
       "password": "NgService@1011",
-      "date": "2026-05-07",
+      "date": "2026-05-08",
       "id": 13
     },
     {
-      "email": "projets@ngservices.info",
-      "password": "sdfgsdf",
-      "date": "2026-05-07",
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-08",
       "id": 14
     },
     {
       "email": "benadelessaya@gmail.com",
-      "password": "ergegegeg",
-      "date": "2026-05-07",
+      "password": "NgService@1011",
+      "date": "2026-05-08",
       "id": 15
     },
     {
       "email": "benadelessaya@gmail.com",
       "password": "NgService@1011",
-      "date": "2026-05-07",
+      "date": "2026-05-08",
       "id": 16
     },
     {
       "email": "benadelessaya@gmail.com",
       "password": "NgService@1011",
-      "date": "2026-05-07",
+      "date": "2026-05-08",
       "id": 17
     },
     {
@@ -842,6 +1396,18 @@
       "password": "NgService@1011",
       "date": "2026-05-08",
       "id": 20
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-08",
+      "id": 21
+    },
+    {
+      "email": "benadelessaya@gmail.com",
+      "password": "NgService@1011",
+      "date": "2026-05-08",
+      "id": 22
     }
   ]
 }
