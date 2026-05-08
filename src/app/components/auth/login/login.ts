@@ -54,6 +54,8 @@ export class Login {
         this.isLoading = false;
         this.agentService.getEmployes().subscribe({
           next: response => {
+            console.log(response);
+            
             this.currentAgent = response.find(x => x.email === data.email && x.password === data.password)
             if (this.currentAgent != undefined) {
               localStorage.setItem('user_ngs', JSON.stringify({
