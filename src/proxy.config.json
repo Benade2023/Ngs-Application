@@ -1,10 +1,14 @@
 {
-  "/api": {
+  "/api/*": {
     "target": "https://broker-passport-screen.ngrok-free.dev",
-    "secure": true,
+    "secure": false,
     "changeOrigin": true,
+    "logLevel": "debug",
     "pathRewrite": {
       "^/api": ""
+    },
+    "headers": {
+      "Origin": "https://carried-backlight-deftly.ngrok-free.dev"
     }
   }
 }
