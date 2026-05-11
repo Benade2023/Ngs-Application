@@ -62,7 +62,8 @@ export class Login {
                 nom: this.currentAgent.nom,
                 prenom: this.currentAgent.prenom,
                 email: this.currentAgent.email,
-                fonction: this.currentAgent.fonction
+                fonction: this.currentAgent.fonction,
+                matricule: this.currentAgent.id
               }));
               // this.router.navigate(['/dashboard'])
               this.router.navigate(['/dashboard']).then(() => {
