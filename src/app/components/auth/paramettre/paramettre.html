@@ -1,0 +1,372 @@
+<div class="parametres-container">
+  <div class="page-header">
+    <h1>⚙️ Paramètres</h1>
+    <p>Configurez l'application selon vos besoins</p>
+  </div>
+
+  <!-- Messages -->
+  <div class="alert alert-success" *ngIf="messageSuccess">
+    <span>✓</span> {{ messageSuccess }}
+  </div>
+  <div class="alert alert-error" *ngIf="messageError">
+    <span>⚠️</span> {{ messageError }}
+  </div>
+
+  <div class="parametres-grid">
+    <!-- Sidebar -->
+    <div class="parametres-sidebar">
+      <div class="sidebar-menu">
+        <button class="menu-item" [class.active]="activeTab === 'general'" (click)="activeTab = 'general'">
+          <span>🏠</span> Général
+        </button>
+        <button class="menu-item" [class.active]="activeTab === 'securite'" (click)="activeTab = 'securite'">
+          <span>🔒</span> Sécurité
+        </button>
+        <button class="menu-item" [class.active]="activeTab === 'notifications'" (click)="activeTab = 'notifications'">
+          <span>🔔</span> Notifications
+        </button>
+        <button class="menu-item" [class.active]="activeTab === 'base'" (click)="activeTab = 'base'">
+          <span>💾</span> Base de données
+        </button>
+        <button class="menu-item" [class.active]="activeTab === 'affichage'" (click)="activeTab = 'affichage'">
+          <span>🎨</span> Affichage
+        </button>
+        <button class="menu-item" [class.active]="activeTab === 'modules'" (click)="activeTab = 'modules'">
+          <span>📦</span> Modules
+        </button>
+      </div>
+      
+      <div class="sidebar-actions">
+        <button class="btn-export" (click)="exporterConfiguration()">
+          📤 Exporter la configuration
+        </button>
+        <label class="btn-import">
+          📥 Importer une configuration
+          <input type="file" accept=".json" (change)="importerConfiguration($event)" style="display: none">
+        </label>
+        <button class="btn-reset" (click)="reinitialiser()">
+          🔄 Réinitialiser
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="parametres-content">
+      <!-- Onglet Général -->
+      <div class="tab-content" *ngIf="activeTab === 'general'">
+        <div class="tab-header">
+          <h2>Paramètres généraux</h2>
+          <p>Informations générales de l'application</p>
+        </div>
+        
+        <form [formGroup]="generalForm" (ngSubmit)="saveGeneral()">
+          <div class="form-group">
+            <label for="nomApplication">Nom de l'application</label>
+            <input type="text" id="nomApplication" formControlName="nomApplication" placeholder="Nom de l'application">
+          </div>
+
+          <div class="form-group">
+            <label>Thème</label>
+            <div class="theme-options">
+              <button *ngFor="let theme of themes" 
+                      type="button" 
+                      class="theme-btn" 
+                      [class.active]="generalForm.value.theme === theme.value"
+                      (click)="generalForm.patchValue({ theme: theme.value })">
+                <span class="theme-icon">{{ theme.icon }}</span>
+                <span>{{ theme.label }}</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Langue par défaut</label>
+            <select formControlName="langue">
+              <option *ngFor="let langue of langues" [value]="langue.value">{{ langue.label }}</option>
+            </select>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+              <span *ngIf="!isLoading">💾 Sauvegarder</span>
+              <span *ngIf="isLoading" class="spinner"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Onglet Sécurité -->
+      <div class="tab-content" *ngIf="activeTab === 'securite'">
+        <div class="tab-header">
+          <h2>Paramètres de sécurité</h2>
+          <p>Configurez les règles de sécurité</p>
+        </div>
+        
+        <form [formGroup]="securiteForm" (ngSubmit)="saveSecurite()">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Timeout de session (minutes)</label>
+              <input type="number" formControlName="sessionTimeout" min="5" max="120">
+            </div>
+            <div class="form-group">
+              <label>Tentatives de connexion max</label>
+              <input type="number" formControlName="tentativeConnexionMax" min="3" max="10">
+            </div>
+          </div>
+
+          <div class="form-group checkbox">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="verrouillageAuto">
+              <span>Verrouillage automatique après échecs</span>
+            </label>
+          </div>
+
+          <div class="form-section">
+            <h3>Politique des mots de passe</h3>
+            <div formGroupName="politiqueMdp">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Longueur minimale</label>
+                  <input type="number" formControlName="longueurMin" min="6" max="20">
+                </div>
+                <div class="form-group">
+                  <label>Expiration (jours)</label>
+                  <input type="number" formControlName="expiration" min="30" max="365">
+                </div>
+              </div>
+              
+              <div class="checkbox-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="majuscule">
+                  <span>Au moins une majuscule</span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="minuscule">
+                  <span>Au moins une minuscule</span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="chiffre">
+                  <span>Au moins un chiffre</span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="special">
+                  <span>Au moins un caractère spécial</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+              <span *ngIf="!isLoading">💾 Sauvegarder</span>
+              <span *ngIf="isLoading" class="spinner"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Onglet Notifications -->
+      <div class="tab-content" *ngIf="activeTab === 'notifications'">
+        <div class="tab-header">
+          <h2>Paramètres de notification</h2>
+          <p>Configurez l'envoi des notifications</p>
+        </div>
+        
+        <form [formGroup]="notificationForm" (ngSubmit)="saveNotifications()">
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="emailNotification">
+              <span>Notifications par email</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="smsNotification">
+              <span>Notifications par SMS</span>
+            </label>
+          </div>
+
+          <div class="form-section" *ngIf="notificationForm.value.emailNotification">
+            <h3>Configuration SMTP</h3>
+            <div class="form-group">
+              <label>Serveur SMTP</label>
+              <input type="text" formControlName="emailServeur">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Port</label>
+                <input type="number" formControlName="emailPort">
+              </div>
+              <div class="form-group">
+                <label>Sécurité</label>
+                <select formControlName="emailSecurite">
+                  <option value="SSL">SSL</option>
+                  <option value="TLS">TLS</option>
+                  <option value="AUCUNE">Aucune</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" (click)="testNotification()">
+              📧 Tester la notification
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+              <span *ngIf="!isLoading">💾 Sauvegarder</span>
+              <span *ngIf="isLoading" class="spinner"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Onglet Base de données -->
+      <div class="tab-content" *ngIf="activeTab === 'base'">
+        <div class="tab-header">
+          <h2>Sauvegarde et base de données</h2>
+          <p>Configurez les sauvegardes automatiques</p>
+        </div>
+        
+        <form [formGroup]="baseForm" (ngSubmit)="saveBase()">
+          <div class="form-group checkbox">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="backupAuto">
+              <span>Sauvegarde automatique</span>
+            </label>
+          </div>
+
+          <div class="form-row" *ngIf="baseForm.value.backupAuto">
+            <div class="form-group">
+              <label>Fréquence</label>
+              <select formControlName="backupFrequence">
+                <option *ngFor="let freq of backupFrequences" [value]="freq.value">{{ freq.label }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Heure</label>
+              <input type="time" formControlName="backupHeure">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Rétention (jours)</label>
+            <input type="number" formControlName="retentionJours" min="7" max="365">
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" (click)="effectuerBackup()">
+              💾 Sauvegarder maintenant
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+              <span *ngIf="!isLoading">💾 Sauvegarder</span>
+              <span *ngIf="isLoading" class="spinner"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Onglet Affichage -->
+      <div class="tab-content" *ngIf="activeTab === 'affichage'">
+        <div class="tab-header">
+          <h2>Paramètres d'affichage</h2>
+          <p>Personnalisez l'affichage de l'application</p>
+        </div>
+        
+        <form [formGroup]="affichageForm" (ngSubmit)="saveAffichage()">
+          <div class="form-group">
+            <label>Éléments par page</label>
+            <select formControlName="elementsParPage">
+              <option *ngFor="let n of [5,10,20,50,100]" [value]="n">{{ n }} éléments</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Format de date</label>
+            <select formControlName="dateFormat">
+              <option *ngFor="let format of dateFormats" [value]="format.value">{{ format.label }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Format d'heure</label>
+            <select formControlName="heureFormat">
+              <option *ngFor="let format of heureFormats" [value]="format.value">{{ format.label }}</option>
+            </select>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+              <span *ngIf="!isLoading">💾 Sauvegarder</span>
+              <span *ngIf="isLoading" class="spinner"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Onglet Modules -->
+      <div class="tab-content" *ngIf="activeTab === 'modules'">
+        <div class="tab-header">
+          <h2>Activation des modules</h2>
+          <p>Activez ou désactivez les modules de l'application</p>
+        </div>
+        
+        <form [formGroup]="modulesForm" (ngSubmit)="saveModules()">
+          <div class="modules-grid">
+            <div class="module-card">
+              <div class="module-icon">📋</div>
+              <div class="module-info">
+                <h3>Gestion des présences</h3>
+                <p>Suivi des présences et absences</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" formControlName="modulePresence">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <div class="module-card">
+              <div class="module-icon">🏪</div>
+              <div class="module-info">
+                <h3>Gestion du stock</h3>
+                <p>Suivi du matériel et consommables</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" formControlName="moduleStock">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <div class="module-card">
+              <div class="module-icon">📊</div>
+              <div class="module-info">
+                <h3>Gestion des projets</h3>
+                <p>Suivi des projets et rapports</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" formControlName="moduleProjets">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <div class="module-card">
+              <div class="module-icon">📄</div>
+              <div class="module-info">
+                <h3>Gestion des rapports</h3>
+                <p>Génération et export de rapports</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" formControlName="moduleRapports">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+              <span *ngIf="!isLoading">💾 Sauvegarder</span>
+              <span *ngIf="isLoading" class="spinner"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

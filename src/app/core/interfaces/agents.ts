@@ -26,6 +26,16 @@ export interface Employes {
     manager: string;
     avatar: string;
     password: string;
+    deuxFacteurs?: boolean;
+    derniereConnexion?: Date; 
+    dateCreation?: Date;  
+    preferences?: {
+        theme: 'clair' | 'sombre' | 'systeme';
+        notifications: boolean;
+        emailNotifications: boolean;
+        langue: 'fr' | 'en';
+        dateFormat: 'DD/MM/YYYY' | 'MM/DD/YYYY' | 'YYYY-MM-DD';
+    };
 }
 
 export interface EmployeResponse {

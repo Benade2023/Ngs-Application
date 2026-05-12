@@ -1,0 +1,334 @@
+<div class="mon-compte-container">
+  <div class="page-header">
+    <h1>👤 Mon compte</h1>
+    <p>Gérez vos informations personnelles et vos préférences</p>
+  </div>
+
+  <!-- Messages -->
+  <div class="alert alert-success" *ngIf="messageSuccess">
+    <span>✓</span> {{ messageSuccess }}
+  </div>
+  <div class="alert alert-error" *ngIf="messageError">
+    <span>⚠️</span> {{ messageError }}
+  </div>
+
+  <div class="account-grid">
+    <!-- Sidebar -->
+    <div class="account-sidebar">
+      <div class="profile-avatar">
+        <div class="avatar-container">
+          <img [src]="avatarPreview || user.avatar || 'assets/images/icon-512x512.png'" alt="Avatar" class="avatar-img">
+          <label for="avatar-upload" class="avatar-upload-btn">
+            📷
+            <input type="file" id="avatar-upload" accept="image/*" (change)="onFileSelected($event)" style="display: none">
+          </label>
+        </div>
+        <h3>{{ user.prenom }} {{ user.nom }}</h3>
+        <p>{{ user.fonction }}</p>
+        <button class="btn-upload" (click)="uploadAvatar()" *ngIf="selectedFile">Enregistrer la photo</button>
+      </div>
+      
+      <div class="sidebar-menu">
+        <button class="menu-item" [class.active]="activeTab === 'profil'" (click)="activeTab = 'profil'">
+          <span>👤</span> Informations personnelles
+        </button>
+        <button class="menu-item" [class.active]="activeTab === 'securite'" (click)="activeTab = 'securite'">
+          <span>🔒</span> Sécurité
+        </button>
+        <button class="menu-item" [class.active]="activeTab === 'preferences'" (click)="activeTab = 'preferences'">
+          <span>⚙️</span> Préférences
+        </button>
+        <button class="menu-item" [class.active]="activeTab === 'activite'" (click)="activeTab = 'activite'">
+          <span>📊</span> Activité
+        </button>
+        <button class="menu-item logout" (click)="logout()">
+          <span>🚪</span> Déconnexion
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="account-content">
+      <!-- Onglet Profil -->
+      <div class="tab-content" *ngIf="activeTab === 'profil'">
+        <div class="tab-header">
+          <h2>Informations personnelles</h2>
+          <p>Modifiez vos informations personnelles</p>
+        </div>
+        
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nom">Nom *</label>
+              <input type="text" id="nom" formControlName="nom" placeholder="Votre nom">
+              <div class="invalid-feedback" *ngIf="profileForm.get('nom')?.invalid && profileForm.get('nom')?.touched">
+                Le nom est requis
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="prenom">Prénom *</label>
+              <input type="text" id="prenom" formControlName="prenom" placeholder="Votre prénom">
+              <div class="invalid-feedback" *ngIf="profileForm.get('prenom')?.invalid && profileForm.get('prenom')?.touched">
+                Le prénom est requis
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" formControlName="email" placeholder="votre@email.com">
+              <div class="invalid-feedback" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+                Email valide requis
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="telephone">Téléphone</label>
+              <input type="tel" id="telephone" formControlName="telephone" placeholder="06 12 34 56 78">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="poste">Poste</label>
+              <input type="text" id="poste" formControlName="poste" placeholder="Votre poste">
+            </div>
+            <div class="form-group">
+              <label for="service">Service</label>
+              <input type="text" id="service" formControlName="service" placeholder="Votre service">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+              <span *ngIf="!isLoading">💾 Enregistrer les modifications</span>
+              <span *ngIf="isLoading" class="spinner"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Onglet Sécurité -->
+      <div class="tab-content" *ngIf="activeTab === 'securite'">
+        <div class="tab-header">
+          <h2>Sécurité</h2>
+          <p>Gérez votre mot de passe et la sécurité de votre compte</p>
+        </div>
+
+        <!-- Changement de mot de passe -->
+        <div class="security-card">
+          <h3>🔑 Changer mon mot de passe</h3>
+          <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+            <div class="form-group">
+              <label for="currentPassword">Mot de passe actuel *</label>
+              <div class="password-input">
+                <input [type]="showPassword ? 'text' : 'password'" id="currentPassword" formControlName="currentPassword" placeholder="••••••••">
+                <button type="button" class="password-toggle" (click)="showPassword = !showPassword">
+                  {{ showPassword ? '🙈' : '👁️' }}
+                </button>
+              </div>
+              <div class="invalid-feedback" *ngIf="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched">
+                Le mot de passe actuel est requis
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="newPassword">Nouveau mot de passe *</label>
+                <div class="password-input">
+                  <input [type]="showNewPassword ? 'text' : 'password'" id="newPassword" formControlName="newPassword" placeholder="••••••••">
+                  <button type="button" class="password-toggle" (click)="showNewPassword = !showNewPassword">
+                    {{ showNewPassword ? '🙈' : '👁️' }}
+                  </button>
+                </div>
+                <div class="password-hints">
+                  <ul>
+                    <li>Minimum 8 caractères</li>
+                    <li>Lettres, chiffres ou symboles</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="confirmPassword">Confirmer le mot de passe *</label>
+                <div class="password-input">
+                  <input [type]="showConfirmPassword ? 'text' : 'password'" id="confirmPassword" formControlName="confirmPassword" placeholder="••••••••">
+                  <button type="button" class="password-toggle" (click)="showConfirmPassword = !showConfirmPassword">
+                    {{ showConfirmPassword ? '🙈' : '👁️' }}
+                  </button>
+                </div>
+                <div class="invalid-feedback" *ngIf="passwordForm.hasError('mismatch') && passwordForm.get('confirmPassword')?.touched">
+                  Les mots de passe ne correspondent pas
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+                <span *ngIf="!isLoading">🔒 Changer le mot de passe</span>
+                <span *ngIf="isLoading" class="spinner"></span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Authentification à deux facteurs -->
+        <div class="security-card">
+          <div class="twofa-header">
+            <h3>📱 Authentification à deux facteurs</h3>
+            <label class="switch">
+              <input type="checkbox" [(ngModel)]="user.deuxFacteurs" (change)="toggleDeuxFacteurs()">
+              <span class="slider round"></span>
+            </label>
+          </div>
+          <p class="twofa-description">
+            Activez l'authentification à deux facteurs pour renforcer la sécurité de votre compte.
+            Vous recevrez un code par SMS ou application d'authentification à chaque connexion.
+          </p>
+        </div>
+
+        <!-- Sessions actives -->
+        <div class="security-card">
+          <h3>💻 Sessions actives</h3>
+          <div class="session-item">
+            <div class="session-info">
+              <span class="session-device">💻 Windows - Chrome</span>
+              <span class="session-location">📍 Libreville, Gabon</span>
+              <span class="session-current">Session actuelle</span>
+            </div>
+            <span class="session-date">Aujourd'hui, 09:30</span>
+          </div>
+          <div class="session-item">
+            <div class="session-info">
+              <span class="session-device">📱 iPhone - Safari</span>
+              <span class="session-location">📍 Port-Gentil, Gabon</span>
+            </div>
+            <span class="session-date">Hier, 18:45</span>
+            <button class="btn-revoke">Révoquer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Onglet Préférences -->
+      <div class="tab-content" *ngIf="activeTab === 'preferences'">
+        <div class="tab-header">
+          <h2>Préférences</h2>
+          <p>Personnalisez votre expérience</p>
+        </div>
+
+        <div class="preferences-card">
+          <h3>🎨 Apparence</h3>
+          <div class="preference-item">
+            <label>Thème</label>
+            <div class="theme-options" *ngIf="user.preferences">
+              <button class="theme-btn" [class.active]="user.preferences.theme === 'clair'" (click)="user.preferences.theme = 'clair'; updatePreferences()">
+                ☀️ Clair
+              </button>
+              <button class="theme-btn" [class.active]="user.preferences.theme === 'sombre'" (click)="user.preferences.theme = 'sombre'; updatePreferences()">
+                🌙 Sombre
+              </button>
+              <button class="theme-btn" [class.active]="user.preferences.theme === 'systeme'" (click)="user.preferences.theme = 'systeme'; updatePreferences()">
+                💻 Système
+              </button>
+            </div>
+          </div>
+
+          <div class="preference-item" *ngIf="user.preferences">
+            <label>Langue</label>
+            <select [(ngModel)]="user.preferences.langue" (change)="updatePreferences()">
+              <option value="fr">Français</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+
+          <div class="preference-item" *ngIf="user.preferences">
+            <label>Format de date</label>
+            <select [(ngModel)]="user.preferences.dateFormat" (change)="updatePreferences()">
+              <option value="DD/MM/YYYY">JJ/MM/AAAA</option>
+              <option value="MM/DD/YYYY">MM/JJ/AAAA</option>
+              <option value="YYYY-MM-DD">AAAA-MM-JJ</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="preferences-card" *ngIf="user.preferences">
+          <h3>🔔 Notifications</h3>
+          <div class="preference-item toggle">
+            <div>
+              <label>Notifications push</label>
+              <p>Recevoir des notifications sur votre navigateur</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" [(ngModel)]="user.preferences.notifications" (change)="updatePreferences()">
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="preference-item toggle">
+            <div>
+              <label>Notifications email</label>
+              <p>Recevoir des notifications par email</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" [(ngModel)]="user.preferences.emailNotifications" (change)="updatePreferences()">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Onglet Activité -->
+      <div class="tab-content" *ngIf="activeTab === 'activite'">
+        <div class="tab-header">
+          <h2>Activité récente</h2>
+          <p>Historique de vos connexions et actions</p>
+        </div>
+
+        <div class="activity-timeline">
+          <div class="activity-item">
+            <div class="activity-icon">🔐</div>
+            <div class="activity-details">
+              <p>Connexion réussie</p>
+              <span class="activity-date">{{ user.derniereConnexion | date:'dd/MM/yyyy à HH:mm' }}</span>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon">👤</div>
+            <div class="activity-details">
+              <p>Modification du profil</p>
+              <span class="activity-date">15/04/2026 à 14:30</span>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon">🔒</div>
+            <div class="activity-details">
+              <p>Changement de mot de passe</p>
+              <span class="activity-date">10/04/2026 à 09:15</span>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon">⚙️</div>
+            <div class="activity-details">
+              <p>Modification des préférences</p>
+              <span class="activity-date">05/04/2026 à 11:45</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="account-stats">
+          <div class="stat-box">
+            <div class="stat-value">45</div>
+            <div class="stat-label">Connexions totales</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">{{ user.dateCreation | date:'dd/MM/yyyy' }}</div>
+            <div class="stat-label">Membre depuis</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">3</div>
+            <div class="stat-label">Appareils</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

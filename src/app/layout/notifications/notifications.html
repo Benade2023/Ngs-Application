@@ -1,0 +1,262 @@
+<div class="notifications-container">
+  <div class="page-header">
+    <div>
+      <h1>🔔 Centre de notifications</h1>
+      <p>Gérez vos notifications et préférences</p>
+    </div>
+    <div class="header-actions">
+      <!-- <button class="btn-test" (click)="envoyerTestNotifications()">
+        📧 Tester la notification
+      </button> -->
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div class="alert alert-success" *ngIf="messageSuccess">
+    <span>✓</span> {{ messageSuccess }}
+  </div>
+  <div class="alert alert-error" *ngIf="messageError">
+    <span>⚠️</span> {{ messageError }}
+  </div>
+
+  <!-- Badge notifications non lues -->
+  <div class="notifications-badge" *ngIf="getNombreNonLues() > 0">
+    <span class="badge">{{ getNombreNonLues() }}</span>
+    <span>notification(s) non lue(s)</span>
+  </div>
+
+  <!-- Onglets -->
+  <div class="tabs">
+    <button class="tab" [class.active]="activeTab === 'notifications'" (click)="activeTab = 'notifications'">
+      📬 Notifications
+      <span class="tab-badge" *ngIf="getNombreNonLues() > 0">{{ getNombreNonLues() }}</span>
+    </button>
+    <button class="tab" [class.active]="activeTab === 'preferences'" (click)="activeTab = 'preferences'">
+      ⚙️ Préférences
+    </button>
+    <button class="tab" [class.active]="activeTab === 'historique'" (click)="activeTab = 'historique'">
+      📜 Historique
+    </button>
+  </div>
+
+  <!-- Onglet Notifications -->
+  <div class="tab-content" *ngIf="activeTab === 'notifications'">
+    <div class="notifications-header">
+      <button class="btn-read-all" (click)="marquerToutCommeLu()" *ngIf="getNombreNonLues() > 0">
+        ✓ Tout marquer comme lu
+      </button>
+      <button class="btn-delete-all" (click)="supprimerToutesNotifications()" *ngIf="notifications.length > 0">
+        🗑️ Tout supprimer
+      </button>
+    </div>
+
+    <div class="notifications-list" *ngIf="!isLoading">
+      <div *ngFor="let notification of notifications" 
+           class="notification-item" 
+           [class]="getTypeClass(notification.type)"
+           [class.non-lue]="!notification.lu"
+           (click)="voirNotifications(notification)">
+        
+        <div class="notification-icon">
+          {{ getTypeIcon(notification.type) }}
+        </div>
+        
+        <div class="notification-content">
+          <div class="notification-header">
+            <h4>{{ notification.titre }}</h4>
+            <span class="notification-date">{{ formatDate(notification.date) }}</span>
+          </div>
+          <p>{{ notification.message }}</p>
+          <div class="notification-footer">
+            <span class="priorite-badge" [class]="getPrioriteClass(notification.priorite)">
+              {{ notification.priorite === 'haute' ? '🔴 Haute' : notification.priorite === 'normale' ? '🟡 Normale' : '🟢 Basse' }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="notification-actions">
+          <button class="btn-mark-read" *ngIf="!notification.lu" (click)="marquerCommeLu(notification); $event.stopPropagation()" title="Marquer comme lu">
+            ✓
+          </button>
+          <button class="btn-delete" (click)="supprimerNotifications(notification.id); $event.stopPropagation()" title="Supprimer">
+            🗑️
+          </button>
+        </div>
+      </div>
+      
+      <div class="empty-state" *ngIf="notifications.length === 0">
+        <span>📭</span>
+        <p>Aucune notification pour le moment</p>
+      </div>
+    </div>
+
+    <div class="loading-state" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>Chargement des notifications...</p>
+    </div>
+  </div>
+
+  <!-- Onglet Préférences -->
+  <div class="tab-content" *ngIf="activeTab === 'preferences'">
+    <form [formGroup]="preferenceForm" (ngSubmit)="savePreferences()">
+      <div class="preferences-section">
+        <h3>🔔 Canaux de notification</h3>
+        
+        <div class="preference-item toggle">
+          <div>
+            <label>Notifications par email</label>
+            <p>Recevoir les notifications par email</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" formControlName="emailNotifications">
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <div class="preference-item toggle">
+          <div>
+            <label>Notifications par SMS</label>
+            <p>Recevoir les notifications par SMS</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" formControlName="smsNotifications">
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <div class="preference-item toggle">
+          <div>
+            <label>Notifications push</label>
+            <p>Recevoir des notifications sur votre navigateur</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" formControlName="pushNotifications">
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="preferences-section">
+        <h3>📋 Types de notifications</h3>
+        <div formGroupName="typesActifs">
+          <div class="preference-item toggle">
+            <div>
+              <label>Présences</label>
+              <p>Notifications liées aux présences et absences</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" formControlName="presence">
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="preference-item toggle">
+            <div>
+              <label>Stock</label>
+              <p>Notifications liées au stock et au matériel</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" formControlName="stock">
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="preference-item toggle">
+            <div>
+              <label>Projets</label>
+              <p>Notifications liées aux projets et rapports</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" formControlName="projet">
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="preference-item toggle">
+            <div>
+              <label>Système</label>
+              <p>Notifications système et mises à jour</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" formControlName="systeme">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="preferences-section">
+        <h3>⚙️ Paramètres avancés</h3>
+        
+        <div class="preference-item">
+          <div>
+            <label>Seuil d'alerte stock</label>
+            <p>Alerter lorsque le stock est inférieur à ce seuil</p>
+          </div>
+          <input type="number" formControlName="seuilAlerteStock" class="input-number" min="1" max="50">
+        </div>
+
+        <div class="preference-item toggle">
+          <div>
+            <label>Rappel de présence</label>
+            <p>Recevoir un rappel pour pointer les présences</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" formControlName="rappelPresence">
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <div class="preference-item" *ngIf="preferenceForm.value.rappelPresence">
+          <div>
+            <label>Heure du rappel</label>
+            <p>À quelle heure recevoir le rappel de présence</p>
+          </div>
+          <input type="time" formControlName="rappelHeure" class="input-time">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+          <span *ngIf="!isLoading">💾 Sauvegarder les préférences</span>
+          <span *ngIf="isLoading" class="spinner"></span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Onglet Historique -->
+  <div class="tab-content" *ngIf="activeTab === 'historique'">
+    <div class="historique-stats">
+      <div class="stat-card">
+        <div class="stat-value">{{ notifications.length }}</div>
+        <div class="stat-label">Total notifications</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ notificationsLues }}</div>
+        <div class="stat-value">{{ notificationsNonLues }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ getNombreNonLues() }}</div>
+        <div class="stat-label">Non lues</div>
+      </div>
+    </div>
+
+    <div class="historique-list">
+      <div *ngFor="let notification of notifications" class="historique-item">
+        <div class="historique-date">{{ formatDate(notification.date) }}</div>
+        <div class="historique-content">
+          <div class="historique-title">
+            <span class="historique-type" [class]="getTypeClass(notification.type)">
+              {{ getTypeIcon(notification.type) }} {{ notification.titre }}
+            </span>
+            <span class="historique-status" [class.lu]="notification.lu">
+              {{ notification.lu ? '📖 Lu' : '📬 Non lu' }}
+            </span>
+          </div>
+          <p>{{ notification.message }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

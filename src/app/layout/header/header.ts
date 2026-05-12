@@ -85,7 +85,7 @@ export class Header implements OnInit, OnDestroy {
 
   goToSettings() {
     this.showUserMenu = false;
-    this.router.navigate(['/settings']);
+    this.router.navigate(['/paramettre']);
   }
 
  logout() {

@@ -16,6 +16,7 @@ export class GestionMagasin implements OnInit {
 
   // Données
   materiaux: Materiel[] = [];
+  allMateriaux: Materiel[] = [];
   mouvements: MouvementStock[] = [];
   locations: LocationMateriel[] = [];
   categories: Categorie[] = [];
@@ -29,6 +30,7 @@ export class GestionMagasin implements OnInit {
   currentPage = 1;
   itemsPerPage = 10;
   totalPages = 1;
+
 
   // Onglet actif
   activeTab: 'stock' | 'mouvements' | 'locations' = 'stock';
@@ -99,7 +101,9 @@ export class GestionMagasin implements OnInit {
     // Chargement des matériels//
     this.mouvementStockService.getAllMateriels().subscribe({
       next: (data) => {
-        this.materiaux = data;
+        this.allMateriaux = data;
+        this.materiaux = [...data];
+
         this.cdr.markForCheck();
         this.calculateStats();
         this.applyFilters();
@@ -176,38 +180,122 @@ export class GestionMagasin implements OnInit {
     return classes[type] || '';
   }
 
-  applyFilters() {
-    let filtered = [...this.materiaux];
+  // applyFilters() {
+  //   let filtered = [...this.materiaux];
 
-    if (this.searchTerm) {
-      const term = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(m =>
-        m.nom.toLowerCase().includes(term) ||
-        m.code.toLowerCase().includes(term) ||
-        m.categorieNom.toLowerCase().includes(term)
-      );
-    }
+  //   if (this.searchTerm) {
+  //     const term = this.searchTerm.toLowerCase();
+  //     filtered = filtered.filter(m =>
+  //       m.nom.toLowerCase().includes(term) ||
+  //       m.code.toLowerCase().includes(term) ||
+  //       m.categorieNom.toLowerCase().includes(term)
+  //     );
+  //   }
 
-    if (this.selectedCategorie) {
-      filtered = filtered.filter(m => m.categorieId === this.selectedCategorie);
-    }
+  //   if (this.selectedCategorie) {
+  //     filtered = filtered.filter(m => m.categorieId === this.selectedCategorie);
+  //   }
 
-    if (this.selectedType) {
-      filtered = filtered.filter(m => m.type === this.selectedType);
-    }
+  //   if (this.selectedType) {
+  //     filtered = filtered.filter(m => m.type === this.selectedType);
+  //   }
 
-    this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    this.materiaux = filtered.slice(start, start + this.itemsPerPage);
+  //   this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
+  //   const start = (this.currentPage - 1) * this.itemsPerPage;
+  //   this.materiaux = filtered.slice(start, start + this.itemsPerPage);
+  // }
+
+  // Ajoutez cette propriété dans votre composant
+//allMateriaux: Materiel[] = []; // Pour conserver la liste complète
+
+// Chargez vos données
+// loadMateriaux() {
+//   this.mouvementStockService.getMateriaux().subscribe({
+//     next: (data) => {
+//       this.allMateriaux = data; // Stocker la liste complète
+//       this.materiaux = [...data]; // Copie pour l'affichage
+//       this.applyFilters();
+//     }
+//   });
+// }
+
+// Méthode applyFilters corrigée
+applyFilters() {
+  // Vérifier que allMateriaux existe
+  if (!this.allMateriaux || this.allMateriaux.length === 0) {
+    this.materiaux = [];
+    this.totalPages = 0;
+    return;
   }
 
-  resetFilters() {
-    this.searchTerm = '';
-    this.selectedCategorie = '';
-    this.selectedType = '';
-    this.currentPage = 1;
-    this.loadData();
+  let filtered = [...this.allMateriaux];
+
+  if (this.searchTerm && this.searchTerm.trim()) {
+    const term = this.searchTerm.toLowerCase().trim();
+    filtered = filtered.filter(m => {
+      // Vérifier que m existe
+      if (!m) return false;
+      
+      // Vérifier chaque champ avec une valeur par défaut
+      const nom = m.nom || '';
+      const code = m.code || '';
+      const categorie = m.categorieNom || '';
+      
+      return nom.toLowerCase().includes(term) ||
+             code.toLowerCase().includes(term) ||
+             categorie.toLowerCase().includes(term);
+    });
   }
+
+  if (this.selectedCategorie) {
+    filtered = filtered.filter(m => m && m.categorieId === this.selectedCategorie);
+  }
+
+  if (this.selectedType) {
+    filtered = filtered.filter(m => m && m.type === this.selectedType);
+  }
+
+  this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
+  
+  if (this.currentPage > this.totalPages && this.totalPages > 0) {
+    this.currentPage = this.totalPages;
+  }
+  
+  const start = (this.currentPage - 1) * this.itemsPerPage;
+  this.materiaux = filtered.slice(start, start + this.itemsPerPage);
+}
+
+// Méthodes de pagination simplifiées
+previousPage() {
+  if (this.currentPage > 1) {
+    this.currentPage--;
+    this.applyFilters();
+  }
+}
+
+nextPage() {
+  if (this.currentPage < this.totalPages) {
+    this.currentPage++;
+    this.applyFilters();
+  }
+}
+
+// // Reset des filtres
+resetFilters() {
+  this.searchTerm = '';
+  this.selectedCategorie = '';
+  this.selectedType = '';
+  this.currentPage = 1;
+  this.applyFilters();
+}
+
+  // resetFilters() {
+  //   this.searchTerm = '';
+  //   this.selectedCategorie = '';
+  //   this.selectedType = '';
+  //   this.currentPage = 1;
+  //   this.loadData();
+  // }
 
   getMaterielById(id: string): Materiel | undefined {
     return this.materiaux.find(m => m.id === id);
@@ -280,12 +368,40 @@ export class GestionMagasin implements OnInit {
       return;
     }
 
+    // if (this.isEditMode) {
+    //   const index = this.materiaux.findIndex(m => m.id === this.materielForm.id);
+    //   if (index !== -1) {
+    //     this.materiaux[index] = { ...this.materielForm as Materiel };
+    //   }
+    // } 
     if (this.isEditMode) {
-      const index = this.materiaux.findIndex(m => m.id === this.materielForm.id);
+  this.isLoading = true;
+  
+  const materielUpdate = { ...this.materielForm as Materiel };
+  
+  this.mouvementStockService.updateMateriel(materielUpdate.id, materielUpdate).subscribe({
+    next: (updatedMateriel) => {
+      const index = this.materiaux.findIndex(m => m.id === updatedMateriel.id);
       if (index !== -1) {
-        this.materiaux[index] = { ...this.materielForm as Materiel };
+        this.materiaux[index] = updatedMateriel;
       }
-    } else {
+      this.isLoading = false;
+      this.alert.success('Matériel modifié avec succès');
+      this.closeModal();
+      // setTimeout(() => this.messageSuccess = '', 3000);
+      this.cdr.markForCheck();
+    },
+    error: (error) => {
+      console.error('Erreur lors de la modification:', error);
+      this.isLoading = false;
+      this.alert.error('Erreur lors de la modification du matériel');
+      // setTimeout(() => this.messageError = '', 3000);
+    }
+  });
+}
+    
+    
+    else {
       const newMateriel = {
         ...this.materielForm,
         id: `MAT-${Date.now()}`,

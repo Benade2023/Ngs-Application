@@ -19,7 +19,8 @@
       <div class="stat-details">
         <h3>Matériels</h3>
         <div class="stat-number">{{ stats.totalMateriaux }}</div>
-        <span class="stat-trend">{{ stats.totalMaterielTravail }} outils + {{ stats.totalConsommable }} consommables</span>
+        <span class="stat-trend">{{ stats.totalMaterielTravail }} outils + {{ stats.totalConsommable }}
+          consommables</span>
       </div>
     </div>
 
@@ -74,7 +75,8 @@
   <div class="tab-content" *ngIf="activeTab === 'stock'">
     <div class="filters-section">
       <div class="search-box">
-        <input type="text" [(ngModel)]="searchTerm" (input)="applyFilters()" placeholder="🔍 Rechercher par nom, code..." class="search-input">
+        <input type="text" [(ngModel)]="searchTerm" (input)="applyFilters()"
+          placeholder="🔍 Rechercher par nom, code..." class="search-input">
       </div>
       <div class="filter-group">
         <select [(ngModel)]="selectedCategorie" (change)="applyFilters()" class="filter-select">
@@ -132,10 +134,15 @@
       </div>
     </div>
 
-    <div class="pagination" *ngIf="totalPages > 1">
+    <!-- <div class="pagination" *ngIf="totalPages > 1">
       <button (click)="currentPage = currentPage - 1; applyFilters()" [disabled]="currentPage === 1">◀ Précédent</button>
       <span>Page {{ currentPage }} sur {{ totalPages }}</span>
       <button (click)="currentPage = currentPage + 1; applyFilters()" [disabled]="currentPage === totalPages">Suivant ▶</button>
+    </div> -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button (click)="previousPage()" [disabled]="currentPage === 1">◀ Précédent</button>
+      <span>Page {{ currentPage }} sur {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages">Suivant ▶</button>
     </div>
   </div>
 
@@ -190,7 +197,8 @@
           </div>
           <div class="info-row">
             <span class="label">Période:</span>
-            <span>du {{ location.dateDebut | date:'dd/MM/yyyy' }} au {{ location.dateFinPrevue | date:'dd/MM/yyyy' }}</span>
+            <span>du {{ location.dateDebut | date:'dd/MM/yyyy' }} au {{ location.dateFinPrevue | date:'dd/MM/yyyy'
+              }}</span>
           </div>
           <div class="info-row" *ngIf="location.dateFinReelle">
             <span class="label">Retour effectif:</span>

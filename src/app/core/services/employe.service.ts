@@ -33,6 +33,11 @@ export class EmployeService {
         return this.http.put<Employes>(`${this.apiUrl}/${id}`, employee);
     }
 
+    // Dans employe.service.ts
+changePassword(id: string, passwordData: { currentPassword: string; newPassword: string }): Observable<any> {
+  return this.http.put(`${this.apiUrl}/${id}/change-password`, passwordData);
+}
+
     //delete employe//
     deleteEmploye(id: string): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${id}`);
