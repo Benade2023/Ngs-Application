@@ -215,30 +215,14 @@
             <!-- <p *ngIf="errorMessage" style="color:red">{{ errorMessage }}</p> -->
           </div>
 
-          <div *ngIf="uploadedFile">
-            <!-- <p>Fichier enregistré : {{ uploadedFile.originalName }}</p>
-            <p>
-              Chemin :
-              <a [href]="'http://localhost:3000' + uploadedFile.filePath" target="_blank">
-                Ouvrir le fichier
-              </a>
-            </p> -->
+          <div>
+         
              <div class="file-link" *ngIf="inductionAgent">
 
-                <a [href]="'http://localhost:3000' + inductionAgent.filePath" target="_blank">
+                <a [href]="apiUrl + inductionAgent.filePath" target="_blank">
                   Voir le document
                 </a>
               </div>
-            <!-- <div class="uploaded-file-card">
-
-              <div class="file-info">
-                <span class="label">Fichier enregistré :</span>
-                <span class="value">{{ uploadedFile.originalName }}</span>
-              </div>
-
-             
-
-            </div> -->
           </div>
 
         </div>

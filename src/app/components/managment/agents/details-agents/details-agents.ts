@@ -7,6 +7,7 @@ import { AlertService } from '../../../../core/services/alert.service';
 import { UploadedFile } from '../../../../core/interfaces/uploadFile.interface';
 import { FileUploadService } from '../../../../core/services/file-upload.service';
 import { ElementRef, ViewChild } from '@angular/core';
+import { EnvironmentProduction } from '../../../../../environment/environment.production';
 
 
 @Component({
@@ -25,6 +26,7 @@ export class DetailsAgents implements OnInit {
   uploadedFile: UploadedFile | null = null;
   errorMessage = '';
   inductionAgent: any;
+  apiUrl = EnvironmentProduction.apiUrlExtern
 
   // Durées de validité (en années)
   readonly INDUCTION_DUREE = 3; // 3 ans
