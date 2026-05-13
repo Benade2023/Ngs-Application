@@ -231,7 +231,7 @@ export class Profile implements OnInit {
     // Créer une copie de l'utilisateur avec le nouveau mot de passe
     const updatedUser = {
       ...this.user,
-      motDePasse: newPassword
+      password: newPassword
     };
 
     this.employeService.updateEmploye(userId, updatedUser).subscribe({
@@ -244,7 +244,8 @@ export class Profile implements OnInit {
       error: (error) => {
         this.isLoading = false;
         this.alert.error('Une erreur est survenue. Veuillez réessayer.');
-        // setTimeout(() => this.messageError = '', 3000);
+        console.log(error);
+        
       }
     });
   }
