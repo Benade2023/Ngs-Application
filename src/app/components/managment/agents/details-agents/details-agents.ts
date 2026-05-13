@@ -4,6 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { EmployeService } from '../../../../core/services/employe.service';
 import { AlertService } from '../../../../core/services/alert.service';
+import { UploadedFile } from '../../../../core/interfaces/uploadFile.interface';
+import { FileUploadService } from '../../../../core/services/file-upload.service';
+import { ElementRef, ViewChild } from '@angular/core';
+
 
 @Component({
   selector: 'app-details-agents',
@@ -15,12 +19,21 @@ export class DetailsAgents implements OnInit {
 
   employe!: Employes;
   isBrowser: boolean;
+  matriculeAgent: string = '';
+
+  selectedFile: File | null = null;
+  uploadedFile: UploadedFile | null = null;
+  errorMessage = '';
+  inductionAgent: any;
 
   // Durées de validité (en années)
   readonly INDUCTION_DUREE = 3; // 3 ans
   readonly HABILITATION_DUREE = 3; // 3 ans
   readonly CERTIFICAT_MEDICAL_DUREE = 1; // 1 an
   readonly CARTE_MARINE_DUREE = 0.5; // 6 mois
+  projectId: string ='';
+
+  @ViewChild('fileInput') fileInput!: ElementRef;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -28,15 +41,18 @@ export class DetailsAgents implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private employeService: EmployeService,
-    private alert: AlertService
+    private alert: AlertService,
+    private fileUploadService: FileUploadService
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
   ngOnInit() {
     const id = this.route.snapshot.params['id'];
+    this.matriculeAgent = id;
     if (id) {
       this.loadEmployee(id);
+      this.getInductionAgent(id, 'Induction')
     }
   }
 
@@ -53,6 +69,61 @@ export class DetailsAgents implements OnInit {
     });
 
   }
+
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+      this.errorMessage = '';
+    }
+  }
+
+uploadInduction(): void {
+  if (!this.selectedFile) {
+    this.alert.error('Sélectionne un fichier avant de l’envoyer.');
+    return;
+  }
+
+  const matricule = (this.matriculeAgent ?? '').trim();
+  const projectId = (this.projectId ?? '').trim();
+  const type = ('Induction').trim();
+
+  //console.log({ matricule, projectId });
+
+  this.fileUploadService
+    .uploadFile(
+      this.selectedFile,
+      matricule || undefined,
+      projectId || undefined,
+      type || undefined
+    )
+    .subscribe({
+      next: (res) => {
+        this.uploadedFile = res;
+        this.alert.success('Induction téléversé avec success !');
+        // Réinitialisation
+        this.selectedFile = null;
+
+        this.fileInput.nativeElement.value = '';
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.alert.error('Erreur pendant l’upload.');
+      }
+    });
+}
+
+getInductionAgent(matricule: string, type: string) {
+  this.fileUploadService.getFiles().subscribe({
+    next: (data) => {
+      this.inductionAgent = data.find(x => x.matriculeAgent === matricule && x.type === type)
+      
+      console.log(this.inductionAgent);
+    }
+  })
+}
+
 
   // Calcul de l'âge
   calculateAge(): number {
@@ -102,22 +173,22 @@ export class DetailsAgents implements OnInit {
     return this.employe.induction ? this.isNearExpiration(this.employe.induction.dateExpiration) : false;
   }
 
-getInductionStatus(employe?: Employes): string {
-  if (!employe?.induction?.dateExpiration) {
-    return 'Non défini';
+  getInductionStatus(employe?: Employes): string {
+    if (!employe?.induction?.dateExpiration) {
+      return 'Non défini';
+    }
+
+    const expiration = new Date(employe.induction.dateExpiration);
+    const today = new Date();
+
+    if (expiration < today) return 'Expiré';
+
+    const diff = Math.ceil((expiration.getTime() - today.getTime()) / (1000 * 3600 * 24));
+
+    if (diff <= 30) return 'Expire bientôt';
+
+    return 'Valide';
   }
-
-  const expiration = new Date(employe.induction.dateExpiration);
-  const today = new Date();
-
-  if (expiration < today) return 'Expiré';
-
-  const diff = Math.ceil((expiration.getTime() - today.getTime()) / (1000 * 3600 * 24));
-
-  if (diff <= 30) return 'Expire bientôt';
-
-  return 'Valide';
-}
 
   getInductionClass(): string {
     if (!this.employe.induction) return 'status-unknown';
@@ -215,7 +286,7 @@ getInductionStatus(employe?: Employes): string {
     this.router.navigate(['/employes/modifier', this.employe.id]);
   }
 
-  viewEmployeeMovements(){
+  viewEmployeeMovements() {
     this.router.navigate(['/detail-mouvement-personnel', this.employe.id]);
   }
 

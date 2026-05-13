@@ -5,7 +5,7 @@
       <button class="btn-back" (click)="goBack()">
         ← Retour
       </button>
-      <div class="employee-title"  *ngIf="employe">
+      <div class="employee-title" *ngIf="employe">
         <h1 style="color: white;">{{ employe.prenom }} {{ employe.nom }}</h1>
         <span class="employee-id">#{{ employe.id }}</span>
       </div>
@@ -189,8 +189,58 @@
         <div class="info-row" *ngIf="employe.induction?.document">
           <div class="info-label">Document</div>
           <div class="info-value">
-            <a [href]="employe.induction?.document" target="_blank">Voir le document</a>
+            <!-- <input type="file" (change)="onFileSelected($event)" accept=".png,.jpg,.jpeg,.pdf" />
+            <button (click)="upload()">Téléversé le document</button> -->
+            <div class="upload-container" *ngIf="!inductionAgent">
+
+              <input #fileInput type="file" id="fileUpload" (change)="onFileSelected($event)"
+                accept=".png,.jpg,.jpeg,.pdf" />
+
+              <label for="fileUpload" class="file-label">
+                Choisir un document
+              </label>
+
+
+
+              <!-- Bouton affiché seulement si un fichier est sélectionné -->
+              <button class="upload-btn" *ngIf="selectedFile" (click)="uploadInduction()">
+                Téléverser le document
+              </button>
+
+            </div>
+            <!-- Nom du fichier -->
+            <span class="file-name" *ngIf="selectedFile">
+              {{'Fichier sélectionné: ' + selectedFile.name }}
+            </span>
+            <!-- <p *ngIf="errorMessage" style="color:red">{{ errorMessage }}</p> -->
           </div>
+
+          <div *ngIf="uploadedFile">
+            <!-- <p>Fichier enregistré : {{ uploadedFile.originalName }}</p>
+            <p>
+              Chemin :
+              <a [href]="'http://localhost:3000' + uploadedFile.filePath" target="_blank">
+                Ouvrir le fichier
+              </a>
+            </p> -->
+             <div class="file-link" *ngIf="inductionAgent">
+
+                <a [href]="'http://localhost:3000' + inductionAgent.filePath" target="_blank">
+                  Voir le document
+                </a>
+              </div>
+            <!-- <div class="uploaded-file-card">
+
+              <div class="file-info">
+                <span class="label">Fichier enregistré :</span>
+                <span class="value">{{ uploadedFile.originalName }}</span>
+              </div>
+
+             
+
+            </div> -->
+          </div>
+
         </div>
         <div class="info-row" *ngIf="!employe.induction">
           <div class="info-value">Aucune induction enregistrée</div>
@@ -257,7 +307,8 @@
             <span class="expiration-warning" *ngIf="isCertificatMedicalExpired()">
               ⚠️ EXPIRÉ
             </span>
-            <span class="expiration-warning" *ngIf="isCertificatMedicalNearExpiration() && !isCertificatMedicalExpired()">
+            <span class="expiration-warning"
+              *ngIf="isCertificatMedicalNearExpiration() && !isCertificatMedicalExpired()">
               ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(employe.certificatMedical?.dateExpiration) }} jours)
             </span>
           </div>
