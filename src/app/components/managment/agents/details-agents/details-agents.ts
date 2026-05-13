@@ -26,7 +26,7 @@ export class DetailsAgents implements OnInit {
   uploadedFile: UploadedFile | null = null;
   errorMessage = '';
   inductionAgent: any;
-  apiUrl = EnvironmentProduction.apiUrlExtern
+  apiUrl = EnvironmentProduction.apiUrlFile
 
   // Durées de validité (en années)
   readonly INDUCTION_DUREE = 3; // 3 ans
