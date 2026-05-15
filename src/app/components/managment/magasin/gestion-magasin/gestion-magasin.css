@@ -939,3 +939,519 @@
 .btn-warning:hover {
   background: #e6bc3e;
 }
+
+
+
+
+
+
+.location-footer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.btn-retour,
+.btn-fiche,
+.btn-print,
+.btn-close,
+.close-btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-retour {
+  background: #2e7d32;
+  color: #fff;
+}
+
+.btn-fiche {
+  background: #1976d2;
+  color: #fff;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  width: min(900px, 95vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.close-btn {
+  background: transparent;
+  font-size: 18px;
+}
+
+.fiche-print {
+  border: 1px solid #000;
+  padding: 20px;
+  background: #fff;
+}
+
+.fiche-header {
+  text-align: center;
+  border-bottom: 1px solid #000;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+}
+
+.fiche-section {
+  margin-bottom: 15px;
+}
+
+.fiche-section h4 {
+  margin-bottom: 8px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-print {
+  background: #6a1b9a;
+  color: #fff;
+}
+
+.btn-close {
+  background: #757575;
+  color: #fff;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .fiche-print,
+  .fiche-print * {
+    visibility: visible;
+  }
+
+  .fiche-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    border: none;
+  }
+
+  .no-print,
+  .modal-actions,
+  .modal-header,
+  .modal-overlay {
+    display: none !important;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  max-width: 1000px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #48199e, #2b06af);
+
+  color: white;
+  border-radius: 12px 12px 0 0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Fiche d'impression */
+.fiche-print {
+  padding: 2rem;
+  background: white;
+}
+
+/* En-tête */
+.fiche-header {
+  border-bottom: 2px solid #1a472a;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.logo-placeholder {
+  width: 70px;
+  height: 70px;
+    background: linear-gradient(135deg, #48199e, #2b06af);
+
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-icon {
+  font-size: 2.5rem;
+}
+
+.company-info h2 {
+  margin: 0;
+  color: #1a472a;
+  font-size: 1.3rem;
+}
+
+.company-info p {
+  margin: 0.2rem 0;
+  font-size: 0.7rem;
+  color: #555;
+}
+
+.document-title {
+  text-align: center;
+}
+
+.document-title h1 {
+  color: #1a472a;
+  font-size: 1.4rem;
+  margin: 0.5rem 0;
+  letter-spacing: 2px;
+}
+
+.document-title .reference {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: normal;
+}
+
+/* Corps */
+.fiche-body {
+  margin-bottom: 1.5rem;
+}
+
+.fiche-section {
+  margin-bottom: 1.5rem;
+}
+
+.fiche-section h4 {
+  background: #f0f4f0;
+  padding: 0.5rem 1rem;
+  color: #1a472a;
+  font-size: 0.9rem;
+  margin: 0 0 0.8rem 0;
+  border-left: 3px solid #1a472a;
+}
+
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.info-table tr {
+  border-bottom: 1px solid #eee;
+}
+
+.info-table td {
+  padding: 0.6rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+.info-table .label {
+  width: 140px;
+  font-weight: 600;
+  color: #555;
+  background: #fafafa;
+}
+
+.info-table .value {
+  color: #333;
+}
+
+/* Badge statut */
+.status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.status-badge.status-encours {
+  background: rgba(255, 209, 102, 0.2);
+  color: #cc9900;
+}
+
+.status-badge.status-termine {
+  background: rgba(6, 214, 160, 0.2);
+  color: #06a56c;
+}
+
+.status-badge.status-retard {
+  background: rgba(239, 71, 111, 0.2);
+  color: #cc3355;
+}
+
+.status-badge.status-approuve {
+  background: rgba(6, 214, 160, 0.2);
+  color: #06a56c;
+}
+
+/* Signatures */
+.signature-section {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ddd;
+}
+
+.signature-box {
+  flex: 1;
+  text-align: center;
+}
+
+.signature-box p {
+  font-size: 0.7rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.signature-line {
+  height: 50px;
+  border-bottom: 1px solid #999;
+  margin-top: 0.5rem;
+}
+
+/* Pied de page */
+.fiche-footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ddd;
+  font-size: 0.65rem;
+  color: #666;
+  text-align: center;
+}
+
+.footer-text p {
+  margin: 0.2rem 0;
+  line-height: 1.3;
+}
+
+.footer-date {
+  margin-top: 0.8rem;
+  font-style: italic;
+}
+
+/* Boutons actions */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: #f5f5f5;
+  border-radius: 0 0 12px 12px;
+}
+
+.btn-print {
+  padding: 0.5rem 1.2rem;
+    background: linear-gradient(135deg, #48199e, #2b06af);
+
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-print:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-close {
+  padding: 0.5rem 1.2rem;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-close:hover {
+  background: #5a6268;
+}
+
+.btn-approuver {
+  padding: 0.4rem 1rem;
+  background: linear-gradient(135deg, #48199e, #2b06af);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.3s;
+}
+
+.btn-approuver:hover {
+  transform: translateY(-2px);
+}
+
+/* Impression */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .modal-overlay {
+    position: static;
+    background: none;
+  }
+  
+  .modal-content {
+    box-shadow: none;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .fiche-print {
+    padding: 0.5cm;
+  }
+  
+  .signature-line {
+    border-bottom: 1px solid #000;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+  }
+  
+  .info-table td {
+    display: block;
+    width: 100%;
+  }
+  
+  .info-table .label {
+    width: 100%;
+    background: #f0f0f0;
+  }
+  
+  .signature-section {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .header-logo {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .document-title h1 {
+    font-size: 1rem;
+  }
+  
+  .fiche-section h4 {
+    font-size: 0.8rem;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-content {
+  animation: fadeIn 0.3s ease;
+}

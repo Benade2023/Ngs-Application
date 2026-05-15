@@ -128,7 +128,7 @@
         </div>
         <div class="materiel-footer">
           <button class="btn-small entree" (click)="ouvrirMouvement('entree', materiel)">📥 Entrée</button>
-          <button class="btn-small sortie" (click)="ouvrirMouvement('sortie', materiel)">📤 Sortie</button>
+          <button class="btn-small sortie" (click)="ouvrirMouvement('sortie', materiel)">📤 Vente</button>
           <button class="btn-small location" (click)="ouvrirLocation(materiel)">🔁 Location</button>
         </div>
       </div>
@@ -183,7 +183,7 @@
             <span class="location-code">{{ location.materielCode }}</span>
           </div>
           <div class="location-statut" [class]="getStatutClass(location.statut)">
-            {{ location.statut === 'en_cours' ? 'En cours' : location.statut === 'termine' ? 'Terminé' : 'En retard' }}
+            {{ getStatutLabel(location.statut) }}
           </div>
         </div>
         <div class="location-body">
@@ -213,13 +213,269 @@
             <span>{{ location.projetNom }}</span>
           </div>
         </div>
+        <span *ngIf="getStatutLabel(location.statut) === 'En Attente'" style="color: red;">Votre demande est en attente
+          d'approbation !</span>
+
         <div class="location-footer" *ngIf="location.statut === 'en_cours'">
           <button class="btn-retour" (click)="retourLocation(location)">✔️ Confirmer retour</button>
+          <button class="btn-fiche" (click)="openFicheModal(location)">
+            📄 Fiche
+          </button>
         </div>
+        <!-- Bouton d'approbation -->
+<div class="location-footer" *ngIf="location.statut === 'en_attente_approbation'">
+  <button class="btn-approuver" (click)="approuverLocation(location)">✔️ Approuver la location</button>
+</div>
+
+<!-- Modal Fiche de location -->
+<div class="modal-overlay" *ngIf="showFicheModal" (click)="closeFicheModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+  
+    <div class="modal-header no-print">
+      <h2>📄 Fiche de location</h2>
+      <button class="close-btn" (click)="closeFicheModal()">✖</button>
+    </div>
+
+    <div #printSection class="fiche-print">
+      <!-- En-tête avec logo -->
+      <div class="fiche-header">
+        <div class="header-logo" style="justify-content: center;">
+          <div class="logo-placeholder">
+            <span class="logo-icon">🏭</span>
+          </div>
+          <div class="company-info">
+            <h2>NGOULOU SERVICES</h2>
+            <p>📍 Quartier Kurou, Port-Gentil - Gabon</p>
+            <p>📞 07540432 – 02 93 49 93 | ✉️ projets@ngservices.info</p>
+            <p>🌐 ngservices.info | N°STATISQUE : 039999 A RG/POG 2015B 1710</p>
+          </div>
+        </div>
+        <div class="document-title">
+          <h1>FICHE DE LOCATION DE MATÉRIEL</h1>
+          <p class="reference">Référence : {{ selectedLocation?.id || 'N/A' }}</p>
+        </div>
+      </div>
+
+      <!-- Corps du document -->
+      <div class="fiche-body">
+        <!-- Section Matériel -->
+        <div class="fiche-section">
+          <h4>📦 INFORMATIONS MATÉRIEL</h4>
+          <table class="info-table">
+            <tr>
+              <td class="label">Code matériel</td>
+              <td class="value">{{ selectedLocation?.materielCode || '-' }}</td>
+              <td class="label">Nom du matériel</td>
+              <td class="value">{{ selectedLocation?.materielNom || '-' }}</td>
+            </tr>
+            <tr>
+              <td class="label">Quantité</td>
+              <td class="value">{{ selectedLocation?.quantite || 0 }}</td>
+              <td class="label">Statut</td>
+              <td class="value">
+                <span class="status-badge" [class]="getStatutClass(location.statut)">
+                  {{ getStatutLabel(selectedLocation?.statut) }}
+                </span>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Section Emprunteur -->
+        <div class="fiche-section">
+          <h4>👤 INFORMATIONS EMPRUNTEUR</h4>
+          <table class="info-table">
+            <tr>
+              <td class="label">Nom complet</td>
+              <td class="value">{{ selectedLocation?.emprunteur || '-' }}</td>
+              <td class="label">Contact</td>
+              <td class="value">{{ selectedLocation?.emprunteurContact || '-' }}</td>
+            </tr>
+            <tr>
+              <td class="label">Projet associé</td>
+              <td class="value">{{ selectedLocation?.projetNom || 'Non renseigné' }}</td>
+              <td class="label">Responsable</td>
+              <td class="value">{{ selectedLocation?.responsable || '-' }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Section Dates -->
+        <div class="fiche-section">
+          <h4>📅 PÉRIODE DE LOCATION</h4>
+          <table class="info-table">
+            <tr>
+              <td class="label">Date de début</td>
+              <td class="value">{{ (selectedLocation?.dateDebut | date:'dd/MM/yyyy HH:mm') || '-' }}</td>
+              <td class="label">Date fin prévue</td>
+              <td class="value">{{ (selectedLocation?.dateFinPrevue | date:'dd/MM/yyyy') || '-' }}</td>
+            </tr>
+            <tr>
+              <td class="label">Date fin réelle</td>
+              <td class="value" colspan="3">{{ selectedLocation?.dateFinReelle ? (selectedLocation?.dateFinReelle| date:'dd/MM/yyyy HH:mm') : 'En cours' }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Section Motif -->
+        <div class="fiche-section">
+          <h4>📝 MOTIF & OBSERVATIONS</h4>
+          <table class="info-table">
+            <tr>
+              <td class="label">Motif</td>
+              <td class="value">{{ selectedLocation?.motif || '-' }}</td>
+            </tr>
+            <tr>
+              <td class="label">Observations</td>
+              <td class="value">{{ selectedLocation?.Observations || 'Aucune observation' }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Section Signatures -->
+        <div class="signature-section">
+          <div class="signature-box">
+            <p>Signature emprunteur</p>
+            <div class="signature-line"></div>
+          </div>
+          <div class="signature-box">
+            <p>Signature responsable magasin</p>
+            <div class="signature-line"></div>
+          </div>
+          <div class="signature-box">
+            <p>Cachet société</p>
+            <div class="signature-line"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pied de page -->
+      <div class="fiche-footer">
+        <div class="footer-text">
+          <p>Ce document est la propriété de NGOULOU SERVICES. Il ne peut être reproduit ni transmis à des tiers sans autorisation écrite de la SOCIETE.</p>
+          <p>Société NGS - Siège Quartier Kurou, Port-Gentil - Gabon | N°STATISQUE : 039999 A RG/POG 2015B 1710</p>
+          <p>Tel : 07540432 – 02 93 49 93 | Site Internet : ngservices.info | Email : projets@ngservices.info</p>
+        </div>
+        <div class="footer-date">
+          <p>Document généré le {{ dateActuelle | date:'dd/MM/yyyy à HH:mm' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions no-print">
+      <button class="btn-print" (click)="printFiche()">🖨️ Imprimer</button>
+      <button class="btn-close" (click)="closeFicheModal()">Fermer</button>
+    </div>
+  </div>
+</div>
+        <!-- <div class="location-footer" *ngIf="location.statut === 'en_attente_approbation'">
+          <button class="btn-retour" (click)="approuverLocation(location)">✔️ Approuver</button>
+        </div>
+        <div class="modal-overlay" *ngIf="showFicheModal" (click)="closeFicheModal()">
+          <div class="modal-content" (click)="$event.stopPropagation()">
+        
+            <div class="modal-header no-print">
+              <h2>Fiche de location</h2>
+              <button class="close-btn" (click)="closeFicheModal()">✖</button>
+            </div>
+        
+            <div #printSection class="fiche-print" *ngIf="selectedLocation as location">
+              <div class="fiche-header">
+                <h3>FICHE DE LOCATION DE MATÉRIEL</h3>
+                <p><strong>Référence :</strong> {{ location.id }}</p>
+              </div>
+        
+              <div class="fiche-section">
+                <p><strong>Code :</strong> {{ location.materielCode }}</p>
+                <p><strong>Nom :</strong> {{ location.materielNom }}</p>
+                <p><strong>Quantité :</strong> {{ location.quantite }}</p>
+                <p><strong>Statut :</strong> {{ getStatutLabel(location.statut) }}</p>
+              </div>
+        
+              <div class="fiche-section">
+                <p><strong>Emprunteur :</strong> {{ location.emprunteur }}</p>
+                <p><strong>Contact :</strong> {{ location.emprunteurContact }}</p>
+                <p><strong>Projet :</strong> {{ location.projetNom || 'Non renseigné' }}</p>
+                <p><strong>Responsable :</strong> {{ location.responsable }}</p>
+              </div>
+        
+              <div class="fiche-section">
+                <p><strong>Date début :</strong> {{ location.dateDebut | date:'dd/MM/yyyy HH:mm' }}</p>
+                <p><strong>Date fin prévue :</strong> {{ location.dateFinPrevue | date:'dd/MM/yyyy' }}</p>
+                <p><strong>Date fin réelle :</strong> {{ location.dateFinReelle ? (location.dateFinReelle | date:'dd/MM/yyyy
+                  HH:mm') : '—' }}</p>
+              </div>
+        
+              <div class="fiche-section">
+                <p><strong>Motif :</strong> {{ location.motif }}</p>
+                <p><strong>Observations :</strong> {{ location.Observations || 'Aucune' }}</p>
+              </div>
+            </div>
+        
+            <div class="modal-actions no-print">
+              <button class="btn-print" (click)="printFiche()">🖨️ Imprimer</button>
+              <button class="btn-close" (click)="closeFicheModal()">Fermer</button>
+            </div>
+          </div>
+        </div> -->
+
+
       </div>
     </div>
   </div>
 </div>
+
+<!-- MODAL -->
+<!-- <div class="modal-overlay" *ngIf="showFicheModal" (click)="closeFicheModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <h2>Fiche de location</h2>
+      <button class="close-btn" (click)="closeFicheModal()">✖</button>
+    </div>
+
+    <div class="fiche-print" *ngIf="selectedLocation as location">
+      <div class="fiche-header">
+        <h3>FICHE DE LOCATION DE MATÉRIEL</h3>
+        <p><strong>Référence :</strong> {{ location.id }}</p>
+      </div>
+
+      <div class="fiche-section">
+        <h4>Matériel</h4>
+        <p><strong>Code :</strong> {{ location.materielCode }}</p>
+        <p><strong>Nom :</strong> {{ location.materielNom }}</p>
+        <p><strong>Quantité :</strong> {{ location.quantite }}</p>
+        <p><strong>Statut :</strong> {{ getStatutLabel(location.statut) }}</p>
+      </div>
+
+      <div class="fiche-section">
+        <h4>Emprunteur</h4>
+        <p><strong>Nom :</strong> {{ location.emprunteur }}</p>
+        <p><strong>Contact :</strong> {{ location.emprunteurContact }}</p>
+        <p><strong>Projet :</strong> {{ location.projetNom || 'Non renseigné' }}</p>
+        <p><strong>Responsable :</strong> {{ location.responsable }}</p>
+      </div>
+
+      <div class="fiche-section">
+        <h4>Dates</h4>
+        <p><strong>Début :</strong> {{ location.dateDebut | date:'dd/MM/yyyy HH:mm' }}</p>
+        <p><strong>Fin prévue :</strong> {{ location.dateFinPrevue | date:'dd/MM/yyyy' }}</p>
+        <p><strong>Fin réelle :</strong> {{ location.dateFinReelle ? (location.dateFinReelle | date:'dd/MM/yyyy HH:mm') : '—' }}</p>
+      </div>
+
+      <div class="fiche-section">
+        <h4>Compléments</h4>
+        <p><strong>Motif :</strong> {{ location.motif }}</p>
+        <p><strong>Observations :</strong> {{ location.Observations || 'Aucune' }}</p>
+      </div>
+    </div>
+
+    <div class="modal-actions no-print">
+      <button class="btn-print" (click)="printFiche()">🖨️ Imprimer</button>
+      <button class="btn-close" (click)="closeFicheModal()">Fermer</button>
+    </div>
+  </div>
+</div> -->
 
 <!-- Modal Matériel -->
 <div class="modal" [class.active]="showMaterielModal" (click)="closeModalOnOutside($event)">

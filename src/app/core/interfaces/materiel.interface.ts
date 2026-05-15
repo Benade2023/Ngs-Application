@@ -60,7 +60,7 @@ export interface LocationMateriel {
   dateDebut: Date;
   dateFinPrevue: Date;
   dateFinReelle?: Date;
-  statut: 'en_cours' | 'termine' | 'retard';
+  statut: 'en_cours' | 'termine' | 'retard' | 'en_attente_approbation';
   emprunteur: string;
   emprunteurContact: string;
   projetId?: string;

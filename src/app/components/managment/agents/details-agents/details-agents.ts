@@ -8,6 +8,7 @@ import { UploadedFile } from '../../../../core/interfaces/uploadFile.interface';
 import { FileUploadService } from '../../../../core/services/file-upload.service';
 import { ElementRef, ViewChild } from '@angular/core';
 import { EnvironmentProduction } from '../../../../../environment/environment.production';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 @Component({
@@ -33,7 +34,7 @@ export class DetailsAgents implements OnInit {
   readonly HABILITATION_DUREE = 3; // 3 ans
   readonly CERTIFICAT_MEDICAL_DUREE = 1; // 1 an
   readonly CARTE_MARINE_DUREE = 0.5; // 6 mois
-  projectId: string ='';
+  projectId: string = '';
 
   @ViewChild('fileInput') fileInput!: ElementRef;
 
@@ -81,50 +82,83 @@ export class DetailsAgents implements OnInit {
     }
   }
 
-uploadInduction(): void {
-  if (!this.selectedFile) {
-    this.alert.error('Sélectionne un fichier avant de l’envoyer.');
-    return;
+  getInductionAgent(matricule: string, type: string) {
+    this.fileUploadService.getFiles().subscribe({
+      next: (data) => {
+        this.inductionAgent = data.find(x => x.matriculeAgent === matricule && x.type === type)
+        this.cdr.markForCheck();
+      }
+    })
   }
 
-  const matricule = (this.matriculeAgent ?? '').trim();
-  const projectId = (this.projectId ?? '').trim();
-  const type = ('Induction').trim();
+  uploadInduction(): void {
+    if (!this.selectedFile) {
+      this.alert.error('Sélectionne un fichier avant de l’envoyer.');
+      return;
+    }
 
-  //console.log({ matricule, projectId });
+    const matricule = (this.matriculeAgent ?? '').trim();
+    const projectId = (this.projectId ?? '').trim();
+    const type = ('Induction').trim();
 
-  this.fileUploadService
-    .uploadFile(
-      this.selectedFile,
-      matricule || undefined,
-      projectId || undefined,
-      type || undefined
-    )
-    .subscribe({
+    //console.log({ matricule, projectId });
+
+    this.fileUploadService
+      .uploadFile(
+        this.selectedFile,
+        matricule || undefined,
+        projectId || undefined,
+        type || undefined
+      )
+      .subscribe({
+        next: (res) => {
+          this.cdr.markForCheck();
+          this.uploadedFile = res;
+          this.alert.success('Induction téléversé avec success !');
+          // Réinitialisation
+          this.selectedFile = null;
+
+          this.fileInput.nativeElement.value = '';
+          window.location.reload();
+
+        },
+        error: (err: HttpErrorResponse) => {
+          this.alert.error('Erreur pendant l’upload.');
+          console.error(err)
+        }
+      });
+  }
+
+
+  updateFile(id: number) {
+    if (!this.selectedFile) {
+      this.alert.error('Sélectionne un fichier avant de l’envoyer.');
+      return;
+    }
+    let idInduction = id;
+    let fileSelect = this.selectedFile;
+    let matriculeAgent = (this.matriculeAgent ?? '').trim();
+    let type = 'Induction';
+
+    this.fileUploadService.updateFile(
+      idInduction,
+      fileSelect,
+      matriculeAgent,
+      type
+    ).subscribe({
       next: (res) => {
-        this.uploadedFile = res;
-        this.alert.success('Induction téléversé avec success !');
-        // Réinitialisation
-        this.selectedFile = null;
-
-        this.fileInput.nativeElement.value = '';
         this.cdr.markForCheck();
+        this.alert.success('Fichier mis à jour');
+        window.location.reload();
+
       },
-      error: () => {
-        this.alert.error('Erreur pendant l’upload.');
+      error: (err) => {
+        this.alert.error(err);
       }
     });
-}
+  }
 
-getInductionAgent(matricule: string, type: string) {
-  this.fileUploadService.getFiles().subscribe({
-    next: (data) => {
-      this.inductionAgent = data.find(x => x.matriculeAgent === matricule && x.type === type)
-      
-      console.log(this.inductionAgent);
-    }
-  })
-}
+
 
 
   // Calcul de l'âge

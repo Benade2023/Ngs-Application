@@ -101,3 +101,62 @@
 .file-link a:hover {
   background: #1d4ed8;
 }
+
+
+
+
+
+
+
+
+.file-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.upload-btn,
+.update-btn,
+.view-btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+/* Voir document */
+.view-btn {
+  background: #1976d2;
+  color: white;
+}
+
+/* Upload */
+.upload-btn {
+  background: #424242;
+  color: white;
+}
+
+/* Modifier */
+.update-btn {
+  background: #2e7d32;
+  color: white;
+}
+
+.upload-btn:hover,
+.update-btn:hover,
+.view-btn:hover {
+  opacity: 0.9;
+}
+
+.file-name {
+  font-size: 13px;
+  color: #555;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

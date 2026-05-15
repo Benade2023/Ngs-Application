@@ -212,17 +212,42 @@
             <span class="file-name" *ngIf="selectedFile">
               {{'Fichier sélectionné: ' + selectedFile.name }}
             </span>
-            <!-- <p *ngIf="errorMessage" style="color:red">{{ errorMessage }}</p> -->
           </div>
 
           <div>
-         
-             <div class="file-link" *ngIf="inductionAgent">
+            <div class="file-link" *ngIf="inductionAgent">
+
+              <!-- Voir document -->
+              <a class="view-btn" [href]="apiUrl + inductionAgent.filePath" target="_blank">
+                Voir le document
+              </a>
+              <div *ngIf="getInductionStatus(employe) === 'Expire bientôt' || getInductionStatus(employe) === 'Expiré'">
+   <!-- Input caché -->
+              <input #fileInput type="file" id="fileUpload" hidden (change)="onFileSelected($event)"
+                accept=".png,.jpg,.jpeg,.pdf" />
+
+              <!-- Bouton choisir fichier -->
+              <label for="fileUpload" class="upload-btn">
+                Mise à jour du document
+              </label>
+              <!-- Bouton modifier visible seulement si fichier choisi -->
+              <button class="update-btn" type="button" *ngIf="selectedFile" (click)="updateFile(inductionAgent.id)">
+                Modifier
+              </button>
+              </div>
+           
+
+            </div>
+
+            <!-- <div class="file-link" *ngIf="inductionAgent">
 
                 <a [href]="apiUrl + inductionAgent.filePath" target="_blank">
                   Voir le document
                 </a>
-              </div>
+                <input #fileInput type="file" id="fileUpload" (change)="onFileSelected($event)"
+                accept=".png,.jpg,.jpeg,.pdf" />
+                <button type="button" (click)="updateFile(inductionAgent.id)">Modifier</button>
+              </div> -->
           </div>
 
         </div>

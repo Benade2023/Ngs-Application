@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Categorie, Fournisseur, LocationMateriel, Materiel, MouvementStock } from '../../../../core/interfaces/materiel.interface';
 import { Router } from '@angular/router';
@@ -41,6 +41,9 @@ export class GestionMagasin implements OnInit {
   showLocationModal = false;
   selectedMateriel: Materiel | null = null;
 
+  showFicheModal = false;
+  selectedLocation: LocationMateriel | null = null;
+
   // Formulaire matériel
   materielForm: Partial<Materiel> = {};
 
@@ -63,6 +66,10 @@ export class GestionMagasin implements OnInit {
     locationsEncours: 0,
     mouvementsJour: 0
   };
+dateActuelle = Date.now();
+
+
+  @ViewChild('printSection') printSection!: ElementRef<HTMLDivElement>;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -77,6 +84,124 @@ export class GestionMagasin implements OnInit {
   ngOnInit() {
     this.loadData();
   }
+  openFicheModal(location: LocationMateriel): void {
+    this.selectedLocation = location;
+    this.showFicheModal = true;
+  }
+
+  closeFicheModal(): void {
+    this.showFicheModal = false;
+    this.selectedLocation = null;
+  }
+
+  // printFiche(): void {
+  //   const content = this.printSection?.nativeElement?.innerHTML;
+  //   if (!content) {
+  //     return;
+  //   }
+
+  //   const printWindow = window.open('', '_blank', 'width=900,height=700');
+  //   if (!printWindow) {
+  //     return;
+  //   }
+
+  //   printWindow.document.open();
+  //   printWindow.document.write(`
+  //   <html>
+  //     <head>
+  //       <title>Fiche de location</title>
+  //       <style>
+  //         body {
+  //           font-family: Arial, sans-serif;
+  //           padding: 20px;
+  //           color: #000;
+  //         }
+  //         .fiche-print {
+  //           max-width: 800px;
+  //           margin: 0 auto;
+  //           border: 1px solid #000;
+  //           padding: 20px;
+  //         }
+  //         .fiche-header {
+  //           text-align: center;
+  //           border-bottom: 2px solid #000;
+  //           margin-bottom: 20px;
+  //           padding-bottom: 10px;
+  //         }
+  //         .fiche-section {
+  //           margin-bottom: 15px;
+  //         }
+  //         .fiche-section p {
+  //           margin: 6px 0;
+  //         }
+  //       </style>
+  //     </head>
+  //     <body>
+  //       <div class="fiche-print">
+  //         ${content}
+  //       </div>
+  //     </body>
+  //   </html>
+  // `);
+  //   printWindow.document.close();
+
+  //   printWindow.onload = () => {
+  //     printWindow.focus();
+  //     printWindow.print();
+  //     printWindow.close();
+  //   };
+  // }
+
+
+  printFiche() {
+  const printContent = document.querySelector('.fiche-print')?.innerHTML;
+  const printWindow = window.open('', '_blank', 'width=900,height=650');
+  if (printWindow) {
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Fiche de location - ${this.selectedLocation?.id}</title>
+          <style>
+            ${this.getPrintStyles()}
+          </style>
+        </head>
+        <body>
+          ${printContent}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+    printWindow.close();
+  }
+}
+
+private getPrintStyles(): string {
+  return `
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .fiche-header { margin-bottom: 20px; border-bottom: 2px solid #1a472a;  }
+    .header-logo { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; justify-content: center; }
+    .logo-placeholder { width: 60px; height: 60px; background: #1a472a; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .logo-icon { font-size: 2rem; }
+    .company-info h2 { color: #1a472a; margin-bottom: 5px; }
+    .company-info p { font-size: 0.7rem; margin: 2px 0; }
+    .document-title { text-align: center; margin: 15px 0; }
+    .document-title h1 { color: #1a472a; font-size: 1.3rem; margin-top: 80px; }
+    .fiche-section { margin-bottom: 20px; }
+    .fiche-section h4 { background: #f0f0f0; padding: 5px 10px; margin-bottom: 10px; border-left: 3px solid #1a472a; }
+    .info-table { width: 100%; border-collapse: collapse; }
+    .info-table td { padding: 5px; border-bottom: 1px solid #eee; }
+    .info-table .label { width: 140px; font-weight: bold; }
+    .signature-section { display: flex; justify-content: space-between; margin-top: 30px; }
+    .signature-box { flex: 1; text-align: center; }
+    .signature-line { height: 50px; border-bottom: 1px solid #000; margin-top: 5px; }
+    .fiche-footer { margin-top: 20px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 0.65rem; text-align: center; }
+    .footer-text p { margin: 2px 0; }
+    .footer-date { margin-top: 10px; }
+  `;
+}
 
   loadData() {
     // chargement des catégories//
@@ -162,11 +287,33 @@ export class GestionMagasin implements OnInit {
     return 'normal';
   }
 
+  getStatutLabel(statut?: string): string {
+
+    switch (statut) {
+
+      case 'en_cours':
+        return 'En cours';
+
+      case 'termine':
+        return 'Terminé';
+
+      case 'en_retard':
+        return 'En retard';
+
+      case 'en_attente_approbation':
+        return 'En Attente';
+
+      default:
+        return 'En attente';
+    }
+  }
+
   getStatutClass(statut: string): string {
     const classes: any = {
       'en_cours': 'status-encours',
       'termine': 'status-termine',
-      'retard': 'status-retard'
+      'retard': 'status-retard',
+      'en_attente_approbation': 'status-encours'
     };
     return classes[statut] || '';
   }
@@ -175,119 +322,82 @@ export class GestionMagasin implements OnInit {
     const classes: any = {
       'entree': 'type-entree',
       'sortie': 'type-sortie',
-      'retour': 'type-retour'
+      'retour': 'type-retour',
+      'en_attente_approbation': 'status-encours'
     };
     return classes[type] || '';
   }
 
-  // applyFilters() {
-  //   let filtered = [...this.materiaux];
 
-  //   if (this.searchTerm) {
-  //     const term = this.searchTerm.toLowerCase();
-  //     filtered = filtered.filter(m =>
-  //       m.nom.toLowerCase().includes(term) ||
-  //       m.code.toLowerCase().includes(term) ||
-  //       m.categorieNom.toLowerCase().includes(term)
-  //     );
-  //   }
+  // Méthode applyFilters corrigée
+  applyFilters() {
+    // Vérifier que allMateriaux existe
+    if (!this.allMateriaux || this.allMateriaux.length === 0) {
+      this.materiaux = [];
+      this.totalPages = 0;
+      return;
+    }
 
-  //   if (this.selectedCategorie) {
-  //     filtered = filtered.filter(m => m.categorieId === this.selectedCategorie);
-  //   }
+    let filtered = [...this.allMateriaux];
 
-  //   if (this.selectedType) {
-  //     filtered = filtered.filter(m => m.type === this.selectedType);
-  //   }
+    if (this.searchTerm && this.searchTerm.trim()) {
+      const term = this.searchTerm.toLowerCase().trim();
+      filtered = filtered.filter(m => {
+        // Vérifier que m existe
+        if (!m) return false;
 
-  //   this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
-  //   const start = (this.currentPage - 1) * this.itemsPerPage;
-  //   this.materiaux = filtered.slice(start, start + this.itemsPerPage);
-  // }
+        // Vérifier chaque champ avec une valeur par défaut
+        const nom = m.nom || '';
+        const code = m.code || '';
+        const categorie = m.categorieNom || '';
 
-  // Ajoutez cette propriété dans votre composant
-//allMateriaux: Materiel[] = []; // Pour conserver la liste complète
+        return nom.toLowerCase().includes(term) ||
+          code.toLowerCase().includes(term) ||
+          categorie.toLowerCase().includes(term);
+      });
+    }
 
-// Chargez vos données
-// loadMateriaux() {
-//   this.mouvementStockService.getMateriaux().subscribe({
-//     next: (data) => {
-//       this.allMateriaux = data; // Stocker la liste complète
-//       this.materiaux = [...data]; // Copie pour l'affichage
-//       this.applyFilters();
-//     }
-//   });
-// }
+    if (this.selectedCategorie) {
+      filtered = filtered.filter(m => m && m.categorieId === this.selectedCategorie);
+    }
 
-// Méthode applyFilters corrigée
-applyFilters() {
-  // Vérifier que allMateriaux existe
-  if (!this.allMateriaux || this.allMateriaux.length === 0) {
-    this.materiaux = [];
-    this.totalPages = 0;
-    return;
+    if (this.selectedType) {
+      filtered = filtered.filter(m => m && m.type === this.selectedType);
+    }
+
+    this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
+
+    if (this.currentPage > this.totalPages && this.totalPages > 0) {
+      this.currentPage = this.totalPages;
+    }
+
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    this.materiaux = filtered.slice(start, start + this.itemsPerPage);
   }
 
-  let filtered = [...this.allMateriaux];
-
-  if (this.searchTerm && this.searchTerm.trim()) {
-    const term = this.searchTerm.toLowerCase().trim();
-    filtered = filtered.filter(m => {
-      // Vérifier que m existe
-      if (!m) return false;
-      
-      // Vérifier chaque champ avec une valeur par défaut
-      const nom = m.nom || '';
-      const code = m.code || '';
-      const categorie = m.categorieNom || '';
-      
-      return nom.toLowerCase().includes(term) ||
-             code.toLowerCase().includes(term) ||
-             categorie.toLowerCase().includes(term);
-    });
+  // Méthodes de pagination simplifiées
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.applyFilters();
+    }
   }
 
-  if (this.selectedCategorie) {
-    filtered = filtered.filter(m => m && m.categorieId === this.selectedCategorie);
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.applyFilters();
+    }
   }
 
-  if (this.selectedType) {
-    filtered = filtered.filter(m => m && m.type === this.selectedType);
-  }
-
-  this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
-  
-  if (this.currentPage > this.totalPages && this.totalPages > 0) {
-    this.currentPage = this.totalPages;
-  }
-  
-  const start = (this.currentPage - 1) * this.itemsPerPage;
-  this.materiaux = filtered.slice(start, start + this.itemsPerPage);
-}
-
-// Méthodes de pagination simplifiées
-previousPage() {
-  if (this.currentPage > 1) {
-    this.currentPage--;
+  // // Reset des filtres
+  resetFilters() {
+    this.searchTerm = '';
+    this.selectedCategorie = '';
+    this.selectedType = '';
+    this.currentPage = 1;
     this.applyFilters();
   }
-}
-
-nextPage() {
-  if (this.currentPage < this.totalPages) {
-    this.currentPage++;
-    this.applyFilters();
-  }
-}
-
-// // Reset des filtres
-resetFilters() {
-  this.searchTerm = '';
-  this.selectedCategorie = '';
-  this.selectedType = '';
-  this.currentPage = 1;
-  this.applyFilters();
-}
 
   // resetFilters() {
   //   this.searchTerm = '';
@@ -322,7 +432,7 @@ resetFilters() {
       quantite: 1,
       dateDebut: new Date(),
       dateFinPrevue: new Date(new Date().setDate(new Date().getDate() + 7)),
-      statut: 'en_cours',
+      statut: 'en_attente_approbation',
       emprunteur: '',
       emprunteurContact: '',
       motif: '',
@@ -375,32 +485,32 @@ resetFilters() {
     //   }
     // } 
     if (this.isEditMode) {
-  this.isLoading = true;
-  
-  const materielUpdate = { ...this.materielForm as Materiel };
-  
-  this.mouvementStockService.updateMateriel(materielUpdate.id, materielUpdate).subscribe({
-    next: (updatedMateriel) => {
-      const index = this.materiaux.findIndex(m => m.id === updatedMateriel.id);
-      if (index !== -1) {
-        this.materiaux[index] = updatedMateriel;
-      }
-      this.isLoading = false;
-      this.alert.success('Matériel modifié avec succès');
-      this.closeModal();
-      // setTimeout(() => this.messageSuccess = '', 3000);
-      this.cdr.markForCheck();
-    },
-    error: (error) => {
-      console.error('Erreur lors de la modification:', error);
-      this.isLoading = false;
-      this.alert.error('Erreur lors de la modification du matériel');
-      // setTimeout(() => this.messageError = '', 3000);
+      this.isLoading = true;
+
+      const materielUpdate = { ...this.materielForm as Materiel };
+
+      this.mouvementStockService.updateMateriel(materielUpdate.id, materielUpdate).subscribe({
+        next: (updatedMateriel) => {
+          const index = this.materiaux.findIndex(m => m.id === updatedMateriel.id);
+          if (index !== -1) {
+            this.materiaux[index] = updatedMateriel;
+          }
+          this.isLoading = false;
+          this.alert.success('Matériel modifié avec succès');
+          this.closeModal();
+          // setTimeout(() => this.messageSuccess = '', 3000);
+          this.cdr.markForCheck();
+        },
+        error: (error) => {
+          console.error('Erreur lors de la modification:', error);
+          this.isLoading = false;
+          this.alert.error('Erreur lors de la modification du matériel');
+          // setTimeout(() => this.messageError = '', 3000);
+        }
+      });
     }
-  });
-}
-    
-    
+
+
     else {
       const newMateriel = {
         ...this.materielForm,
@@ -491,181 +601,178 @@ resetFilters() {
 
 
   saveLocation() {
-  if (!this.locationForm.materielId || !this.locationForm.emprunteur || !this.locationForm.dateFinPrevue) {
-    this.alert.toast('Veuillez remplir tous les champs obligatoires');
-    return;
-  }
-
-  const materiel = this.getMaterielById(this.locationForm.materielId);
-  if (!materiel) {
-    this.alert.error('Matériel non trouvé');
-    return;
-  }
-
-  const quantiteLocation = this.locationForm.quantite || 1;
-  
-  // Vérification du stock
-  if (materiel.quantiteStock < quantiteLocation) {
-    this.alert.error(`Stock insuffisant ! Stock disponible: ${materiel.quantiteStock}`);
-    return;
-  }
-
-  // Sauvegarder l'état original du stock pour restauration possible
-  const stockOriginal = materiel.quantiteStock;
-  
-  // Mettre à jour le stock du matériel
-  materiel.quantiteStock -= quantiteLocation;
-  materiel.dateDerniereSortie = new Date();
-
-  // Sauvegarder d'abord la mise à jour du stock
-  this.mouvementStockService.updateMateriel(materiel.id, materiel).subscribe({
-    next: () => {
-      // Après mise à jour du stock, ajouter la location
-      const newLocation = {
-        ...this.locationForm,
-        id: `LOC-${Date.now()}`,
-        dateDebut: new Date(),
-        statut: 'en_cours'
-      } as LocationMateriel;
-
-      this.mouvementStockService.addLocation(newLocation).subscribe({
-        next: (data) => {
-          this.locations.unshift(newLocation);
-          this.alert.success("Location ajoutée avec succès");
-          console.log("Location et stock mis à jour");
-          this.calculateStats();
-          this.closeModal();
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          // Restaurer le stock en cas d'échec
-          materiel.quantiteStock = stockOriginal;
-          this.mouvementStockService.updateMateriel(materiel.id, materiel).subscribe({
-            next: () => {
-              this.alert.error("Erreur lors de l'ajout de la location. Stock restauré.");
-            },
-            error: () => {
-              this.alert.error("Erreur critique : Stock non restauré. Vérifiez manuellement.");
-            }
-          });
-          console.error("Erreur d'ajout de la location", err);
-        }
-      });
-    },
-    error: (err) => {
-      // Restaurer le stock localement car la mise à jour a échoué
-      materiel.quantiteStock = stockOriginal;
-      this.alert.error("Erreur lors de la mise à jour du stock");
-      console.error("Erreur de mise à jour du stock", err);
+    if (!this.locationForm.materielId || !this.locationForm.emprunteur || !this.locationForm.dateFinPrevue) {
+      this.alert.toast('Veuillez remplir tous les champs obligatoires');
+      return;
     }
-  });
-}
 
-  // saveLocation() {
-  //   if (!this.locationForm.materielId || !this.locationForm.emprunteur || !this.locationForm.dateFinPrevue) {
-  //     alert('Veuillez remplir tous les champs obligatoires');
-  //     return;
-  //   }
-
-  //   const materiel = this.getMaterielById(this.locationForm.materielId);
-  //   if (materiel && materiel.quantiteStock < (this.locationForm.quantite || 1)) {
-  //     alert('Stock insuffisant pour la location !');
-  //     return;
-  //   }
-
-  //   if (materiel) {
-  //     materiel.quantiteStock -= (this.locationForm.quantite || 1);
-  //   }
-
-  //   const newLocation = {
-  //     ...this.locationForm,
-  //     id: `LOC-${Date.now()}`,
-  //     dateDebut: new Date(),
-  //     statut: 'en_cours'
-  //   } as LocationMateriel;
-
-  //   this.mouvementStockService.addLocation(newLocation).subscribe({
-  //     next: (data) => {
-  //       this.locations.unshift(newLocation);
-  //       this.calculateStats();
-  //       this.closeModal();
-  //       this.cdr.detectChanges();
-  //     }
-  //   })
-  // }
-
-  retourLocation(location: LocationMateriel) {
-  if (confirm(`Confirmer le retour du matériel "${location.materielNom}" ?`)) {
-    const materiel = this.getMaterielById(location.materielId);
+    const materiel = this.getMaterielById(this.locationForm.materielId);
     if (!materiel) {
       this.alert.error('Matériel non trouvé');
       return;
     }
 
-    // Sauvegarder l'état original pour restauration possible
+    const quantiteLocation = this.locationForm.quantite || 1;
+
+    // Vérification du stock
+    if (materiel.quantiteStock < quantiteLocation) {
+      this.alert.error(`Stock insuffisant ! Stock disponible: ${materiel.quantiteStock}`);
+      return;
+    }
+
+    // Sauvegarder l'état original du stock pour restauration possible
     const stockOriginal = materiel.quantiteStock;
-    
-    // Mettre à jour le stock localement
-    materiel.quantiteStock += location.quantite;
-    materiel.dateDerniereEntree = new Date();
+
+    // Mettre à jour le stock du matériel
+    materiel.quantiteStock -= quantiteLocation;
+    materiel.dateDerniereSortie = new Date();
 
     // Sauvegarder d'abord la mise à jour du stock
     this.mouvementStockService.updateMateriel(materiel.id, materiel).subscribe({
       next: () => {
-        // Après mise à jour du stock, mettre à jour la location
-        location.statut = 'termine';
-        location.dateFinReelle = new Date();
+        // Après mise à jour du stock, ajouter la location
+        const newLocation = {
+          ...this.locationForm,
+          id: `LOC-${Date.now()}`,
+          dateDebut: new Date(),
+          statut: 'en_attente_approbation'
+        } as LocationMateriel;
 
-        // Mettre à jour la location dans la base de données
-        this.mouvementStockService.updateLocation(location.id, location).subscribe({
-          next: () => {
-            // Ajouter un mouvement de retour
-            const newMouvement = {
-              id: `MOV-${Date.now()}`,
-              materielId: location.materielId,
-              materielCode: location.materielCode,
-              materielNom: location.materielNom,
-              type: 'retour',
-              quantite: location.quantite,
-              date: new Date(),
-              motif: `Retour de location - ${location.motif}`,
-              destination: 'Magasin',
-              utilisateur: location.responsable
-            } as MouvementStock;
-
-            this.mouvementStockService.addMouvementStock(newMouvement).subscribe({
-              next: () => {
-                this.mouvements.unshift(newMouvement);
-                this.alert.success("Retour de location effectué avec succès");
-                console.log("Retour de location et stock mis à jour");
-                this.calculateStats();
-                this.cdr.detectChanges();
-              },
-              error: (err) => {
-                this.alert.error("Erreur lors de l'ajout du mouvement de retour");
-                console.error("Erreur d'ajout du mouvement", err);
-                // Restaurer le stock si l'ajout du mouvement échoue
-                materiel.quantiteStock = stockOriginal;
-                this.mouvementStockService.updateMateriel(materiel.id, materiel).subscribe();
-              }
-            });
+        this.mouvementStockService.addLocation(newLocation).subscribe({
+          next: (data) => {
+            this.locations.unshift(newLocation);
+            this.alert.success("Location ajoutée avec succès");
+            console.log("Location et stock mis à jour");
+            this.calculateStats();
+            this.closeModalOnOutside('');
+            this.cdr.markForCheck();
           },
           error: (err) => {
-            this.alert.error("Erreur lors de la mise à jour de la location");
-            console.error("Erreur de mise à jour de la location", err);
-            // Restaurer le stock si la mise à jour de la location échoue
+            // Restaurer le stock en cas d'échec
             materiel.quantiteStock = stockOriginal;
-            this.mouvementStockService.updateMateriel(materiel.id, materiel).subscribe();
+            this.mouvementStockService.updateMateriel(materiel.id, materiel).subscribe({
+              next: () => {
+                this.alert.error("Erreur lors de l'ajout de la location. Stock restauré.");
+              },
+              error: () => {
+                this.alert.error("Erreur critique : Stock non restauré. Vérifiez manuellement.");
+              }
+            });
+            console.error("Erreur d'ajout de la location", err);
           }
         });
       },
       error: (err) => {
+        // Restaurer le stock localement car la mise à jour a échoué
+        materiel.quantiteStock = stockOriginal;
         this.alert.error("Erreur lors de la mise à jour du stock");
         console.error("Erreur de mise à jour du stock", err);
       }
     });
   }
-}
+
+
+  approuverLocation(location: LocationMateriel) {
+    if (!confirm(`Approuver la location du matériel "${location.materielNom}" ?`)) {
+      return;
+    }
+
+    const locationMiseAJour: LocationMateriel = {
+      ...location,
+      statut: 'en_cours'
+    };
+
+    this.mouvementStockService.updateLocation(location.id, locationMiseAJour).subscribe({
+      next: () => {
+        location.statut = 'en_cours';
+        this.alert.success('Location approuvée avec succès');
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.alert.error('Erreur lors de l’approbation de la location');
+        console.error(err);
+      }
+    });
+  }
+
+
+
+
+  retourLocation(location: LocationMateriel) {
+    if (confirm(`Confirmer le retour du matériel "${location.materielNom}" ?`)) {
+      const materiel = this.getMaterielById(location.materielId);
+      if (!materiel) {
+        this.alert.error('Matériel non trouvé');
+        return;
+      }
+
+      // Sauvegarder l'état original pour restauration possible
+      const stockOriginal = materiel.quantiteStock;
+
+      // Mettre à jour le stock localement
+      materiel.quantiteStock += location.quantite;
+      materiel.dateDerniereEntree = new Date();
+
+      // Sauvegarder d'abord la mise à jour du stock
+      this.mouvementStockService.updateMateriel(materiel.id, materiel).subscribe({
+        next: () => {
+          // Après mise à jour du stock, mettre à jour la location
+          location.statut = 'termine';
+          location.dateFinReelle = new Date();
+          this.cdr.markForCheck();
+
+          // Mettre à jour la location dans la base de données
+          this.mouvementStockService.updateLocation(location.id, location).subscribe({
+            next: () => {
+              // Ajouter un mouvement de retour
+              const newMouvement = {
+                id: `MOV-${Date.now()}`,
+                materielId: location.materielId,
+                materielCode: location.materielCode,
+                materielNom: location.materielNom,
+                type: 'retour',
+                quantite: location.quantite,
+                date: new Date(),
+                motif: `Retour de location - ${location.motif}`,
+                destination: 'Magasin',
+                utilisateur: location.responsable
+              } as MouvementStock;
+              this.cdr.markForCheck();
+
+
+              this.mouvementStockService.addMouvementStock(newMouvement).subscribe({
+                next: () => {
+                  this.mouvements.unshift(newMouvement);
+                  this.alert.success("Retour de location effectué avec succès");
+                  console.log("Retour de location et stock mis à jour");
+                  this.calculateStats();
+                  this.cdr.markForCheck();
+                },
+                error: (err) => {
+                  this.alert.error("Erreur lors de l'ajout du mouvement de retour");
+                  console.error("Erreur d'ajout du mouvement", err);
+                  // Restaurer le stock si l'ajout du mouvement échoue
+                  materiel.quantiteStock = stockOriginal;
+                  this.mouvementStockService.updateMateriel(materiel.id, materiel).subscribe();
+                }
+              });
+            },
+            error: (err) => {
+              this.alert.error("Erreur lors de la mise à jour de la location");
+              console.error("Erreur de mise à jour de la location", err);
+              // Restaurer le stock si la mise à jour de la location échoue
+              materiel.quantiteStock = stockOriginal;
+              this.mouvementStockService.updateMateriel(materiel.id, materiel).subscribe();
+            }
+          });
+        },
+        error: (err) => {
+          this.alert.error("Erreur lors de la mise à jour du stock");
+          console.error("Erreur de mise à jour du stock", err);
+        }
+      });
+    }
+  }
 
   // retourLocation(location: LocationMateriel) {
   //   if (confirm(`Confirmer le retour du matériel "${location.materielNom}" ?`)) {
