@@ -9,11 +9,12 @@ import { FileUploadService } from '../../../../core/services/file-upload.service
 import { ElementRef, ViewChild } from '@angular/core';
 import { EnvironmentProduction } from '../../../../../environment/environment.production';
 import { HttpErrorResponse } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-details-agents',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './details-agents.html',
   styleUrl: './details-agents.css',
 })
@@ -22,6 +23,7 @@ export class DetailsAgents implements OnInit {
   employe!: Employes;
   isBrowser: boolean;
   matriculeAgent: string = '';
+
 
   selectedFile: File | null = null;
   uploadedFile: UploadedFile | null = null;
@@ -37,6 +39,7 @@ export class DetailsAgents implements OnInit {
   projectId: string = '';
 
   @ViewChild('fileInput') fileInput!: ElementRef;
+  isLoading: boolean = false;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -74,8 +77,14 @@ export class DetailsAgents implements OnInit {
   }
 
 
-  onFileSelected(event: Event): void {
+  onFileSelected(event: any): void {
     const input = event.target as HTMLInputElement;
+
+    const file = event.target.files[0];
+    if (file) {
+      this.inductionForm.file = file;
+      this.inductionForm.fileName = file.name;
+    }
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
       this.errorMessage = '';
@@ -346,5 +355,97 @@ export class DetailsAgents implements OnInit {
     //   console.log('Supprimer employé:', this.employe.id);
     //   this.router.navigate(['/employes']);
     // }
+  }
+
+  // Variables
+  showInductionModal = false;
+  inductionForm = {
+    id: '',
+    employeId: '',
+    dateEmission: '',
+    dateExpiration: '',
+    fileName: '',
+    file: null as File | null,
+    documentExistant: ''
+  };
+
+  // Méthodes
+  openInductionModal(employe: Employes) {
+    this.inductionForm = {
+      id: employe.induction?.id || '',
+      employeId: employe.id,
+      dateEmission: employe.induction?.dateEmission ? new Date(employe.induction.dateEmission).toISOString().split('T')[0] : '',
+      dateExpiration: employe.induction?.dateExpiration || '',
+      fileName: employe.induction?.document || '',
+      file: null,
+      documentExistant: employe.induction?.filePath || ''
+    };
+    this.showInductionModal = true;
+  }
+
+  closeInductionModal() {
+    this.showInductionModal = false;
+    this.inductionForm = {
+      id: '',
+      employeId: '',
+      dateEmission: '',
+      dateExpiration: '',
+      fileName: '',
+      file: null,
+      documentExistant: ''
+    };
+  }
+
+  onInductionFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.inductionForm.file = file;
+      this.inductionForm.fileName = file.name;
+    }
+  }
+
+  // Dans votre composant
+  updateInduction(id: string, inductionId?: number) {
+    if (!this.inductionForm.dateEmission) {
+      alert('Veuillez sélectionner une date d\'émission');
+      return;
+    }
+
+    this.isLoading = true;
+
+    // Calculer la date d'expiration (3 ans après date d'émission)
+    const emissionDate = new Date(this.inductionForm.dateEmission);
+    const expirationDate = new Date(emissionDate);
+    expirationDate.setFullYear(expirationDate.getFullYear() + 3);
+
+    const inductionData = {
+      dateEmission: this.inductionForm.dateEmission,
+      dateExpiration: expirationDate.toISOString().split('T')[0],
+      document: this.inductionForm.fileName || this.inductionForm.documentExistant
+    };
+
+    console.log(inductionData);
+
+    // Utiliser PATCH pour modifier uniquement l'induction
+    this.employeService.updateInduction(this.inductionForm.employeId, inductionData).subscribe({
+      next: (response) => {
+        if (inductionId && this.inductionForm.file) {
+          this.updateFile(inductionId);
+        } else {
+          this.uploadInduction();
+          this.isLoading = false;
+          this.alert.success('Induction mise à jour avec succès');
+          this.closeInductionModal();
+          this.loadEmployee(id); // Recharger les données
+        }
+
+      },
+      error: (error) => {
+        console.error('Erreur:', error);
+        this.alert.error('Erreur lors de la mise à jour');
+        this.isLoading = false;
+
+      }
+    });
   }
 }

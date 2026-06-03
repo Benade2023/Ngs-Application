@@ -33,6 +33,18 @@ export class EmployeService {
         return this.http.put<Employes>(`${this.apiUrl}/${id}`, employee);
     }
 
+    //update induction//
+   // employe.service.ts
+updateInduction(employeId: string, inductionData: any): Observable<any> {
+  return this.http.patch(`${this.apiUrl}/${employeId}`, {
+    induction: {
+      dateEmission: inductionData.dateEmission,
+      dateExpiration: inductionData.dateExpiration,
+      document: inductionData.document
+    }
+  });
+}
+
     // Dans employe.service.ts
 changePassword(id: string, passwordData: { currentPassword: string; newPassword: string }): Observable<any> {
   return this.http.put(`${this.apiUrl}/${id}/change-password`, passwordData);

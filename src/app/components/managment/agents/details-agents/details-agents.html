@@ -162,100 +162,109 @@
     </div>
 
     <!-- Induction -->
-    <div class="detail-card" [class.expired-card]="isInductionExpired(employe)">
-      <div class="card-header">
-        <h3>📋 Induction</h3>
-        <span class="status-badge" [class]="getInductionClass()">
-          {{ getInductionStatus(employe) }}
+<div class="detail-card" [class.expired-card]="isInductionExpired(employe)">
+  <div class="card-header">
+    <h3>📋 Induction</h3>
+    <span class="status-badge" [class]="getInductionClass()">
+      {{ getInductionStatus(employe) }}
+    </span>
+  </div>
+  <div class="card-body">
+    <div class="info-row" *ngIf="employe.induction?.dateEmission">
+      <div class="info-label">Date d'émission</div>
+      <div class="info-value">{{ employe.induction?.dateEmission | date:'dd/MM/yyyy' }}</div>
+    </div>
+    <div class="info-row" *ngIf="employe.induction?.dateExpiration">
+      <div class="info-label">Date d'expiration</div>
+      <div class="info-value">
+        {{ employe.induction?.dateExpiration | date:'dd/MM/yyyy' }}
+        <span class="expiration-warning" *ngIf="isInductionExpired(employe)">
+          ⚠️ EXPIRÉ
+        </span>
+        <span class="expiration-warning" *ngIf="isInductionNearExpiration() && !isInductionExpired(employe)">
+          ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(employe.induction?.dateExpiration) }} jours)
         </span>
       </div>
-      <div class="card-body">
-        <div class="info-row" *ngIf="employe.induction?.dateEmission">
-          <div class="info-label">Date d'émission</div>
-          <div class="info-value">{{ employe.induction?.dateEmission | date:'dd/MM/yyyy' }}</div>
-        </div>
-        <div class="info-row" *ngIf="employe.induction?.dateExpiration">
-          <div class="info-label">Date d'expiration</div>
-          <div class="info-value">
-            {{ employe.induction?.dateExpiration | date:'dd/MM/yyyy' }}
-            <span class="expiration-warning" *ngIf="isInductionExpired(employe)">
-              ⚠️ EXPIRÉ
-            </span>
-            <span class="expiration-warning" *ngIf="isInductionNearExpiration() && !isInductionExpired(employe)">
-              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(employe.induction?.dateExpiration) }} jours)
-            </span>
-          </div>
-        </div>
-        <div class="info-row" *ngIf="employe.induction?.document">
-          <div class="info-label">Document</div>
-          <div class="info-value">
-            <!-- <input type="file" (change)="onFileSelected($event)" accept=".png,.jpg,.jpeg,.pdf" />
-            <button (click)="upload()">Téléversé le document</button> -->
-            <div class="upload-container" *ngIf="!inductionAgent">
-
-              <input #fileInput type="file" id="fileUpload" (change)="onFileSelected($event)"
-                accept=".png,.jpg,.jpeg,.pdf" />
-
-              <label for="fileUpload" class="file-label">
-                Choisir un document
-              </label>
-
-
-
-              <!-- Bouton affiché seulement si un fichier est sélectionné -->
-              <button class="upload-btn" *ngIf="selectedFile" (click)="uploadInduction()">
-                Téléverser le document
-              </button>
-
-            </div>
-            <!-- Nom du fichier -->
-            <span class="file-name" *ngIf="selectedFile">
-              {{'Fichier sélectionné: ' + selectedFile.name }}
-            </span>
-          </div>
-
-          <div>
-            <div class="file-link" *ngIf="inductionAgent">
-
-              <!-- Voir document -->
-              <a class="view-btn" [href]="apiUrl + inductionAgent.filePath" target="_blank">
-                Voir le document
-              </a>
-              <div *ngIf="getInductionStatus(employe) === 'Expire bientôt' || getInductionStatus(employe) === 'Expiré'">
-   <!-- Input caché -->
-              <input #fileInput type="file" id="fileUpload" hidden (change)="onFileSelected($event)"
-                accept=".png,.jpg,.jpeg,.pdf" />
-
-              <!-- Bouton choisir fichier -->
-              <label for="fileUpload" class="upload-btn">
-                Mise à jour du document
-              </label>
-              <!-- Bouton modifier visible seulement si fichier choisi -->
-              <button class="update-btn" type="button" *ngIf="selectedFile" (click)="updateFile(inductionAgent.id)">
-                Modifier
-              </button>
-              </div>
-           
-
-            </div>
-
-            <!-- <div class="file-link" *ngIf="inductionAgent">
-
-                <a [href]="apiUrl + inductionAgent.filePath" target="_blank">
-                  Voir le document
-                </a>
-                <input #fileInput type="file" id="fileUpload" (change)="onFileSelected($event)"
-                accept=".png,.jpg,.jpeg,.pdf" />
-                <button type="button" (click)="updateFile(inductionAgent.id)">Modifier</button>
-              </div> -->
-          </div>
-
-        </div>
-        <div class="info-row" *ngIf="!employe.induction">
-          <div class="info-value">Aucune induction enregistrée</div>
+    </div>
+    <div class="info-row" *ngIf="employe.induction?.document">
+      <div class="info-label">Document</div>
+      <div class="info-value">
+        <div class="document-actions">
+          <a class="view-doc-btn" [href]="apiUrl + inductionAgent.filePath" target="_blank">
+            📄 Voir le document
+          </a>
+          <button class="update-doc-btn" (click)="openInductionModal(employe)">
+            🔄 Mettre à jour
+          </button>
         </div>
       </div>
     </div>
+    <div class="info-row" *ngIf="employe.induction === null || !employe.induction?.dateEmission">
+      <div class="info-value">
+        <p>Aucune induction enregistrée</p>
+        <button class="btn-add-doc" (click)="openInductionModal(employe)">
+          ➕ Ajouter une induction
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Modal d'édition Induction -->
+<div class="modal-overlay" *ngIf="showInductionModal" (click)="closeInductionModal()">
+  <div class="modal-content modal-small" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>✏️ Modifier l'induction</h3>
+      <button class="close-btn" (click)="closeInductionModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Date d'émission *</label>
+        <input type="date" [(ngModel)]="inductionForm.dateEmission" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Document</label>
+        <div class="upload-area">
+          <!-- <input type="file" #inductionFile (change)="onInductionFileSelected($event)" accept=".png,.jpg,.jpeg,.pdf" class="file-input"> -->
+          
+          <input #fileInput type="file" id="fileUpload" hidden (change)="onFileSelected($event)"
+                accept=".png,.jpg,.jpeg,.pdf" />
+          <label for="fileUpload" class="file-label">
+            <span class="file-icon">📁</span>
+            Choisir un fichier
+          </label>
+          <span class="file-name" *ngIf="inductionForm.fileName">
+           Fichier actuel : {{ inductionForm.fileName }}
+          </span>
+
+           <!-- Bouton modifier visible seulement si fichier choisi -->
+              <!-- <button class="update-btn" type="button" *ngIf="selectedFile" (click)="updateFile(inductionAgent.id)">
+                Modifier
+              </button> -->
+                    <!-- Nom du fichier -->
+            <span class="file-name" *ngIf="selectedFile">
+              {{'Fichier sélectionné: ' + selectedFile.name }}
+            </span>
+        </div>
+      </div>
+      <div class="form-row" *ngIf="inductionForm.documentExistant">
+        <div class="form-group">
+          <label>Document actuel</label>
+          <a [href]="apiUrl + inductionForm.documentExistant" target="_blank" class="current-doc-link">
+            📄 Voir le document actuel
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondaire" (click)="closeInductionModal()">Annuler</button>
+      <button class="btn btn-validation" (click)="updateInduction(inductionForm.employeId, inductionAgent?.id)" [disabled]="isLoading">
+        <span *ngIf="!isLoading">💾 Enregistrer</span>
+        <span *ngIf="isLoading" class="spinner"></span>
+      </button>
+    </div>
+  </div>
+</div>
 
     <!-- Habilitation -->
     <div class="detail-card" [class.expired-card]="isHabilitationExpired()">

@@ -215,8 +215,8 @@ private getPrintStyles(): string {
       next: (data) => {
         this.categories = data;
         this.cdr.markForCheck();
-        this.calculateStats();
-        this.applyFilters();
+        // this.calculateStats();
+        // this.applyFilters();
       }
     })
 
@@ -225,8 +225,8 @@ private getPrintStyles(): string {
       next: (data) => {
         this.fournisseurs = data;
         this.cdr.markForCheck();
-        this.calculateStats();
-        this.applyFilters();
+        // this.calculateStats();
+        // this.applyFilters();
       }
     })
     // Chargement des matériels//
@@ -245,8 +245,8 @@ private getPrintStyles(): string {
       next: (data) => {
         this.mouvements = data;
         this.cdr.markForCheck();
-        this.calculateStats();
-        this.applyFilters();
+        // this.calculateStats();
+        // this.applyFilters();
       }
     })
 
@@ -255,11 +255,13 @@ private getPrintStyles(): string {
       next: (data) => {
         this.locations = data;
         this.cdr.markForCheck();
-        this.calculateStats();
-        this.applyFilters();
+        // this.calculateStats();
+        // this.applyFilters();
 
       }
     })
+
+
 
 
 
@@ -346,6 +348,7 @@ private getPrintStyles(): string {
 
     let filtered = [...this.allMateriaux];
 
+
     if (this.searchTerm && this.searchTerm.trim()) {
       const term = this.searchTerm.toLowerCase().trim();
       filtered = filtered.filter(m => {
@@ -372,7 +375,8 @@ private getPrintStyles(): string {
     }
 
     this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
-
+    
+    
     if (this.currentPage > this.totalPages && this.totalPages > 0) {
       this.currentPage = this.totalPages;
     }
