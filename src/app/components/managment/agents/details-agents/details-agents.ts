@@ -10,6 +10,8 @@ import { ElementRef, ViewChild } from '@angular/core';
 import { EnvironmentProduction } from '../../../../../environment/environment.production';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Habilitation } from '../../../../core/interfaces/habilitation';
+import { CertifMedical } from '../../../../core/interfaces/certif-medical';
 
 
 @Component({
@@ -29,6 +31,7 @@ export class DetailsAgents implements OnInit {
   uploadedFile: UploadedFile | null = null;
   errorMessage = '';
   inductionAgent: any;
+  habilitationAgent: any;
   apiUrl = EnvironmentProduction.apiUrlFile
 
   // Durées de validité (en années)
@@ -40,6 +43,7 @@ export class DetailsAgents implements OnInit {
 
   @ViewChild('fileInput') fileInput!: ElementRef;
   isLoading: boolean = false;
+  certificatAgent: any;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -59,6 +63,8 @@ export class DetailsAgents implements OnInit {
     if (id) {
       this.loadEmployee(id);
       this.getInductionAgent(id, 'Induction')
+      this.getHabilitationAgent(id, 'Habilitation')
+      this.getCertificatMedicalAgent(id, 'CertificatMedical')
     }
   }
 
@@ -90,11 +96,40 @@ export class DetailsAgents implements OnInit {
       this.errorMessage = '';
     }
   }
+  onFileSelectedHabilitation(event: any): void {
+    const input = event.target as HTMLInputElement;
+
+    const file = event.target.files[0];
+    if (file) {
+      this.habilitationForm.file = file;
+      this.habilitationForm.fileName = file.name;
+    }
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+      this.errorMessage = '';
+    }
+  }
 
   getInductionAgent(matricule: string, type: string) {
     this.fileUploadService.getFiles().subscribe({
       next: (data) => {
         this.inductionAgent = data.find(x => x.matriculeAgent === matricule && x.type === type)
+        this.cdr.markForCheck();
+      }
+    })
+  }
+  getHabilitationAgent(matricule: string, type: string) {
+    this.fileUploadService.getFiles().subscribe({
+      next: (data) => {
+        this.habilitationAgent = data.find(x => x.matriculeAgent === matricule && x.type === type)
+        this.cdr.markForCheck();
+      }
+    })
+  }
+  getCertificatMedicalAgent(matricule: string, type: string) {
+    this.fileUploadService.getFiles().subscribe({
+      next: (data) => {
+        this.certificatAgent = data.find(x => x.matriculeAgent === matricule && x.type === type)
         this.cdr.markForCheck();
       }
     })
@@ -137,6 +172,80 @@ export class DetailsAgents implements OnInit {
         }
       });
   }
+  uploadHabilitation(): void {
+    if (!this.selectedFile) {
+      this.alert.error('Sélectionne un fichier avant de l’envoyer.');
+      return;
+    }
+
+    const matricule = (this.matriculeAgent ?? '').trim();
+    const projectId = (this.projectId ?? '').trim();
+    const type = ('Habilitation').trim();
+
+    //console.log({ matricule, projectId });
+
+    this.fileUploadService
+      .uploadFile(
+        this.selectedFile,
+        matricule || undefined,
+        projectId || undefined,
+        type || undefined
+      )
+      .subscribe({
+        next: (res) => {
+          this.cdr.markForCheck();
+          this.uploadedFile = res;
+          this.alert.success('Habilitation téléversée avec success !');
+          // Réinitialisation
+          this.selectedFile = null;
+
+          this.fileInput.nativeElement.value = '';
+          window.location.reload();
+
+        },
+        error: (err: HttpErrorResponse) => {
+          this.alert.error('Erreur pendant l’upload.');
+          console.error(err)
+        }
+      });
+  }
+  uploadCertificatMedical(): void {
+    if (!this.selectedFile) {
+      this.alert.error('Sélectionne un fichier avant de l’envoyer.');
+      return;
+    }
+
+    const matricule = (this.matriculeAgent ?? '').trim();
+    const projectId = (this.projectId ?? '').trim();
+    const type = ('CertificatMedical').trim();
+
+    //console.log({ matricule, projectId });
+
+    this.fileUploadService
+      .uploadFile(
+        this.selectedFile,
+        matricule || undefined,
+        projectId || undefined,
+        type || undefined
+      )
+      .subscribe({
+        next: (res) => {
+          this.cdr.markForCheck();
+          this.uploadedFile = res;
+          this.alert.success('Certificat médical téléversé avec success !');
+          // Réinitialisation
+          this.selectedFile = null;
+
+          this.fileInput.nativeElement.value = '';
+          window.location.reload();
+
+        },
+        error: (err: HttpErrorResponse) => {
+          this.alert.error('Erreur pendant l’upload.');
+          console.error(err)
+        }
+      });
+  }
 
 
   updateFile(id: number) {
@@ -151,6 +260,63 @@ export class DetailsAgents implements OnInit {
 
     this.fileUploadService.updateFile(
       idInduction,
+      fileSelect,
+      matriculeAgent,
+      type
+    ).subscribe({
+      next: (res) => {
+        this.cdr.markForCheck();
+        this.alert.success('Fichier mis à jour');
+        window.location.reload();
+
+      },
+      error: (err) => {
+        this.alert.error(err);
+      }
+    });
+  }
+  updateFileHabilitation(id: number) {
+    if (!this.selectedFile) {
+      this.alert.error('Sélectionne un fichier avant de l’envoyer.');
+      return;
+    }
+    let idHabilitation = id;
+    let fileSelect = this.selectedFile;
+    let matriculeAgent = (this.matriculeAgent ?? '').trim();
+    let type = 'Habilitation';
+
+    this.fileUploadService.updateFile(
+      idHabilitation,
+      fileSelect,
+      matriculeAgent,
+      type
+    ).subscribe({
+      next: (res) => {
+        this.cdr.markForCheck();
+        this.alert.success('Fichier mis à jour');
+        window.location.reload();
+
+      },
+      error: (err) => {
+        this.alert.error(err);
+      }
+    });
+  }
+
+
+
+  updateFileCertificatMedical(id: number) {
+    if (!this.selectedFile) {
+      this.alert.error('Sélectionne un fichier avant de l’envoyer.');
+      return;
+    }
+    let idCertificatMedical = id;
+    let fileSelect = this.selectedFile;
+    let matriculeAgent = (this.matriculeAgent ?? '').trim();
+    let type = 'CertificatMedical';
+
+    this.fileUploadService.updateFile(
+      idCertificatMedical,
       fileSelect,
       matriculeAgent,
       type
@@ -242,37 +408,125 @@ export class DetailsAgents implements OnInit {
     return 'status-valid';
   }
 
+  private hasValidHabilitation(): boolean {
+    return !!this.employe.habilitation &&
+      this.employe.habilitation !== 'pending';
+  }
+  private hasValidCertificatMedical(): boolean {
+    return !!this.employe.certificatMedical &&
+      this.employe.certificatMedical !== 'pending';
+  }
+
   // Habilitation
   isHabilitationExpired(): boolean {
-    return this.employe.habilitation ? this.isExpired(this.employe.habilitation.dateExpiration) : false;
+    if (!this.hasValidHabilitation()) {
+      return false;
+    }
+
+    return this.isExpired(
+      (this.employe.habilitation as Habilitation).dateExpiration
+    );
   }
 
   isHabilitationNearExpiration(): boolean {
-    return this.employe.habilitation ? this.isNearExpiration(this.employe.habilitation.dateExpiration) : false;
+    if (!this.hasValidHabilitation()) {
+      return false;
+    }
+
+    return this.isNearExpiration(
+      (this.employe.habilitation as Habilitation).dateExpiration
+    );
+  }
+
+  // Certificat Médical //
+  isCertificatMedicalExpired(): boolean {
+    if (!this.hasValidCertificatMedical()) {
+      return false;
+    }
+
+    return this.isExpired(
+      (this.employe.certificatMedical as CertifMedical).dateExpiration
+    );
+  }
+
+  isCertificatMedicalNearExpiration(): boolean {
+    if (!this.hasValidCertificatMedical()) {
+      return false;
+    }
+
+    return this.isNearExpiration(
+      (this.employe.certificatMedical as CertifMedical).dateExpiration
+    );
+  }
+
+  get habilitationData(): Habilitation | null {
+    const habilitation = this.employe?.habilitation;
+
+    return habilitation && habilitation !== 'pending'
+      ? habilitation
+      : null;
+  }
+
+  get certificatMedicalData(): CertifMedical | null {
+    const certificatMedical = this.employe?.certificatMedical;
+
+    return certificatMedical && certificatMedical !== 'pending'
+      ? certificatMedical
+      : null;
   }
 
   getHabilitationStatus(): string {
-    if (!this.employe.habilitation) return 'Non renseigné';
-    if (this.isHabilitationExpired()) return 'Expiré';
-    if (this.isHabilitationNearExpiration()) return 'Expire bientôt';
+    const habilitation = this.employe.habilitation;
+
+    if (!habilitation) {
+      return 'Non renseigné';
+    }
+
+    if (habilitation === 'pending') {
+      return 'En attente';
+    }
+
+    if (this.isHabilitationExpired()) {
+      return 'Expiré';
+    }
+
+    if (this.isHabilitationNearExpiration()) {
+      return 'Expire bientôt';
+    }
+
     return 'Valide';
   }
 
   getHabilitationClass(): string {
-    if (!this.employe.habilitation) return 'status-unknown';
-    if (this.isHabilitationExpired()) return 'status-expired';
-    if (this.isHabilitationNearExpiration()) return 'status-warning';
+    const habilitation = this.employe.habilitation;
+
+    if (!habilitation) {
+      return 'status-unknown';
+    }
+
+    if (habilitation === 'pending') {
+      return 'status-unknown';
+    }
+
+    if (this.isHabilitationExpired()) {
+      return 'status-expired';
+    }
+
+    if (this.isHabilitationNearExpiration()) {
+      return 'status-warning';
+    }
+
     return 'status-valid';
   }
 
   // Certificat Médical
-  isCertificatMedicalExpired(): boolean {
-    return this.employe.certificatMedical ? this.isExpired(this.employe.certificatMedical.dateExpiration) : false;
-  }
+  // isCertificatMedicalExpired(): boolean {
+  //   return this.employe.certificatMedical ? this.isExpired(this.employe.certificatMedical.dateExpiration) : false;
+  // }
 
-  isCertificatMedicalNearExpiration(): boolean {
-    return this.employe.certificatMedical ? this.isNearExpiration(this.employe.certificatMedical.dateExpiration) : false;
-  }
+  // isCertificatMedicalNearExpiration(): boolean {
+  //   return this.employe.certificatMedical ? this.isNearExpiration(this.employe.certificatMedical.dateExpiration) : false;
+  // }
 
   getCertificatMedicalStatus(): string {
     if (!this.employe.certificatMedical) return 'Non renseigné';
@@ -359,11 +613,36 @@ export class DetailsAgents implements OnInit {
 
   // Variables
   showInductionModal = false;
+  showHabilitationModal = false;
+  showCertificatModal = false;
+
   inductionForm = {
     id: '',
     employeId: '',
     dateEmission: '',
     dateExpiration: '',
+    fileName: '',
+    file: null as File | null,
+    documentExistant: ''
+  };
+  habilitationForm = {
+    id: '',
+    employeId: '',
+    type: '',
+    dateObtention: '',
+    dateExpiration: '',
+    fileName: '',
+    file: null as File | null,
+    documentExistant: ''
+  };
+
+  certificatForm = {
+    id: '',
+    employeId: '',
+    type: '',
+    dateEmission: '',
+    dateExpiration: '',
+    medecin: '',
     fileName: '',
     file: null as File | null,
     documentExistant: ''
@@ -383,6 +662,54 @@ export class DetailsAgents implements OnInit {
     this.showInductionModal = true;
   }
 
+  openHabilitationModal(employe: Employes) {
+
+    const habilitation =
+      employe.habilitation && employe.habilitation !== 'pending'
+        ? employe.habilitation
+        : null;
+
+    this.habilitationForm = {
+      id: habilitation?.id || '',
+      employeId: employe.id,
+      type: habilitation?.type || '',
+      dateObtention: habilitation?.dateObtention
+        ? new Date(habilitation.dateObtention).toISOString().split('T')[0]
+        : '',
+      dateExpiration: habilitation?.dateExpiration || '',
+      fileName: habilitation?.document || '',
+      file: null,
+      documentExistant: habilitation?.filePath || ''
+    };
+
+    this.showHabilitationModal = true;
+  }
+
+
+  openCertificatModal(employe: Employes) {
+
+    const certificat =
+      employe.certificatMedical && employe.certificatMedical !== 'pending'
+        ? employe.certificatMedical
+        : null;
+
+    this.certificatForm = {
+      id: certificat?.id || '',
+      employeId: employe.id,
+      type: certificat?.type || '',
+      medecin: certificat?.medecin || '',
+      dateEmission: certificat?.dateEmission
+        ? new Date(certificat.dateEmission).toISOString().split('T')[0]
+        : '',
+      dateExpiration: certificat?.dateExpiration || '',
+      fileName: certificat?.document || '',
+      file: null,
+      documentExistant: certificat?.filePath || ''
+    };
+
+    this.showCertificatModal = true;
+  }
+
   closeInductionModal() {
     this.showInductionModal = false;
     this.inductionForm = {
@@ -396,11 +723,55 @@ export class DetailsAgents implements OnInit {
     };
   }
 
+  closeHabilitationModal() {
+    this.showHabilitationModal = false;
+    this.habilitationForm = {
+      id: '',
+      employeId: '',
+      type: '',
+      dateObtention: '',
+      dateExpiration: '',
+      fileName: '',
+      file: null,
+      documentExistant: ''
+    };
+  }
+
+  closeCertificatModal() {
+    this.showCertificatModal = false;
+    this.certificatForm = {
+      id: '',
+      employeId: '',
+      type: '',
+      dateEmission: '',
+      dateExpiration: '',
+      medecin: '',
+      fileName: '',
+      file: null,
+      documentExistant: ''
+    };
+  }
+
   onInductionFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.inductionForm.file = file;
       this.inductionForm.fileName = file.name;
+    }
+  }
+
+  onHabilitationFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.habilitationForm.file = file;
+      this.habilitationForm.fileName = file.name;
+    }
+  }
+  onCertificatFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.certificatForm.file = file;
+      this.certificatForm.fileName = file.name;
     }
   }
 
@@ -436,6 +807,92 @@ export class DetailsAgents implements OnInit {
           this.isLoading = false;
           this.alert.success('Induction mise à jour avec succès');
           this.closeInductionModal();
+          this.loadEmployee(id); // Recharger les données
+        }
+
+      },
+      error: (error) => {
+        console.error('Erreur:', error);
+        this.alert.error('Erreur lors de la mise à jour');
+        this.isLoading = false;
+
+      }
+    });
+  }
+  updateHabilitation(id: string, habilitationId?: number) {
+    if (!this.habilitationForm.dateObtention) {
+      alert('Veuillez sélectionner une date d\'obtention');
+      return;
+    }
+
+    this.isLoading = true;
+
+    // Calculer la date d'expiration (3 ans après date d'émission)
+    const emissionDate = new Date(this.habilitationForm.dateObtention);
+    const expirationDate = new Date(emissionDate);
+    expirationDate.setFullYear(expirationDate.getFullYear() + 3);
+
+    const habilitationData = {
+      dateObtention: this.habilitationForm.dateObtention,
+      dateExpiration: expirationDate.toISOString().split('T')[0],
+      document: this.habilitationForm.fileName || this.habilitationForm.documentExistant
+    };
+
+    console.log(habilitationData);
+
+    // Utiliser PATCH pour modifier uniquement l'induction
+    this.employeService.updateHabilitation(this.habilitationForm.employeId, habilitationData).subscribe({
+      next: (response) => {
+        if (habilitationId && this.habilitationForm.file) {
+          this.updateFile(habilitationId);
+        } else {
+          this.uploadHabilitation();
+          this.isLoading = false;
+          this.alert.success('Habilitation mise à jour avec succès');
+          this.closeHabilitationModal();
+          this.loadEmployee(id); // Recharger les données
+        }
+
+      },
+      error: (error) => {
+        console.error('Erreur:', error);
+        this.alert.error('Erreur lors de la mise à jour');
+        this.isLoading = false;
+
+      }
+    });
+  }
+  updateCertificat(id: string, certificatId?: number) {
+    if (!this.certificatForm.dateEmission) {
+      alert('Veuillez sélectionner une date d\'émission');
+      return;
+    }
+
+    this.isLoading = true;
+
+    // Calculer la date d'expiration (3 ans après date d'émission)
+    const emissionDate = new Date(this.certificatForm.dateEmission);
+    const expirationDate = new Date(emissionDate);
+    expirationDate.setFullYear(expirationDate.getFullYear() + 3);
+
+    const certificatData = {
+      dateEmission: this.certificatForm.dateEmission,
+      dateExpiration: expirationDate.toISOString().split('T')[0],
+      document: this.certificatForm.fileName || this.certificatForm.documentExistant
+    };
+
+    console.log(certificatData);
+
+    // Utiliser PATCH pour modifier uniquement l'induction
+    this.employeService.updateCertificat(this.certificatForm.employeId, certificatData).subscribe({
+      next: (response) => {
+        if (certificatId && this.certificatForm.file) {
+          this.updateFile(certificatId);
+        } else {
+          this.uploadCertificatMedical();
+          this.isLoading = false;
+          this.alert.success('Certificat mis à jour avec succès');
+          this.closeCertificatModal();
           this.loadEmployee(id); // Recharger les données
         }
 

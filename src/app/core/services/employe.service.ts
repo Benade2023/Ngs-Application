@@ -34,21 +34,45 @@ export class EmployeService {
     }
 
     //update induction//
-   // employe.service.ts
-updateInduction(employeId: string, inductionData: any): Observable<any> {
-  return this.http.patch(`${this.apiUrl}/${employeId}`, {
-    induction: {
-      dateEmission: inductionData.dateEmission,
-      dateExpiration: inductionData.dateExpiration,
-      document: inductionData.document
+    // employe.service.ts
+    updateInduction(employeId: string, inductionData: any): Observable<any> {
+        return this.http.patch(`${this.apiUrl}/${employeId}`, {
+            induction: {
+                dateEmission: inductionData.dateEmission,
+                dateExpiration: inductionData.dateExpiration,
+                document: inductionData.document
+            }
+        });
     }
-  });
-}
+    //update habilitation//
+    // employe.service.ts
+    updateHabilitation(employeId: string, habilitationData: any): Observable<any> {
+        return this.http.patch(`${this.apiUrl}/${employeId}`, {
+            habilitation: {
+                type: habilitationData.type,
+                dateObtention: habilitationData.dateObtention,
+                dateExpiration: habilitationData.dateExpiration,
+                document: habilitationData.document
+            }
+        });
+    }
+    //update certificat//
+    // employe.service.ts
+    updateCertificat(employeId: string, certificatData: any): Observable<any> {
+        return this.http.patch(`${this.apiUrl}/${employeId}`, {
+            certificat: {
+                dateEmission: certificatData.dateEmission,
+                medecin: certificatData.medecin,
+                dateExpiration: certificatData.dateExpiration,
+                document: certificatData.document
+            }
+        });
+    }
 
     // Dans employe.service.ts
-changePassword(id: string, passwordData: { currentPassword: string; newPassword: string }): Observable<any> {
-  return this.http.put(`${this.apiUrl}/${id}/change-password`, passwordData);
-}
+    changePassword(id: string, passwordData: { currentPassword: string; newPassword: string }): Observable<any> {
+        return this.http.put(`${this.apiUrl}/${id}/change-password`, passwordData);
+    }
 
     //delete employe//
     deleteEmploye(id: string): Observable<void> {
