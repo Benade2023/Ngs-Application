@@ -31,6 +31,8 @@ export class GestionMagasin implements OnInit {
   itemsPerPage = 10;
   totalPages = 1;
 
+  currentUserConnect: any;
+
 
   // Onglet actif
   activeTab: 'stock' | 'mouvements' | 'locations' = 'stock';
@@ -83,6 +85,10 @@ dateActuelle = Date.now();
 
   ngOnInit() {
     this.loadData();
+
+     this.currentUserConnect = JSON.parse(
+      localStorage.getItem('user_ngs') || '{}'
+    );
   }
   openFicheModal(location: LocationMateriel): void {
     this.selectedLocation = location;
