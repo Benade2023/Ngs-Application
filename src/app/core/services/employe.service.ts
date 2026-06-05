@@ -60,14 +60,27 @@ export class EmployeService {
     // employe.service.ts
     updateCertificat(employeId: string, certificatData: any): Observable<any> {
         return this.http.patch(`${this.apiUrl}/${employeId}`, {
-            certificat: {
+            certificatMedical: {
                 dateEmission: certificatData.dateEmission,
-                medecin: certificatData.medecin,
                 dateExpiration: certificatData.dateExpiration,
-                document: certificatData.document
+                document: certificatData.document,
+                medecin: certificatData.medecin
             }
         });
     }
+    //update carte marine//
+    // employe.service.ts
+    updateCarteMarine(employeId: string, carteMarineData: any): Observable<any> {
+        return this.http.patch(`${this.apiUrl}/${employeId}`, {
+            carteMarine: {
+                dateDelivrance: carteMarineData.dateDelivrance,
+                numero: carteMarineData.numero,
+                dateExpiration: carteMarineData.dateExpiration,
+                document: carteMarineData.document
+            }
+        });
+    }
+ 
 
     // Dans employe.service.ts
     changePassword(id: string, passwordData: { currentPassword: string; newPassword: string }): Observable<any> {
