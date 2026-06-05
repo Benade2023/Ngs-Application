@@ -45,8 +45,8 @@
       <div class="stat-info">
         <h3>Habilitation</h3>
         <div class="stat-value">{{ getHabilitationStatus() }}</div>
-        <div class="stat-date" *ngIf="employe.habilitation?.dateExpiration">
-          Expire le {{ employe.habilitation?.dateExpiration | date:'dd/MM/yyyy' }}
+        <div class="stat-date" *ngIf="habilitationData?.dateExpiration">
+          Expire le {{ habilitationData?.dateExpiration | date:'dd/MM/yyyy' }}
         </div>
       </div>
     </div>
@@ -58,8 +58,8 @@
       <div class="stat-info">
         <h3>Certificat Médical</h3>
         <div class="stat-value">{{ getCertificatMedicalStatus() }}</div>
-        <div class="stat-date" *ngIf="employe.certificatMedical?.dateExpiration">
-          Expire le {{ employe.certificatMedical?.dateExpiration | date:'dd/MM/yyyy' }}
+        <div class="stat-date" *ngIf="certificatMedicalData?.dateExpiration">
+          Expire le {{ certificatMedicalData?.dateExpiration | date:'dd/MM/yyyy' }}
         </div>
       </div>
     </div>
@@ -71,8 +71,8 @@
       <div class="stat-info">
         <h3>Carte Marine</h3>
         <div class="stat-value">{{ getCarteMarineStatus() }}</div>
-        <div class="stat-date" *ngIf="employe.carteMarine?.dateExpiration">
-          Expire le {{ employe.carteMarine?.dateExpiration | date:'dd/MM/yyyy' }}
+        <div class="stat-date" *ngIf="carteMarineData?.dateExpiration">
+          Expire le {{ carteMarineData?.dateExpiration | date:'dd/MM/yyyy' }}
         </div>
       </div>
     </div>
@@ -189,70 +189,73 @@
         <div class="info-row" *ngIf="employe.induction?.document">
           <div class="info-label">Document</div>
           <div class="info-value">
-            <!-- <input type="file" (change)="onFileSelected($event)" accept=".png,.jpg,.jpeg,.pdf" />
-            <button (click)="upload()">Téléversé le document</button> -->
-            <div class="upload-container" *ngIf="!inductionAgent">
-
-              <input #fileInput type="file" id="fileUpload" (change)="onFileSelected($event)"
-                accept=".png,.jpg,.jpeg,.pdf" />
-
-              <label for="fileUpload" class="file-label">
-                Choisir un document
-              </label>
-
-
-
-              <!-- Bouton affiché seulement si un fichier est sélectionné -->
-              <button class="upload-btn" *ngIf="selectedFile" (click)="uploadInduction()">
-                Téléverser le document
-              </button>
-
-            </div>
-            <!-- Nom du fichier -->
-            <span class="file-name" *ngIf="selectedFile">
-              {{'Fichier sélectionné: ' + selectedFile.name }}
-            </span>
-          </div>
-
-          <div>
-            <div class="file-link" *ngIf="inductionAgent">
-
-              <!-- Voir document -->
-              <a class="view-btn" [href]="apiUrl + inductionAgent.filePath" target="_blank">
-                Voir le document
+            <div class="document-actions">
+              <a class="view-doc-btn" [href]="apiUrl + inductionAgent.filePath" target="_blank">
+                📄 Voir l'induction
               </a>
-              <div *ngIf="getInductionStatus(employe) === 'Expire bientôt' || getInductionStatus(employe) === 'Expiré'">
-   <!-- Input caché -->
+              <button class="update-doc-btn" (click)="openInductionModal(employe)">
+                🔄 Mettre à jour
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="info-row" *ngIf="employe.induction === null || !employe.induction?.dateEmission">
+          <div class="info-value">
+            <p>Aucune induction enregistrée</p>
+            <button class="btn-add-doc" (click)="openInductionModal(employe)">
+              ➕ Ajouter une induction
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal d'édition Induction -->
+    <div class="modal-overlay" *ngIf="showInductionModal" (click)="closeInductionModal()">
+      <div class="modal-content modal-small" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>✏️ Modifier l'induction</h3>
+          <button class="close-btn" (click)="closeInductionModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Date d'émission *</label>
+            <input type="date" [(ngModel)]="inductionForm.dateEmission" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Document</label>
+            <div class="upload-area">
               <input #fileInput type="file" id="fileUpload" hidden (change)="onFileSelected($event)"
                 accept=".png,.jpg,.jpeg,.pdf" />
-
-              <!-- Bouton choisir fichier -->
-              <label for="fileUpload" class="upload-btn">
-                Mise à jour du document
+              <label for="fileUpload" class="file-label">
+                <span class="file-icon">📁</span>
+                Choisir un fichier
               </label>
-              <!-- Bouton modifier visible seulement si fichier choisi -->
-              <button class="update-btn" type="button" *ngIf="selectedFile" (click)="updateFile(inductionAgent.id)">
-                Modifier
-              </button>
-              </div>
-           
-
+              <span class="file-name" *ngIf="inductionForm.fileName">
+                Fichier actuel : {{ inductionForm.fileName }}
+              </span>
+              <!-- Nom du fichier -->
+              <span class="file-name" *ngIf="selectedFile">
+                {{'Fichier sélectionné: ' + selectedFile.name }}
+              </span>
             </div>
-
-            <!-- <div class="file-link" *ngIf="inductionAgent">
-
-                <a [href]="apiUrl + inductionAgent.filePath" target="_blank">
-                  Voir le document
-                </a>
-                <input #fileInput type="file" id="fileUpload" (change)="onFileSelected($event)"
-                accept=".png,.jpg,.jpeg,.pdf" />
-                <button type="button" (click)="updateFile(inductionAgent.id)">Modifier</button>
-              </div> -->
           </div>
-
+          <div class="form-row" *ngIf="inductionForm.documentExistant">
+            <div class="form-group">
+              <label>Document actuel</label>
+              <a [href]="apiUrl + inductionForm.documentExistant" target="_blank" class="current-doc-link">
+                📄 Voir le document actuel
+              </a>
+            </div>
+          </div>
         </div>
-        <div class="info-row" *ngIf="!employe.induction">
-          <div class="info-value">Aucune induction enregistrée</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondaire" (click)="closeInductionModal()">Annuler</button>
+          <button class="btn btn-validation" (click)="updateInduction(inductionForm.employeId, inductionAgent?.id)"
+            [disabled]="isLoading">
+            <span *ngIf="!isLoading">💾 Enregistrer</span>
+            <span *ngIf="isLoading" class="spinner"></span>
+          </button>
         </div>
       </div>
     </div>
@@ -266,28 +269,100 @@
         </span>
       </div>
       <div class="card-body">
-        <div class="info-row" *ngIf="employe.habilitation?.type">
+        <div class="info-row" *ngIf="habilitationData?.type">
           <div class="info-label">Type d'habilitation</div>
-          <div class="info-value">{{ employe.habilitation?.type }}</div>
+          <div class="info-value">{{ habilitationData?.type }}</div>
         </div>
-        <div class="info-row" *ngIf="employe.habilitation?.dateObtention">
+        <div class="info-row" *ngIf="habilitationData?.dateObtention">
           <div class="info-label">Date d'obtention</div>
-          <div class="info-value">{{ employe.habilitation?.dateObtention | date:'dd/MM/yyyy' }}</div>
+          <div class="info-value">{{ habilitationData?.dateObtention | date:'dd/MM/yyyy' }}</div>
         </div>
-        <div class="info-row" *ngIf="employe.habilitation?.dateExpiration">
+        <div class="info-row" *ngIf="habilitationData?.dateExpiration">
           <div class="info-label">Date d'expiration</div>
           <div class="info-value">
-            {{ employe.habilitation?.dateExpiration | date:'dd/MM/yyyy' }}
+            {{ habilitationData?.dateExpiration | date:'dd/MM/yyyy' }}
             <span class="expiration-warning" *ngIf="isHabilitationExpired()">
               ⚠️ EXPIRÉ
             </span>
             <span class="expiration-warning" *ngIf="isHabilitationNearExpiration() && !isHabilitationExpired()">
-              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(employe.habilitation?.dateExpiration) }} jours)
+              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(habilitationData?.dateExpiration) }} jours)
             </span>
           </div>
         </div>
-        <div class="info-row" *ngIf="!employe.habilitation">
-          <div class="info-value">Aucune habilitation enregistrée</div>
+        <div class="info-row" *ngIf="habilitationData?.document">
+          <div class="info-label">Document</div>
+          <div class="info-value">
+            <div class="document-actions">
+              <a class="view-doc-btn" [href]="apiUrl + habilitationAgent.filePath" target="_blank">
+                📄 Voir l'habilitation
+              </a>
+              <button class="update-doc-btn" (click)="openHabilitationModal(employe)">
+                🔄 Mettre à jour
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="info-row" *ngIf="employe.habilitation === null || !habilitationData?.dateObtention">
+          <div class="info-value">
+            <p>Aucune habilitation enregistrée</p>
+            <button class="btn-add-doc" (click)="openHabilitationModal(employe)">
+              ➕ Ajouter une habilitation
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal d'édition Habilitation -->
+    <div class="modal-overlay" *ngIf="showHabilitationModal" (click)="closeHabilitationModal()">
+      <div class="modal-content modal-small" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>✏️ Modifier l'habilitation</h3>
+          <button class="close-btn" (click)="closeHabilitationModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Type d'habilitation *</label>
+            <input type="text" [(ngModel)]="habilitationForm.type" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Date d'obtention *</label>
+            <input type="date" [(ngModel)]="habilitationForm.dateObtention" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Document</label>
+            <div class="upload-area">
+              <input #fileInput type="file" id="fileUpload" hidden (change)="onFileSelectedHabilitation($event)"
+                accept=".png,.jpg,.jpeg,.pdf" />
+              <label for="fileUpload" class="file-label">
+                <span class="file-icon">📁</span>
+                Choisir un fichier
+              </label>
+              <span class="file-name" *ngIf="habilitationForm.fileName">
+                Fichier actuel : {{ habilitationForm.fileName }}
+              </span>
+              <!-- Nom du fichier -->
+              <span class="file-name" *ngIf="selectedFile">
+                {{'Fichier sélectionné: ' + selectedFile.name }}
+              </span>
+            </div>
+          </div>
+          <div class="form-row" *ngIf="habilitationForm.documentExistant">
+            <div class="form-group">
+              <label>Document actuel</label>
+              <a [href]="apiUrl + habilitationForm.documentExistant" target="_blank" class="current-doc-link">
+                📄 Voir le document actuel
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondaire" (click)="closeHabilitationModal()">Annuler</button>
+          <button class="btn btn-validation"
+            (click)="updateHabilitation(habilitationForm.employeId, habilitationAgent?.id)" [disabled]="isLoading">
+            <span *ngIf="!isLoading">💾 Enregistrer</span>
+            <span *ngIf="isLoading" class="spinner"></span>
+          </button>
         </div>
       </div>
     </div>
@@ -301,29 +376,101 @@
         </span>
       </div>
       <div class="card-body">
-        <div class="info-row" *ngIf="employe.certificatMedical?.date">
+        <div class="info-row" *ngIf="certificatMedicalData?.date">
           <div class="info-label">Date d'émission</div>
-          <div class="info-value">{{ employe.certificatMedical?.date | date:'dd/MM/yyyy' }}</div>
+          <div class="info-value">{{ certificatMedicalData?.date | date:'dd/MM/yyyy' }}</div>
         </div>
-        <div class="info-row" *ngIf="employe.certificatMedical?.medecin">
+        <div class="info-row" *ngIf="certificatMedicalData?.medecin">
           <div class="info-label">Médecin</div>
-          <div class="info-value">{{ employe.certificatMedical?.medecin }}</div>
+          <div class="info-value">{{ certificatMedicalData?.medecin }}</div>
         </div>
-        <div class="info-row" *ngIf="employe.certificatMedical?.dateExpiration">
+        <div class="info-row" *ngIf="certificatMedicalData?.dateExpiration">
           <div class="info-label">Date d'expiration</div>
           <div class="info-value">
-            {{ employe.certificatMedical?.dateExpiration | date:'dd/MM/yyyy' }}
+            {{ certificatMedicalData?.dateExpiration | date:'dd/MM/yyyy' }}
             <span class="expiration-warning" *ngIf="isCertificatMedicalExpired()">
               ⚠️ EXPIRÉ
             </span>
             <span class="expiration-warning"
               *ngIf="isCertificatMedicalNearExpiration() && !isCertificatMedicalExpired()">
-              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(employe.certificatMedical?.dateExpiration) }} jours)
+              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(certificatMedicalData?.dateExpiration) }} jours)
             </span>
           </div>
         </div>
-        <div class="info-row" *ngIf="!employe.certificatMedical">
-          <div class="info-value">Aucun certificat médical enregistré</div>
+          <div class="info-row" *ngIf="certificatMedicalData?.document">
+          <div class="info-label">Document</div>
+          <div class="info-value">
+            <div class="document-actions">
+              <a class="view-doc-btn" [href]="apiUrl + certificatAgent.filePath" target="_blank">
+                📄 Voir le certificat médical
+              </a>
+              <button class="update-doc-btn" (click)="openCertificatModal(employe)">
+                🔄 Mettre à jour
+              </button>
+            </div>
+          </div>
+        </div>
+         <div class="info-row" *ngIf="employe.certificatMedical === null || !certificatMedicalData?.dateEmission">
+          <div class="info-value">
+            <p>Aucun certificat médical enregistré</p>
+            <button class="btn-add-doc" (click)="openCertificatModal(employe)">
+              ➕ Ajouter un certificat médical
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal d'édition Certificat Medical -->
+    <div class="modal-overlay" *ngIf="showCertificatModal" (click)="closeCertificatModal()">
+      <div class="modal-content modal-small" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>✏️ Modifier le certificat médical</h3>
+          <button class="close-btn" (click)="closeCertificatModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Medecin *</label>
+            <input type="text" [(ngModel)]="certificatForm.medecin" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Date d'obtention *</label>
+            <input type="date" [(ngModel)]="certificatForm.dateEmission" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Document</label>
+            <div class="upload-area">
+              <input #fileInput type="file" id="fileUpload" hidden (change)="onCertificatFileSelected($event)"
+                accept=".png,.jpg,.jpeg,.pdf" />
+              <label for="fileUpload" class="file-label">
+                <span class="file-icon">📁</span>
+                Choisir un fichier
+              </label>
+              <span class="file-name" *ngIf="certificatForm.fileName">
+                Fichier actuel : {{ certificatForm.fileName }}
+              </span>
+              <!-- Nom du fichier -->
+              <span class="file-name" *ngIf="selectedFile">
+                {{'Fichier sélectionné: ' + selectedFile.name }}
+              </span>
+            </div>
+          </div>
+          <div class="form-row" *ngIf="certificatForm.documentExistant">
+            <div class="form-group">
+              <label>Document actuel</label>
+              <a [href]="apiUrl + certificatForm.documentExistant" target="_blank" class="current-doc-link">
+                📄 Voir le document actuel
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondaire" (click)="closeCertificatModal()">Annuler</button>
+          <button class="btn btn-validation" (click)="updateCertificat(certificatForm.employeId, certificatAgent?.id)"
+            [disabled]="isLoading">
+            <span *ngIf="!isLoading">💾 Enregistrer</span>
+            <span *ngIf="isLoading" class="spinner"></span>
+          </button>
         </div>
       </div>
     </div>
@@ -337,28 +484,101 @@
         </span>
       </div>
       <div class="card-body">
-        <div class="info-row" *ngIf="employe.carteMarine?.numero">
+        <div class="info-row" *ngIf="carteMarineData?.numero">
           <div class="info-label">Numéro</div>
-          <div class="info-value">{{ employe.carteMarine?.numero }}</div>
+          <div class="info-value">{{ carteMarineData?.numero }}</div>
         </div>
-        <div class="info-row" *ngIf="employe.carteMarine?.dateDelivrance">
+        <div class="info-row" *ngIf="carteMarineData?.dateDelivrance">
           <div class="info-label">Date de délivrance</div>
-          <div class="info-value">{{ employe.carteMarine?.dateDelivrance | date:'dd/MM/yyyy' }}</div>
+          <div class="info-value">{{ carteMarineData?.dateDelivrance | date:'dd/MM/yyyy' }}</div>
         </div>
-        <div class="info-row" *ngIf="employe.carteMarine?.dateExpiration">
+        <div class="info-row" *ngIf="carteMarineData?.dateExpiration">
           <div class="info-label">Date d'expiration</div>
           <div class="info-value">
-            {{ employe.carteMarine?.dateExpiration | date:'dd/MM/yyyy' }}
+            {{ carteMarineData?.dateExpiration | date:'dd/MM/yyyy' }}
             <span class="expiration-warning" *ngIf="isCarteMarineExpired()">
               ⚠️ EXPIRÉ
             </span>
             <span class="expiration-warning" *ngIf="isCarteMarineNearExpiration() && !isCarteMarineExpired()">
-              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(employe.carteMarine?.dateExpiration) }} jours)
+              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(carteMarineData?.dateExpiration) }} jours)
             </span>
           </div>
         </div>
-        <div class="info-row" *ngIf="!employe.carteMarine">
-          <div class="info-value">Aucune carte marine enregistrée</div>
+               <div class="info-row" *ngIf="carteMarineData?.document">
+          <div class="info-label">Document</div>
+          <div class="info-value">
+            <div class="document-actions">
+              <a class="view-doc-btn" [href]="apiUrl + carteMarineAgent?.filePath" target="_blank">
+                📄 Voir la carte marine
+              </a>
+              <button class="update-doc-btn" (click)="openCarteMarineModal(employe)">
+                🔄 Mettre à jour
+              </button>
+            </div>
+          </div>
+        </div>
+       <div class="info-row" *ngIf="employe.carteMarine === null || !carteMarineData?.dateDelivrance">
+          <div class="info-value">
+            <p>Aucune carte marine enregistrée</p>
+            <button class="btn-add-doc" (click)="openCarteMarineModal(employe)">
+              ➕ Ajouter une carte marine
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+     <!-- Modal d'édition Carte Marine -->
+    <div class="modal-overlay" *ngIf="showCarteMarineModal" (click)="closeCarteMarineModal()">
+      <div class="modal-content modal-small" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>✏️ Modifier la carte marine</h3>
+          <button class="close-btn" (click)="closeCarteMarineModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Numéro *</label>
+            <input type="text" [(ngModel)]="carteMarineForm.numero" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Date de délivrance *</label>
+            <input type="date" [(ngModel)]="carteMarineForm.dateDelivrance" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Document</label>
+            <div class="upload-area">
+              <input #fileInput type="file" id="fileUpload" hidden (change)="onCarteMarineFileSelected($event)"
+                accept=".png,.jpg,.jpeg,.pdf" />
+              <label for="fileUpload" class="file-label">
+                <span class="file-icon">📁</span>
+                Choisir un fichier
+              </label>
+              <span class="file-name" *ngIf="carteMarineForm.fileName">
+                Fichier actuel : {{ carteMarineForm.fileName }}
+              </span>
+              <!-- Nom du fichier -->
+              <span class="file-name" *ngIf="selectedFile">
+                {{'Fichier sélectionné: ' + selectedFile.name }}
+              </span>
+            </div>
+          </div>
+          <div class="form-row" *ngIf="carteMarineForm.documentExistant">
+            <div class="form-group">
+              <label>Document actuel</label>
+              <a [href]="apiUrl + carteMarineForm.documentExistant" target="_blank" class="current-doc-link">
+                📄 Voir le document actuel
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondaire" (click)="closeCarteMarineModal()">Annuler</button>
+          <button class="btn btn-validation" (click)="updateCarteMarine(carteMarineForm.employeId, carteMarineAgent?.id)"
+            [disabled]="isLoading">
+            <span *ngIf="!isLoading">💾 Enregistrer</span>
+            <span *ngIf="isLoading" class="spinner"></span>
+          </button>
         </div>
       </div>
     </div>

@@ -5,6 +5,9 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EmployeService } from '../../../../core/services/employe.service';
 import { AlertService } from '../../../../core/services/alert.service';
+import { CertifMedical } from '../../../../core/interfaces/certif-medical';
+import { Habilitation } from '../../../../core/interfaces/habilitation';
+import { CarteMarine } from '../../../../core/interfaces/carte-marine';
 
 @Component({
   selector: 'app-add-agents',
@@ -65,6 +68,30 @@ export class AddAgents implements OnInit {
       }
     });
   }
+
+    get certificatMedicalData(): CertifMedical | null {
+      const certificatMedical = this.employee?.certificatMedical;
+  
+      return certificatMedical && certificatMedical !== 'pending'
+        ? certificatMedical
+        : null;
+    }
+
+     get habilitationData(): Habilitation | null {
+        const habilitation = this.employee?.habilitation;
+    
+        return habilitation && habilitation !== 'pending'
+          ? habilitation
+          : null;
+      }
+
+        get carteMarineData(): CarteMarine | null {
+          const carteMarine = this.employee?.carteMarine;
+      
+          return carteMarine && carteMarine !== 'pending'
+            ? carteMarine
+            : null;
+        }
 
   generateId(): string {
     const prefix = 'EMP';

@@ -269,15 +269,15 @@
     <div class="document-info">
       <div class="info-row">
         <span class="label">Type:</span>
-        <span>{{ employee.habilitation.type }}</span>
+        <span>{{ habilitationData?.type }}</span>
       </div>
       <div class="info-row">
         <span class="label">Date d'obtention:</span>
-        <span>{{ employee.habilitation.dateObtention | date:'dd/MM/yyyy' }}</span>
+        <span>{{ habilitationData?.dateObtention | date:'dd/MM/yyyy' }}</span>
       </div>
       <div class="info-row">
         <span class="label">Date d'expiration:</span>
-        <span>{{ employee.habilitation.dateExpiration | date:'dd/MM/yyyy' }}</span>
+        <span>{{ habilitationData?.dateExpiration | date:'dd/MM/yyyy' }}</span>
       </div>
     </div>
   </div>
@@ -310,15 +310,15 @@
     <div class="document-info">
       <div class="info-row">
         <span class="label">Date d'émission:</span>
-        <span>{{ employee.certificatMedical.date | date:'dd/MM/yyyy' }}</span>
+        <span>{{ certificatMedicalData?.date | date:'dd/MM/yyyy' }}</span>
       </div>
       <div class="info-row">
         <span class="label">Date d'expiration:</span>
-        <span>{{ employee.certificatMedical.dateExpiration | date:'dd/MM/yyyy' }}</span>
+        <span>{{ certificatMedicalData?.dateExpiration | date:'dd/MM/yyyy' }}</span>
       </div>
       <div class="info-row">
         <span class="label">Médecin:</span>
-        <span>{{ employee.certificatMedical.medecin }}</span>
+        <span>{{ certificatMedicalData?.medecin }}</span>
       </div>
     </div>
   </div>
@@ -351,15 +351,15 @@
     <div class="document-info">
       <div class="info-row">
         <span class="label">Numéro:</span>
-        <span>{{ employee.carteMarine.numero }}</span>
+        <span>{{ carteMarineData?.numero }}</span>
       </div>
       <div class="info-row">
         <span class="label">Date de délivrance:</span>
-        <span>{{ employee.carteMarine.dateDelivrance | date:'dd/MM/yyyy' }}</span>
+        <span>{{ carteMarineData?.dateDelivrance | date:'dd/MM/yyyy' }}</span>
       </div>
       <div class="info-row">
         <span class="label">Date d'expiration:</span>
-        <span>{{ employee.carteMarine.dateExpiration | date:'dd/MM/yyyy' }}</span>
+        <span>{{ carteMarineData?.dateExpiration | date:'dd/MM/yyyy' }}</span>
       </div>
     </div>
   </div>

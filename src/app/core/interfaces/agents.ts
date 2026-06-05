@@ -15,9 +15,9 @@ export interface Employes {
     sexe: string;
     fonction: string;
     induction?: Induction;
-    habilitation?: Habilitation;
-    certificatMedical?: CertifMedical;
-    carteMarine?: CarteMarine;
+    habilitation?: Habilitation | 'pending';
+    certificatMedical?: CertifMedical | 'pending';
+    carteMarine?: CarteMarine | 'pending';
     typeContrat: string;
     statut: string;
     dateDebut: string;
