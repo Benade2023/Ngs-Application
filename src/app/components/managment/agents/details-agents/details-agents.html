@@ -289,11 +289,11 @@
             </span>
           </div>
         </div>
-        <div class="info-row" *ngIf="habilitationData as habilitation">
+        <div class="info-row" *ngIf="employe.habilitation as habilitation">
           <div class="info-label">Document</div>
           <div class="info-value">
             <div class="document-actions">
-              <a class="view-doc-btn" [href]="apiUrl + habilitation.filePath" target="_blank">
+              <a class="view-doc-btn" [href]="apiUrl + habilitationAgent?.filePath" target="_blank">
                 📄 Voir l'habilitation
               </a>
               <button class="update-doc-btn" (click)="openHabilitationModal(employe)">
@@ -397,11 +397,11 @@
             </span>
           </div>
         </div>
-        <div class="info-row" *ngIf="certificatMedicalData as certificat">
+        <div class="info-row" *ngIf="employe.certificatMedical as certificats">
           <div class="info-label">Document</div>
           <div class="info-value">
             <div class="document-actions">
-              <a class="view-doc-btn" [href]="apiUrl + certificat.filePath" target="_blank">
+              <a class="view-doc-btn" [href]="apiUrl + certificatAgent?.filePath" target="_blank">
                 📄 Voir le certificat médical
               </a>
               <button class="update-doc-btn" (click)="openCertificatModal(employe)">
