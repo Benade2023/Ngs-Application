@@ -80,7 +80,16 @@ export class EmployeService {
             }
         });
     }
- 
+
+    updateEpi(employeId: string, epiData: any): Observable<any> {
+        // Option 1: PATCH pour mise à jour partielle (recommandé)
+        return this.http.patch(`${this.apiUrl}/${employeId}`, {
+            epi: epiData.epi,
+            epiRemplacements: epiData.epiRemplacements,
+            epiValidation: epiData.epiValidation
+        });
+    }
+
 
     // Dans employe.service.ts
     changePassword(id: string, passwordData: { currentPassword: string; newPassword: string }): Observable<any> {

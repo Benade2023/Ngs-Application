@@ -45,8 +45,8 @@
       <div class="stat-info">
         <h3>Habilitation</h3>
         <div class="stat-value">{{ getHabilitationStatus() }}</div>
-        <div class="stat-date" *ngIf="habilitationData?.dateExpiration">
-          Expire le {{ habilitationData?.dateExpiration | date:'dd/MM/yyyy' }}
+        <div class="stat-date" *ngIf="habilitationData as habilitation">
+          Expire le {{ habilitation.dateExpiration | date:'dd/MM/yyyy' }}
         </div>
       </div>
     </div>
@@ -58,8 +58,8 @@
       <div class="stat-info">
         <h3>Certificat Médical</h3>
         <div class="stat-value">{{ getCertificatMedicalStatus() }}</div>
-        <div class="stat-date" *ngIf="certificatMedicalData?.dateExpiration">
-          Expire le {{ certificatMedicalData?.dateExpiration | date:'dd/MM/yyyy' }}
+        <div class="stat-date" *ngIf="certificatMedicalData as certificat">
+          Expire le {{ certificat.dateExpiration | date:'dd/MM/yyyy' }}
         </div>
       </div>
     </div>
@@ -71,8 +71,8 @@
       <div class="stat-info">
         <h3>Carte Marine</h3>
         <div class="stat-value">{{ getCarteMarineStatus() }}</div>
-        <div class="stat-date" *ngIf="carteMarineData?.dateExpiration">
-          Expire le {{ carteMarineData?.dateExpiration | date:'dd/MM/yyyy' }}
+        <div class="stat-date" *ngIf="carteMarineData as carte">
+          Expire le {{ carte.dateExpiration | date:'dd/MM/yyyy' }}
         </div>
       </div>
     </div>
@@ -170,27 +170,27 @@
         </span>
       </div>
       <div class="card-body">
-        <div class="info-row" *ngIf="employe.induction?.dateEmission">
+        <div class="info-row" *ngIf="employe.induction as induction">
           <div class="info-label">Date d'émission</div>
-          <div class="info-value">{{ employe.induction?.dateEmission | date:'dd/MM/yyyy' }}</div>
+          <div class="info-value">{{ induction.dateEmission | date:'dd/MM/yyyy' }}</div>
         </div>
-        <div class="info-row" *ngIf="employe.induction?.dateExpiration">
+        <div class="info-row" *ngIf="employe.induction as induction">
           <div class="info-label">Date d'expiration</div>
           <div class="info-value">
-            {{ employe.induction?.dateExpiration | date:'dd/MM/yyyy' }}
+            {{ induction.dateExpiration | date:'dd/MM/yyyy' }}
             <span class="expiration-warning" *ngIf="isInductionExpired(employe)">
               ⚠️ EXPIRÉ
             </span>
             <span class="expiration-warning" *ngIf="isInductionNearExpiration() && !isInductionExpired(employe)">
-              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(employe.induction?.dateExpiration) }} jours)
+              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(employe.induction.dateExpiration) }} jours)
             </span>
           </div>
         </div>
-        <div class="info-row" *ngIf="employe.induction?.document">
+        <div class="info-row" *ngIf="employe.induction as induction">
           <div class="info-label">Document</div>
           <div class="info-value">
             <div class="document-actions">
-              <a class="view-doc-btn" [href]="apiUrl + inductionAgent.filePath" target="_blank">
+              <a class="view-doc-btn" [href]="apiUrl + inductionAgent?.filePath" target="_blank">
                 📄 Voir l'induction
               </a>
               <button class="update-doc-btn" (click)="openInductionModal(employe)">
@@ -199,7 +199,7 @@
             </div>
           </div>
         </div>
-        <div class="info-row" *ngIf="employe.induction === null || !employe.induction?.dateEmission">
+        <div class="info-row" *ngIf="!employe.induction?.dateEmission">
           <div class="info-value">
             <p>Aucune induction enregistrée</p>
             <button class="btn-add-doc" (click)="openInductionModal(employe)">
@@ -269,31 +269,31 @@
         </span>
       </div>
       <div class="card-body">
-        <div class="info-row" *ngIf="habilitationData?.type">
+        <div class="info-row" *ngIf="habilitationData as habilitation">
           <div class="info-label">Type d'habilitation</div>
-          <div class="info-value">{{ habilitationData?.type }}</div>
+          <div class="info-value">{{ habilitation.type }}</div>
         </div>
-        <div class="info-row" *ngIf="habilitationData?.dateObtention">
+        <div class="info-row" *ngIf="habilitationData as habilitation ">
           <div class="info-label">Date d'obtention</div>
-          <div class="info-value">{{ habilitationData?.dateObtention | date:'dd/MM/yyyy' }}</div>
+          <div class="info-value">{{ habilitation.dateObtention | date:'dd/MM/yyyy' }}</div>
         </div>
-        <div class="info-row" *ngIf="habilitationData?.dateExpiration">
+        <div class="info-row" *ngIf="habilitationData as habilitation">
           <div class="info-label">Date d'expiration</div>
           <div class="info-value">
-            {{ habilitationData?.dateExpiration | date:'dd/MM/yyyy' }}
+            {{ habilitation.dateExpiration | date:'dd/MM/yyyy' }}
             <span class="expiration-warning" *ngIf="isHabilitationExpired()">
               ⚠️ EXPIRÉ
             </span>
             <span class="expiration-warning" *ngIf="isHabilitationNearExpiration() && !isHabilitationExpired()">
-              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(habilitationData?.dateExpiration) }} jours)
+              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(habilitation.dateExpiration) }} jours)
             </span>
           </div>
         </div>
-        <div class="info-row" *ngIf="habilitationData?.document">
+        <div class="info-row" *ngIf="habilitationData as habilitation">
           <div class="info-label">Document</div>
           <div class="info-value">
             <div class="document-actions">
-              <a class="view-doc-btn" [href]="apiUrl + habilitationAgent.filePath" target="_blank">
+              <a class="view-doc-btn" [href]="apiUrl + habilitation.filePath" target="_blank">
                 📄 Voir l'habilitation
               </a>
               <button class="update-doc-btn" (click)="openHabilitationModal(employe)">
@@ -376,32 +376,32 @@
         </span>
       </div>
       <div class="card-body">
-        <div class="info-row" *ngIf="certificatMedicalData?.date">
+        <div class="info-row" *ngIf="certificatMedicalData as certificat">
           <div class="info-label">Date d'émission</div>
-          <div class="info-value">{{ certificatMedicalData?.date | date:'dd/MM/yyyy' }}</div>
+          <div class="info-value">{{ certificat.date | date:'dd/MM/yyyy' }}</div>
         </div>
-        <div class="info-row" *ngIf="certificatMedicalData?.medecin">
+        <div class="info-row" *ngIf="certificatMedicalData as certificat">
           <div class="info-label">Médecin</div>
-          <div class="info-value">{{ certificatMedicalData?.medecin }}</div>
+          <div class="info-value">{{ certificat.medecin }}</div>
         </div>
-        <div class="info-row" *ngIf="certificatMedicalData?.dateExpiration">
+        <div class="info-row" *ngIf="certificatMedicalData as certificat">
           <div class="info-label">Date d'expiration</div>
           <div class="info-value">
-            {{ certificatMedicalData?.dateExpiration | date:'dd/MM/yyyy' }}
+            {{ certificat.dateExpiration | date:'dd/MM/yyyy' }}
             <span class="expiration-warning" *ngIf="isCertificatMedicalExpired()">
               ⚠️ EXPIRÉ
             </span>
             <span class="expiration-warning"
               *ngIf="isCertificatMedicalNearExpiration() && !isCertificatMedicalExpired()">
-              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(certificatMedicalData?.dateExpiration) }} jours)
+              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(certificat.dateExpiration) }} jours)
             </span>
           </div>
         </div>
-          <div class="info-row" *ngIf="certificatMedicalData?.document">
+        <div class="info-row" *ngIf="certificatMedicalData as certificat">
           <div class="info-label">Document</div>
           <div class="info-value">
             <div class="document-actions">
-              <a class="view-doc-btn" [href]="apiUrl + certificatAgent.filePath" target="_blank">
+              <a class="view-doc-btn" [href]="apiUrl + certificat.filePath" target="_blank">
                 📄 Voir le certificat médical
               </a>
               <button class="update-doc-btn" (click)="openCertificatModal(employe)">
@@ -410,7 +410,7 @@
             </div>
           </div>
         </div>
-         <div class="info-row" *ngIf="employe.certificatMedical === null || !certificatMedicalData?.dateEmission">
+        <div class="info-row" *ngIf="employe.certificatMedical === null || !certificatMedicalData?.dateEmission">
           <div class="info-value">
             <p>Aucun certificat médical enregistré</p>
             <button class="btn-add-doc" (click)="openCertificatModal(employe)">
@@ -484,27 +484,27 @@
         </span>
       </div>
       <div class="card-body">
-        <div class="info-row" *ngIf="carteMarineData?.numero">
+        <div class="info-row" *ngIf="carteMarineData as carte">
           <div class="info-label">Numéro</div>
-          <div class="info-value">{{ carteMarineData?.numero }}</div>
+          <div class="info-value">{{ carte.numero }}</div>
         </div>
-        <div class="info-row" *ngIf="carteMarineData?.dateDelivrance">
+        <div class="info-row" *ngIf="carteMarineData as carte">
           <div class="info-label">Date de délivrance</div>
-          <div class="info-value">{{ carteMarineData?.dateDelivrance | date:'dd/MM/yyyy' }}</div>
+          <div class="info-value">{{ carte.dateDelivrance | date:'dd/MM/yyyy' }}</div>
         </div>
-        <div class="info-row" *ngIf="carteMarineData?.dateExpiration">
+        <div class="info-row" *ngIf="carteMarineData as carte">
           <div class="info-label">Date d'expiration</div>
           <div class="info-value">
-            {{ carteMarineData?.dateExpiration | date:'dd/MM/yyyy' }}
+            {{ carte.dateExpiration | date:'dd/MM/yyyy' }}
             <span class="expiration-warning" *ngIf="isCarteMarineExpired()">
               ⚠️ EXPIRÉ
             </span>
             <span class="expiration-warning" *ngIf="isCarteMarineNearExpiration() && !isCarteMarineExpired()">
-              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(carteMarineData?.dateExpiration) }} jours)
+              ⚠️ Expire bientôt ({{ getDaysBeforeExpiration(carte.dateExpiration) }} jours)
             </span>
           </div>
         </div>
-               <div class="info-row" *ngIf="carteMarineData?.document">
+        <div class="info-row" *ngIf="carteMarineData?.document">
           <div class="info-label">Document</div>
           <div class="info-value">
             <div class="document-actions">
@@ -517,7 +517,7 @@
             </div>
           </div>
         </div>
-       <div class="info-row" *ngIf="employe.carteMarine === null || !carteMarineData?.dateDelivrance">
+        <div class="info-row" *ngIf="employe.carteMarine === null || !carteMarineData?.dateDelivrance">
           <div class="info-value">
             <p>Aucune carte marine enregistrée</p>
             <button class="btn-add-doc" (click)="openCarteMarineModal(employe)">
@@ -529,7 +529,7 @@
     </div>
 
 
-     <!-- Modal d'édition Carte Marine -->
+    <!-- Modal d'édition Carte Marine -->
     <div class="modal-overlay" *ngIf="showCarteMarineModal" (click)="closeCarteMarineModal()">
       <div class="modal-content modal-small" (click)="$event.stopPropagation()">
         <div class="modal-header">
@@ -574,13 +574,356 @@
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondaire" (click)="closeCarteMarineModal()">Annuler</button>
-          <button class="btn btn-validation" (click)="updateCarteMarine(carteMarineForm.employeId, carteMarineAgent?.id)"
-            [disabled]="isLoading">
+          <button class="btn btn-validation"
+            (click)="updateCarteMarine(carteMarineForm.employeId, carteMarineAgent?.id)" [disabled]="isLoading">
             <span *ngIf="!isLoading">💾 Enregistrer</span>
             <span *ngIf="isLoading" class="spinner"></span>
           </button>
         </div>
       </div>
     </div>
+
+
+    <!-- Section EPI -->
+    <div class="detail-card">
+      <div class="card-header">
+        <h3>🛡️ Équipements de Protection Individuelle (EPI)</h3>
+        <button class="btn-add-epi" (click)="openEpiModal(employe)">
+          ➕ Ajouter / Modifier les EPI
+        </button>
+      </div>
+      <div class="card-body">
+        <!-- Tableau des EPI -->
+        <div class="epi-table-wrapper">
+          <table class="epi-table">
+            <thead>
+              <tr>
+                <th>N°</th>
+                <th>Désignation EPI</th>
+                <th>Référence / Marque</th>
+                <th>Taille</th>
+                <th>Qté</th>
+                <th>Date de remise</th>
+                <th>État</th>
+                <th>Signature Agent</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let epi of employe.epi; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>
+                  <strong>{{ epi.designation }}</strong>
+                  <span class="epi-type" *ngIf="epi.type">{{ epi.type }}</span>
+                </td>
+                <td>{{ epi.reference || '-' }}</td>
+                <td>{{ epi.taille || '-' }}</td>
+                <td class="text-center">{{ epi.quantite || 1 }}</td>
+                <td>{{ epi.dateRemise | date:'dd/MM/yyyy' }}</td>
+                <td>
+                  <span class="epi-state" [class]="getEpiStateClass(epi.etat)">
+                    {{ epi.etat || 'Neuf' }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <span class="signature-indicator" *ngIf="epi.signatureAgent">✓</span>
+                  <span class="signature-indicator empty" *ngIf="!epi.signatureAgent">—</span>
+                </td>
+                <td class="actions">
+                  <button class="btn-edit-epi" (click)="editEpi(epi, i)" title="Modifier">
+                    ✏️
+                  </button>
+                  <button class="btn-delete-epi" (click)="deleteEpi(epi, i)" title="Supprimer">
+                    🗑️
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Section remplacement EPI -->
+        <div class="epi-remplacement-section" *ngIf="employe.epiRemplacements && employe.epiRemplacements.length > 0">
+          <h4>🔄 Historique des remplacements</h4>
+          <table class="epi-remplacement-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>EPI remplacé</th>
+                <th>Motif</th>
+                <th>Ancien EPI restitué</th>
+                <th>Signature Agent</th>
+                <th>Signature Responsable</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let remplacement of employe.epiRemplacements">
+                <td>{{ remplacement.date | date:'dd/MM/yyyy' }}</td>
+                <td>{{ remplacement.epiRemplace }}</td>
+                <td>{{ remplacement.motif }}</td>
+                <td>{{ remplacement.ancienEpiRestitue ? 'Oui' : 'Non' }}</td>
+                <td class="text-center">
+                  <span class="signature-indicator" *ngIf="remplacement.signatureAgent">✓</span>
+                  <span class="signature-indicator empty" *ngIf="!remplacement.signatureAgent">—</span>
+                </td>
+                <td class="text-center">
+                  <span class="signature-indicator" *ngIf="remplacement.signatureResponsable">✓</span>
+                  <span class="signature-indicator empty" *ngIf="!remplacement.signatureResponsable">—</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Section validation -->
+        <div class="epi-validation-section">
+          <h4>✅ Validation</h4>
+          <table class="epi-validation-table">
+            <thead>
+              <tr>
+                <th>Fonction</th>
+                <th>Nom</th>
+                <th>Signature</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-weight-bold">Magasinier</td>
+                <td>{{ employe.epiValidation?.magasinier?.nom || 'Non renseigné' }}</td>
+                <td class="text-center">
+                  <span class="signature-badge" [class.signed]="employe.epiValidation?.magasinier?.signature"
+                    [class.unsigned]="!employe.epiValidation?.magasinier?.signature">
+                    {{ employe.epiValidation?.magasinier?.signature ? '✓ Signé' : '✗ Non signé' }}
+                  </span>
+                </td>
+                <td>{{ (employe.epiValidation?.magasinier?.date | date:'dd/MM/yyyy') || '—' }}</td>
+              </tr>
+              <tr>
+                <td class="font-weight-bold">Responsable Administratif</td>
+                <td>{{ employe.epiValidation?.responsableHSE?.nom || 'Non renseigné' }}</td>
+                <td class="text-center">
+                  <span class="signature-badge" [class.signed]="employe.epiValidation?.responsableHSE?.signature"
+                    [class.unsigned]="!employe.epiValidation?.responsableHSE?.signature">
+                    {{ employe.epiValidation?.responsableHSE?.signature ? '✓ Signé' : '✗ Non signé' }}
+                  </span>
+                </td>
+                <td>{{ (employe.epiValidation?.responsableHSE?.date | date:'dd/MM/yyyy') || '—' }}</td>
+              </tr>
+              <tr>
+                <td class="font-weight-bold">Directeur Général</td>
+                <td>{{ employe.epiValidation?.chefProjet?.nom || 'Non renseigné' }}</td>
+                <td class="text-center">
+                  <span class="signature-badge" [class.signed]="employe.epiValidation?.chefProjet?.signature"
+                    [class.unsigned]="!employe.epiValidation?.chefProjet?.signature">
+                    {{ employe.epiValidation?.chefProjet?.signature ? '✓ Signé' : '✗ Non signé' }}
+                  </span>
+                </td>
+                <td>{{ (employe.epiValidation?.chefProjet?.date | date:'dd/MM/yyyy') || '—' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+
+        <!-- Message si aucun EPI -->
+        <div class="info-row" *ngIf="employe.epi?.length === 0">
+          <div class="info-value">
+            <p>Aucun EPI enregistré pour cet agent</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal EPI -->
+    <div class="modal-overlay" *ngIf="showEpiModal" (click)="closeEpiModal()">
+      <div class="modal-content modal-large" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>📋 Gestion des EPI - {{ employe.prenom }} {{ employe.nom }}</h3>
+          <button class="close-btn" (click)="closeEpiModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <!-- Liste des EPI -->
+          <div class="epi-form-list">
+            <h4>Liste des EPI</h4>
+            <div class="epi-form-table-wrapper">
+              <table class="epi-form-table">
+                <thead>
+                  <tr>
+                    <th>Désignation</th>
+                    <th>Référence / Marque</th>
+                    <th>Taille</th>
+                    <th>Qté</th>
+                    <th>Date de remise</th>
+                    <th>État</th>
+                    <th>Signature Agent</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let epi of epiFormList; let i = index">
+                    <td>
+                      <strong>{{ epi.designation }}</strong>
+                      <input type="hidden" [(ngModel)]="epi.id">
+                    </td>
+                    <td><input type="text" [(ngModel)]="epi.reference" class="form-control" placeholder="Référence">
+                    </td>
+                    <td>
+                      <select [(ngModel)]="epi.taille" class="form-control">
+                        <option value="">-</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
+                      </select>
+                    </td>
+                    <td><input type="number" [(ngModel)]="epi.quantite" class="form-control" min="1"
+                        style="width: 70px;"></td>
+                    <td><input type="date" [(ngModel)]="epi.dateRemise" class="form-control"></td>
+                    <td>
+                      <select [(ngModel)]="epi.etat" class="form-control">
+                        <option value="Neuf">Neuf</option>
+                        <option value="Bon état">Bon état</option>
+                        <option value="Usé">Usé</option>
+                        <option value="À remplacer">À remplacer</option>
+                      </select>
+                    </td>
+                    <td class="text-center">
+                      <label class="checkbox-sign">
+                        <input type="checkbox" [(ngModel)]="epi.signatureAgent">
+                        <span>✓</span>
+                      </label>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Section remplacement -->
+          <div class="epi-remplacement-form">
+            <h4>🔄 Remplacement EPI</h4>
+            <div class="remplacement-row" *ngFor="let remplacement of epiRemplacementFormList; let i = index">
+              <div class="remplacement-header">
+                <span>Remplacement {{ i + 1 }}</span>
+                <button class="btn-remove" (click)="removeRemplacement(i)">🗑️</button>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Date</label>
+                  <input type="date" [(ngModel)]="remplacement.date" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>EPI remplacé</label>
+                  <input type="text" [(ngModel)]="remplacement.epiRemplace" class="form-control"
+                    placeholder="Désignation EPI">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Motif</label>
+                  <select [(ngModel)]="remplacement.motif" class="form-control">
+                    <option value="">Sélectionner</option>
+                    <option value="Usure normale">Usure normale</option>
+                    <option value="Détérioration">Détérioration</option>
+                    <option value="Perte">Perte</option>
+                    <option value="Fin de validité">Fin de validité</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Ancien EPI restitué</label>
+                  <label class="checkbox-label">
+                    <input type="checkbox" [(ngModel)]="remplacement.ancienEpiRestitue">
+                    <span>Oui</span>
+                  </label>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Signature Agent</label>
+                  <label class="checkbox-sign">
+                    <input type="checkbox" [(ngModel)]="remplacement.signatureAgent">
+                    <span>✓ Signé</span>
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label>Signature Responsable</label>
+                  <label class="checkbox-sign">
+                    <input type="checkbox" [(ngModel)]="remplacement.signatureResponsable">
+                    <span>✓ Signé</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <button class="btn-add-row" (click)="addRemplacement()">+ Ajouter un remplacement</button>
+          </div>
+
+          <!-- Section validation -->
+          <div class="epi-validation-form">
+            <h4>✅ Validation</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Magasinier - Nom</label>
+                <input type="text" [(ngModel)]="epiValidationForm.magasinier.nom" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Signature</label>
+                <label class="checkbox-sign">
+                  <input type="checkbox" [(ngModel)]="epiValidationForm.magasinier.signature">
+                  <span>✓</span>
+                </label>
+              </div>
+              <div class="form-group">
+                <label>Date</label>
+                <input type="date" [(ngModel)]="epiValidationForm.magasinier.date" class="form-control">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Responsable Administratif - Nom</label>
+                <input type="text" [(ngModel)]="epiValidationForm.responsableHSE.nom" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Signature</label>
+                <label class="checkbox-sign">
+                  <input type="checkbox" [(ngModel)]="epiValidationForm.responsableHSE.signature">
+                  <span>✓</span>
+                </label>
+              </div>
+              <div class="form-group">
+                <label>Date</label>
+                <input type="date" [(ngModel)]="epiValidationForm.responsableHSE.date" class="form-control">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Directeur Général - Nom</label>
+                <input type="text" [(ngModel)]="epiValidationForm.chefProjet.nom" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Signature</label>
+                <label class="checkbox-sign">
+                  <input type="checkbox" [(ngModel)]="epiValidationForm.chefProjet.signature">
+                  <span>✓</span>
+                </label>
+              </div>
+              <div class="form-group">
+                <label>Date</label>
+                <input type="date" [(ngModel)]="epiValidationForm.chefProjet.date" class="form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondaire" (click)="closeEpiModal()">Annuler</button>
+          <button class="btn btn-validation" (click)="saveEpi(employe.id)" [disabled]="isLoading">
+            <span *ngIf="!isLoading">💾 Enregistrer</span>
+            <span *ngIf="isLoading" class="spinner"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+
   </div>
 </div>

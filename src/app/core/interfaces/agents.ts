@@ -1,5 +1,6 @@
 import { CarteMarine } from "./carte-marine";
 import { CertifMedical } from "./certif-medical";
+import { EPI, EPIRemplacement, EPIValidation } from "./epi.interface";
 import { Habilitation } from "./habilitation";
 import { Induction } from "./induction";
 
@@ -18,6 +19,9 @@ export interface Employes {
     habilitation?: Habilitation | 'pending';
     certificatMedical?: CertifMedical | 'pending';
     carteMarine?: CarteMarine | 'pending';
+    epi?: EPI[];
+    epiValidation?: EPIValidation; 
+    epiRemplacements?: EPIRemplacement[];
     typeContrat: string;
     statut: string;
     dateDebut: string;
