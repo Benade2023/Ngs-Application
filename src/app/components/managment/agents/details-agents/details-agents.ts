@@ -13,6 +13,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Habilitation } from '../../../../core/interfaces/habilitation';
 import { CertifMedical } from '../../../../core/interfaces/certif-medical';
 import { CarteMarine } from '../../../../core/interfaces/carte-marine';
+import { EPI, EPIRemplacement, EPIValidation } from '../../../../core/interfaces/epi.interface';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -1143,4 +1145,431 @@ export class DetailsAgents implements OnInit {
       }
     });
   }
+
+  // Propriétés EPI
+  epiList: EPI[] = [];
+  epiRemplacements: EPIRemplacement[] = [];
+  epiValidation: EPIValidation = {
+    magasinier: { nom: '', signature: false, date: '' },
+    responsableHSE: { nom: '', signature: false, date: '' },
+    chefProjet: { nom: '', signature: false, date: '' }
+  };
+
+  // Formulaire modal
+  showEpiModal = false;
+  epiFormList: EPI[] = [];
+  epiRemplacementFormList: EPIRemplacement[] = [];
+  epiValidationForm: EPIValidation = {
+    magasinier: { nom: '', signature: false, date: '' },
+    responsableHSE: { nom: '', signature: false, date: '' },
+    chefProjet: { nom: '', signature: false, date: '' }
+  };
+
+  // Liste prédéfinie des EPI
+  epiDesignations = [
+    { id: 1, designation: 'Casque de sécurité', type: 'Tête' },
+    { id: 2, designation: 'Lunettes de protection', type: 'Yeux' },
+    { id: 3, designation: 'Chaussures de sécurité', type: 'Pieds' },
+    { id: 4, designation: 'Gants de manutention', type: 'Mains' },
+    { id: 5, designation: 'Gants isolants', type: 'Mains' },
+    { id: 6, designation: 'Veste haute visibilité', type: 'Corps' },
+    { id: 7, designation: 'Combinaison de travail', type: 'Corps' },
+    { id: 8, designation: 'Harnais antichute', type: 'Corps' },
+    { id: 9, designation: 'Jugulaire casque', type: 'Tête' },
+    { id: 10, designation: 'Protection auditive', type: 'Oreilles' }
+  ];
+
+
+
+  // openEpiModal(employe: any) {
+  //   // Charger les EPI existants ou initialiser avec la liste par défaut
+  //   if (employe.epi && employe.epi.length > 0) {
+  //     this.epiFormList = [...employe.epi];
+  //   } else {
+  //     this.epiFormList = this.epiDesignations.map(epi => ({
+  //       id: epi.id.toString(),
+  //       designation: epi.designation,
+  //       type: epi.type,
+  //       reference: '',
+  //       taille: '',
+  //       quantite: 1,
+  //       dateRemise: new Date().toISOString().split('T')[0],
+  //       etat: 'Neuf',
+  //       signatureAgent: false
+  //     }));
+  //     console.log(this.epiFormList);
+
+  //   }
+
+  //   this.epiRemplacementFormList = employe.epiRemplacements ? [...employe.epiRemplacements] : [];
+
+  //   if (employe.epiValidation) {
+  //     this.epiValidationForm = { ...employe.epiValidation };
+  //   } else {
+  //     this.epiValidationForm = {
+  //       magasinier: { nom: '', signature: false, date: new Date().toISOString().split('T')[0] },
+  //       responsableHSE: { nom: '', signature: false, date: new Date().toISOString().split('T')[0] },
+  //       chefProjet: { nom: '', signature: false, date: new Date().toISOString().split('T')[0] }
+  //     };
+  //   }
+
+  //   this.showEpiModal = true;
+  // }
+
+
+  openEpiModal(employe: any) {
+    // Créer la liste complète des EPI disponibles
+    const tousLesEpi = this.epiDesignations.map(epi => ({
+      id: epi.id.toString(),
+      designation: epi.designation,
+      type: epi.type,
+      reference: '',
+      taille: '',
+      quantite: 1,
+      dateRemise: new Date().toISOString().split('T')[0],
+      etat: 'Neuf',
+      signatureAgent: false
+    }));
+
+    // Si l'employé a des EPI enregistrés, on les fusionne avec la liste complète
+    if (employe.epi && employe.epi.length > 0) {
+      // Créer un map des EPI existants par désignation
+      const epiExistantsMap = new Map();
+      employe.epi.forEach((epi: EPI) => {
+        epiExistantsMap.set(epi.designation, epi);
+      });
+
+      // Fusionner: garder les valeurs existantes, compléter avec les nouveaux
+      this.epiFormList = tousLesEpi.map(epi => {
+        const epiExistant = epiExistantsMap.get(epi.designation);
+        if (epiExistant) {
+          // Garder les valeurs existantes
+          return { ...epiExistant };
+        } else {
+          // Retourner le nouveau EPI avec valeurs par défaut
+          return { ...epi };
+        }
+      });
+    } else {
+      // Aucun EPI existant, afficher tous les EPI avec valeurs par défaut
+      this.epiFormList = tousLesEpi;
+    }
+
+    console.log('Liste complète des EPI:', this.epiFormList);
+
+    this.epiRemplacementFormList = employe.epiRemplacements ? [...employe.epiRemplacements] : [];
+
+    if (employe.epiValidation) {
+      this.epiValidationForm = { ...employe.epiValidation };
+    } else {
+      this.epiValidationForm = {
+        magasinier: { nom: '', signature: false, date: new Date().toISOString().split('T')[0] },
+        responsableHSE: { nom: '', signature: false, date: new Date().toISOString().split('T')[0] },
+        chefProjet: { nom: '', signature: false, date: new Date().toISOString().split('T')[0] }
+      };
+    }
+
+    this.showEpiModal = true;
+  }
+
+  closeEpiModal() {
+    this.showEpiModal = false;
+  }
+
+  addRemplacement() {
+    this.epiRemplacementFormList.push({
+      date: new Date().toISOString().split('T')[0],
+      epiRemplace: '',
+      motif: '',
+      ancienEpiRestitue: false,
+      signatureAgent: false,
+      signatureResponsable: false
+    });
+  }
+
+  removeRemplacement(index: number) {
+    this.epiRemplacementFormList.splice(index, 1);
+  }
+
+  // Variable pour stocker l'EPI en cours d'édition
+  currentEditingEpi: EPI | null = null;
+  currentEditingIndex = -1;
+
+  // editEpi(epi: EPI, index: number) {
+  //   // Ouvrir un sous-modal ou permettre l'édition directement
+  //   console.log('Modifier EPI:', epi);
+  // }
+  deleteEpi(epi: EPI, index: number) {
+    // Confirmation avant suppression
+    Swal.fire({
+      title: '⚠️ Confirmation',
+      text: `Voulez-vous vraiment supprimer l'EPI "${epi.designation}" ?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Oui, supprimer',
+      cancelButtonText: 'Annuler',
+      confirmButtonColor: '#ef476f',
+      cancelButtonColor: '#6c757d'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Supprimer l'EPI du tableau
+        this.epiFormList.splice(index, 1);
+
+        // Appel au service pour sauvegarder
+        this.isLoading = true;
+
+        const epiData = {
+          epi: this.epiFormList,
+          epiRemplacements: this.epiRemplacementFormList,
+          epiValidation: this.epiValidationForm
+        };
+
+        this.employeService.updateEpi(this.employe.id, epiData).subscribe({
+          next: (response) => {
+            this.isLoading = false;
+            Swal.fire({
+              title: '✅ Supprimé !',
+              text: 'EPI supprimé avec succès',
+              icon: 'success',
+              timer: 2000,
+              showConfirmButton: false
+            });
+            this.loadEmployee(this.employe.id);
+          },
+          error: (error) => {
+            console.error('Erreur:', error);
+            this.isLoading = false;
+            Swal.fire({
+              title: '❌ Erreur',
+              text: 'Erreur lors de la suppression',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+          }
+        });
+      }
+    });
+  }
+
+  editEpi(epi: EPI, index: number) {
+    Swal.fire({
+      title: `✏️ Modifier ${epi.designation}`,
+      html: `
+      <div class="swal-custom-form">
+        <div class="swal-form-group">
+          <label class="swal-label">📦 Référence / Marque</label>
+          <input id="reference" class="swal-input-custom" value="${epi.reference}" placeholder="Ex: CS-001">
+        </div>
+        <div class="swal-row">
+          <div class="swal-form-group half">
+            <label class="swal-label">📏 Taille</label>
+            <select id="taille" class="swal-select-custom">
+              <option value="">Sélectionner</option>
+              <option value="S" ${epi.taille === 'S' ? 'selected' : ''}>S</option>
+              <option value="M" ${epi.taille === 'M' ? 'selected' : ''}>M</option>
+              <option value="L" ${epi.taille === 'L' ? 'selected' : ''}>L</option>
+              <option value="XL" ${epi.taille === 'XL' ? 'selected' : ''}>XL</option>
+              <option value="XXL" ${epi.taille === 'XXL' ? 'selected' : ''}>XXL</option>
+            </select>
+          </div>
+          <div class="swal-form-group half">
+            <label class="swal-label">🔢 Quantité</label>
+            <input id="quantite" type="number" class="swal-input-custom" value="${epi.quantite}" min="1">
+          </div>
+        </div>
+        <div class="swal-form-group">
+          <label class="swal-label">📅 Date de remise</label>
+          <input id="dateRemise" type="date" class="swal-input-custom" value="${epi.dateRemise}">
+        </div>
+        <div class="swal-form-group">
+          <label class="swal-label">📊 État</label>
+          <select id="etat" class="swal-select-custom">
+            <option value="Neuf" ${epi.etat === 'Neuf' ? 'selected' : ''}>🆕 Neuf</option>
+            <option value="Bon état" ${epi.etat === 'Bon état' ? 'selected' : ''}>👍 Bon état</option>
+            <option value="Usé" ${epi.etat === 'Usé' ? 'selected' : ''}>⚠️ Usé</option>
+            <option value="À remplacer" ${epi.etat === 'À remplacer' ? 'selected' : ''}>🔄 À remplacer</option>
+          </select>
+        </div>
+        <div class="swal-form-group">
+          <label class="swal-checkbox">
+            <input type="checkbox" id="signatureAgent" ${epi.signatureAgent ? 'checked' : ''}>
+            <span class="checkmark"></span>
+            <span class="checkbox-label">✍️ Signature Agent</span>
+          </label>
+        </div>
+      </div>
+    `,
+      width: '550px',
+      padding: '1.5rem',
+      background: '#ffffff',
+      backdrop: 'rgba(0,0,0,0.4)',
+      showCancelButton: true,
+      confirmButtonText: '💾 Enregistrer',
+      cancelButtonText: '❌ Annuler',
+      confirmButtonColor: '#1a472a',
+      cancelButtonColor: '#6c757d',
+      customClass: {
+        popup: 'swal-custom-popup',
+        title: 'swal-custom-title',
+        confirmButton: 'swal-confirm-btn',
+        cancelButton: 'swal-cancel-btn'
+      },
+      preConfirm: () => {
+        const reference = (document.getElementById('reference') as HTMLInputElement)?.value;
+        const taille = (document.getElementById('taille') as HTMLSelectElement)?.value;
+        const quantite = parseInt((document.getElementById('quantite') as HTMLInputElement)?.value);
+        const dateRemise = (document.getElementById('dateRemise') as HTMLInputElement)?.value;
+        const etat = (document.getElementById('etat') as HTMLSelectElement)?.value;
+        const signatureAgent = (document.getElementById('signatureAgent') as HTMLInputElement)?.checked;
+
+        if (!reference || reference.trim() === '') {
+          Swal.showValidationMessage('⚠️ La référence est requise');
+          return false;
+        }
+        if (!dateRemise) {
+          Swal.showValidationMessage('⚠️ La date de remise est requise');
+          return false;
+        }
+        if (isNaN(quantite) || quantite < 1) {
+          Swal.showValidationMessage('⚠️ La quantité doit être au moins 1');
+          return false;
+        }
+
+        return { reference, taille, quantite, dateRemise, etat, signatureAgent };
+      }
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        this.isLoading = true;
+
+        // Mettre à jour l'EPI
+        this.epiFormList[index] = {
+          ...this.epiFormList[index],
+          reference: result.value.reference,
+          taille: result.value.taille,
+          quantite: result.value.quantite,
+          dateRemise: result.value.dateRemise,
+          etat: result.value.etat,
+          signatureAgent: result.value.signatureAgent
+        };
+
+        // Appel au service pour sauvegarder
+        const epiData = {
+          epi: this.epiFormList,
+          epiRemplacements: this.epiRemplacementFormList,
+          epiValidation: this.epiValidationForm
+        };
+
+        this.employeService.updateEpi(this.employe.id, epiData).subscribe({
+          next: (response) => {
+            this.isLoading = false;
+            Swal.fire({
+              title: '✅ Succès !',
+              text: 'EPI modifié avec succès',
+              icon: 'success',
+              timer: 2000,
+              showConfirmButton: false
+            });
+            this.loadEmployee(this.employe.id);
+          },
+          error: (error) => {
+            console.error('Erreur:', error);
+            this.isLoading = false;
+            Swal.fire({
+              title: '❌ Erreur',
+              text: 'Erreur lors de la modification',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+          }
+        });
+      }
+    });
+  }
+
+  // saveEpi(idEmploye: string) {
+  //   this.isLoading = true;
+
+  //   const epiData = {
+  //     epi: this.epiFormList,
+  //     epiRemplacements: this.epiRemplacementFormList,
+  //     epiValidation: this.epiValidationForm
+  //   };
+
+
+  //   console.log('Données EPI à enregistrer:', epiData);
+
+  //   this.employeService.updateEpi(this.employe.id, epiData).subscribe({
+  //     next: (response) => {
+  //       this.isLoading = false;
+  //       this.alert.success('EPI enregistrés avec succès');
+  //       this.closeEpiModal();
+  //       this.loadEmployee(idEmploye);
+  //     },
+  //     error: (error) => {
+  //       console.error('Erreur:', error);
+  //       this.isLoading = false;
+  //       this.alert.error('Erreur lors de l\'enregistrement');
+  //     }
+  //   });
+  // }
+
+  saveEpi(idEmploye: string) {
+    this.isLoading = true;
+
+    // Filtrer uniquement les EPI avec signature agent cochée
+    const epiSignes = this.epiFormList.filter(epi => epi.signatureAgent === true);
+
+    // Filtrer les remplacements avec signatures (optionnel)
+    const remplacementsSignes = this.epiRemplacementFormList.filter(r =>
+      r.signatureAgent === true && r.signatureResponsable === true
+    );
+
+    // Vérifier qu'au moins un EPI est signé
+    if (epiSignes.length === 0) {
+      this.alert.toast('Veuillez obtenir la signature agent pour au moins un EPI avant de sauvegarder');
+      this.isLoading = false;
+      return;
+    }
+
+    const epiData = {
+      epi: epiSignes,
+      epiRemplacements: remplacementsSignes,
+      epiValidation: this.epiValidationForm
+    };
+
+    console.log('Données EPI à enregistrer (uniquement signés):', JSON.stringify(epiData, null, 2));
+    console.log(`${epiSignes.length} EPI(s) signés sur ${this.epiFormList.length} total`);
+
+    this.employeService.updateEpi(this.employe.id, epiData).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        this.alert.success(`${epiSignes.length} EPI(s) enregistrés avec succès`);
+        this.closeEpiModal();
+        this.loadEmployee(idEmploye);
+      },
+      error: (error) => {
+        console.error('Erreur:', error);
+        this.isLoading = false;
+        this.alert.error('Erreur lors de l\'enregistrement');
+      }
+    });
+  }
+
+  getEpiStateClass(etat: string): string {
+    const classes: any = {
+      'Neuf': 'state-neuf',
+      'Bon état': 'state-bon',
+      'Usé': '-state-use',
+      'À remplacer': 'state-remplacer'
+    };
+    return classes[etat] || '';
+  }
+
+
+
+
+
+
+
+
 }
