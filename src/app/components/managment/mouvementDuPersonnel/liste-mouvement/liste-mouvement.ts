@@ -189,6 +189,16 @@ export class ListeMouvement implements OnInit {
   updateDemobilisation(event: any) {
     const value = event.target.value;
     this.selectedMouvement.demobilisation = value ? new Date(value) : null;
+    this.selectedMouvement.demobilisation = value
+      ? new Date(value)
+      : null;
+
+    this.selectedMouvement.status =
+      this.selectedMouvement.demobilisation
+        ? 'Hors site'
+        : 'Sur site';
+
+    this.calculateJours();
   }
 
   updateDateEstimeDemob(event: any) {
@@ -268,23 +278,87 @@ export class ListeMouvement implements OnInit {
     }
 
     this.calculateJours();
+
+    this.selectedMouvement.status =
+      this.selectedMouvement.demobilisation
+        ? 'Hors site'
+        : 'Sur site';
+
     this.isLoading = true;
 
     if (this.isEditMode) {
-      this.mouvementService.updateMouvementPersonnel(this.selectedMouvement.id, this.selectedMouvement).subscribe({
-        next: () => {
-          this.loadData();
-          this.closeModal();
-          this.isLoading = false;
-          this.alertService.success('Mouvement mis à jour avec succès');
 
+      this.mouvementService.updateMouvementPersonnel(
+        this.selectedMouvement.id,
+        this.selectedMouvement
+      ).subscribe({
+        next: (res) => {
+
+          console.log('Mouvement mis à jour:', res);
+
+          this.rotationService.getRotationByEmployeId(res.employe.id)
+            .subscribe({
+              next: (rotationExistante) => {
+
+
+                console.log(JSON.stringify(rotationExistante, null, 2));
+
+                const rotation: Rotation = {
+                  id: rotationExistante[0].id,
+                  projet: res.projet,
+                  mobilisation: res.mobilisation,
+                  demobilisation: res.demobilisation,
+                  fonction: res.fonction,
+                  site: res.site,
+                  entreprise: res.entreprise,
+                  activites: res.activites,
+                  observations: '',
+                  statut: res.status,
+                  employeId: res.employe.id
+                };
+
+                console.log(rotationExistante[0].id);
+
+                this.rotationService.updateRotation(
+                  rotationExistante[0].id,
+                  rotation
+                ).subscribe({
+                  next: () => {
+                    this.loadData();
+                    this.closeModal();
+                    this.isLoading = false;
+                    this.alertService.success('Mouvement mis à jour avec succès');
+                  }
+                });
+              }
+            });
         },
         error: (error) => {
-          console.error('Erreur lors de la modification:', error);
+          console.error(error);
           this.isLoading = false;
-          this.alertService.error('Erreur lors de la modification du mouvement');
         }
       });
+
+
+      // this.mouvementService.updateMouvementPersonnel(this.selectedMouvement.id, this.selectedMouvement).subscribe({
+      //   next: () => {
+      //     this.loadData();
+      //     this.closeModal();
+      //     this.isLoading = false;
+      //     this.alertService.success('Mouvement mis à jour avec succès');
+
+      //   },
+      //   error: (error) => {
+      //     console.error('Erreur lors de la modification:', error);
+      //     this.isLoading = false;
+      //     this.alertService.error('Erreur lors de la modification du mouvement');
+      //   }
+      // });
+
+
+
+
+
     } else {
       this.mouvementService.addMouvementPersonnel(this.selectedMouvement).subscribe({
         next: (res) => {
@@ -370,7 +444,7 @@ export class ListeMouvement implements OnInit {
 
     if (!start || !end) return 0;
 
-    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const diffTime = Math.abs((end.getTime() + 1) - start.getTime());
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   }
 

@@ -115,6 +115,7 @@ export class DetailMouvement implements OnInit, AfterViewInit {
     // Données mockées avec 20 rotations pour tester
     this.mouvementService.getMouvementPersonnel().subscribe({
       next: (res => {
+        
         this.agent = res.find(m => m.employe.id === id) || {} as MouvementPersonnel;
 
       })
@@ -130,6 +131,7 @@ export class DetailMouvement implements OnInit, AfterViewInit {
         this.calculateStats();
         this.filterHistorique();
         this.initChart();
+        this.cdr.markForCheck();
       }
     })
 

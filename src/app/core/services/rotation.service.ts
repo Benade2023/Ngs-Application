@@ -10,6 +10,7 @@ import { EnvironmentProduction } from "../../../environment/environment.producti
 export class RotationService {
     // apiUrl = "http://localhost:3000/rotations";
     apiUrl = EnvironmentProduction.apiUrlExtern + '/rotations';
+    apiUrlForEmplyeId = EnvironmentProduction.apiUrlExtern + '/rotations?employeId=';
 
 
     constructor(private http: HttpClient) { }
@@ -25,8 +26,8 @@ export class RotationService {
     }
 
     //get Rotatione by id//
-    getRotationByEmployeId(employeId: string): Observable<Rotation> {
-        return this.http.get<Rotation>(`${this.apiUrl}/${employeId}`);
+    getRotationByEmployeId(employeId: string): Observable<Rotation[]> {
+        return this.http.get<Rotation[]>(`${this.apiUrlForEmplyeId}${employeId}`);
     }
 
     //update Rotatione//
